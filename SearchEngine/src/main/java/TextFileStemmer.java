@@ -155,27 +155,8 @@ public class TextFileStemmer {
 				 return uniqueStems(sb.toString());
 			}
 		}else {
-			System.out.println("doesnt even exist");
 			return null;
 		}
 	}
 
-	/**
-	 * A simple main method that demonstrates this class.
-	 *
-	 * @param args unused
-	 * @throws IOException if an I/O error occurs
-	 */
-	public static void main(String[] args) throws IOException {
-		String text = "practic practical practice practiced practicer practices "
-				+ "practicing practis practisants practise practised practiser "
-				+ "practisers practises practising practitioner practitioners";
-
-		System.out.println(uniqueStems(text));
-		System.out.println(listStems(text));
-
-		Path inputPath = Path.of("src", "test", "resources", "animals.text");
-		Set<String> actual = TextFileStemmer.uniqueStems(inputPath);
-		System.out.println(actual);
-	}
 }

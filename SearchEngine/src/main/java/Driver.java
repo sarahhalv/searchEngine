@@ -35,19 +35,42 @@ public class Driver {
 		TextFileStemmer tfs = new TextFileStemmer();
 		SimpleJsonWriter sjw = new SimpleJsonWriter();
 		
-
-		
+		if(args.length == 0) { //no arguments provided
+			System.out.println("no arguments!"); 
+			return;
+		}
+		if(!Arrays.asList(args).contains("-path")) { //if no path flag/bad arguments
+			System.out.println("bad arguments !");
+			//write empty inverted index to default file
+			TreeMap<String, TreeMap<Path, List<Integer>>> invertm = new TreeMap<String, TreeMap<Path, List<Integer>>>();
+			Path p = Paths.get("index.json");
+			try {
+				SimpleJsonWriter.asDoubleNestedArray(invertm, p);
+			} catch (IOException e) {
+				//add some type of error thing
+			}
+			return;
+		}
 		// store initial start time
 		Instant start = Instant.now();
 
 		// output arguments
-		System.out.println(Arrays.toString(args));
-		System.out.println("\n");
+		//System.out.println(Arrays.toString(args));
+		//System.out.println("\n");
 		
 		//parsing command-line arguments into flag/value pairs, and supports default values if a flag is missing a value (argument map)
 		var Argmap = new ArgumentMap(args);
-		System.out.println("argument map: "+ Argmap);
-		System.out.println("path value "+ Argmap.getPath("-path"));
+//		System.out.println("argument map: "+ Argmap);
+//		System.out.println("path value "+ Argmap.getPath("-path"));
+		
+		if(Argmap.getString("-path")==null) { //if no path provided
+			System.out.println("path is missing");
+			return;
+		}
+		if(!Files.isDirectory(Argmap.getPath("-path")) && !Files.exists(Argmap.getPath("-path"))) {
+			System.out.println("invalid path");
+			return;
+		}
 		
 		//traverse a directory and return a list of all the text files found within that directory (textfilefinder)
 		boolean isDir = false;
@@ -60,12 +83,14 @@ public class Driver {
 				textfiles = tff.list(Argmap.getPath("-path"));
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();   //do something else beside stack trace
+				//e.printStackTrace();   //do something else beside stack trace
 			}
 		}else { //if single file, add it
-			textfiles.add(Argmap.getPath("-path"));
+			if(Argmap.getPath("-path") != null) {
+				textfiles.add(Argmap.getPath("-path"));
+			}
 		}
-		System.out.println("text files: " + textfiles);
+		//System.out.println("text files: " + textfiles);
 		
 		/*parse text into words, including converting that text to lowercase, replacing special characters and digits, 
 		*splitting that text into words by whitespaces, and finally stemming the words (textStemmer)
@@ -82,20 +107,20 @@ public class Driver {
 						}
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
-						e.printStackTrace(); //make something beside stack trace
+						//e.printStackTrace(); //make something beside stack trace
 					}
 			}
 		}else{ //if single file, record it's stems
-				System.out.println("value going into unique stems: " + Argmap.getPath("-path"));
+				//System.out.println("value going into unique stems: " + Argmap.getPath("-path"));
 				try {
 					stems = TextFileStemmer.uniqueStems(Argmap.getPath("-path"));
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace(); //make something beside stack trace
+					//e.printStackTrace(); //make something beside stack trace
 				}
 		}
 		
-		System.out.println("word stems: " + stems);
+		//System.out.println("word stems: " + stems);
 		
 		
 		//storing a word, file path, and location into an inverted index data structure (similar but lil diff to textfileindex)
@@ -110,7 +135,7 @@ public class Driver {
 					stemmed = TextFileStemmer.listStems(yee);
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 				
 				int position = 1;
@@ -128,6 +153,7 @@ public class Driver {
 			invertm.put(s, stemData);  //put map of files and their positions as value for stem key
 		}
 		
+		
 		//writing a nested data structure (matching your inverted index data structure) to a file in JSON format (SimpleJSONWriter)
 		if(Arrays.asList(args).contains("-index")) {  //write JSON to a file bc index flag present
 			if(Argmap.getPath("-index") != null) { //if has path value, use it 
@@ -144,10 +170,8 @@ public class Driver {
 					//add some type of error thing
 				}
 			}
-		System.out.print(SimpleJsonWriter.asDoubleNestedArray(invertm));
-			
+		//System.out.print(SimpleJsonWriter.asDoubleNestedArray(invertm));
 		}
-		
 		
 		// calculate time elapsed and output
 		Duration elapsed = Duration.between(start, Instant.now());
