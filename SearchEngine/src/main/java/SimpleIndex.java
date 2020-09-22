@@ -1,6 +1,8 @@
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * An index to store locations and the words found at those locations. Makes no
@@ -15,33 +17,33 @@ public interface SimpleIndex {
 	/**
 	 * Adds the location and word.
 	 *
-	 * @param location the location the word was found
-	 * @param word the word found
+	 * @param map the file and locations within it the stem is found
+	 * @param word the stem
 	 */
-	public void add(Path location, String word);
-	
+ public void add(String word, HashMap<Path, List<Integer>> map);
+//	
 	/**
 	 * Adds the location and the provided words.
 	 *
-	 * @param location the location the words were found
-	 * @param words the words found at that location
+	 * @param maps the paths/files and the locations that stem is found in
+	 * @param word the stem word
 	 */
-	public default void add(Path location, String[] words) {
+	public default void add(String word, HashMap<Path, List<Integer>>[] maps) {
 		
-		for(int i=0; i<words.length; i++) {
-			add(location, words[i]);
+		for(int i=0; i<maps.length; i++) {
+			add(word, maps[i]);
 		}
-		
+	
 	}
 	
-	/**
-	 * Returns the number of words stored for the given path.
-	 *
-	 * @param location the location to lookup
-	 * @return 0 if the location is not in the index or has no words, otherwise
-	 *         the number of words stored for that element
-	 */
-	public int size(Path location);
+//	/**
+//	 * Returns the number of words stored for the given path.
+//	 *
+//	 * @param location the location to lookup
+//	 * @return 0 if the location is not in the index or has no words, otherwise
+//	 *         the number of words stored for that element
+//	 */
+//	public int size(Path location);
 
 	/**
 	 * Returns the number of locations stored in the index.
@@ -54,10 +56,10 @@ public interface SimpleIndex {
 	/**
 	 * Determines whether the location is stored in the index.
 	 *
-	 * @param location the location to lookup
+	 * @param stem the stemmed word to lookup
 	 * @return {@true} if the location is stored in the index
 	 */
-	public boolean contains(Path location);
+	public boolean contains(String stem);
 
 	/**
 	 * Determines whether the location is stored in the index and the word is
@@ -70,21 +72,31 @@ public interface SimpleIndex {
 	public boolean contains(Path location, String word);
 
 	/**
-	 * Returns an unmodifiable view of the locations stored in the index.
+	 * Determines whether the map is stored in index and t
+	 *
+	 * @param map the text file and locations
+	 * @return {@true} if the location and word is stored in the index
+	 */
+	public boolean contains(HashMap<Path, List<Integer>> map);
+	
+	/**
+	 * Returns an unmodifiable view of the stems stored in the index.
 	 *
 	 * @return an unmodifiable view of the locations stored in the index
 	 * @see Collections#unmodifiableCollection(Collection)
 	 */
-	public Collection<Path> get();
+	public Collection<String> get();
 
 	/**
 	 * Returns an unmodifiable view of the words stored in the index for the
 	 * provided location, or an empty collection if the location is not in the
 	 * index.
 	 *
-	 * @param location the location to lookup
+	 * @param stem the stem to lookup
 	 * @return an unmodifiable view of the words stored for the location
 	 */
-	public Collection<String> get(Path location);
+	public Collection<HashMap<Path, List<Integer>>> get(String stem);
+	
+
 
 }

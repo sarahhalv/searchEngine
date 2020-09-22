@@ -5,6 +5,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 /**
  * A special type of {@link SimpleIndex} that indexes the UNIQUE words that were
@@ -19,86 +22,124 @@ public class TextFileIndex implements SimpleIndex{
 	// TODO Modify anything within this class as necessary
 	
 	  /**
-		 * initializes hashmap for the index
+		 * initializes map for the index
 		 */
-	HashMap<Path, List<String>> indexMap = new HashMap<>();
+	//HashMap<Path, List<String>> indexMap = new HashMap<>();
+	TreeMap<String, HashMap<Path, List<Integer>>> invertedMap = new TreeMap<String, HashMap<Path, List<Integer>>>();
 	
-	@Override
-	public void add(Path location, String word) {
-		// TODO Auto-generated method stub
-		if(contains(location)) {	//if path is already in there
-			if(indexMap.get(location).contains(word)) { //if word is already in there
-				return; //don't add it and end method
-			}
-			indexMap.get(location).add(word);
-		}else {
-			List<String> words = new ArrayList<>(Arrays.asList(word)); //if no location at all, create new list for values
-			indexMap.put(location, words);
-		}
+	
+	//public void add(String word, HashMap<Path, List<Integer>> map)
+  @Override
+	public void add(String word, HashMap<Path, List<Integer>> map){
+//		// TODO Auto-generated method stub
+//		if(contains(word)) {	//if stem is already in there
+//			if(invertedMap.get(word).contains(map)) { //if hashmap is already present under stem
+//				return; //don't add it and end method
+//			}
+//			invertedMap.get(word).add(map); //add hashmap
+//		}else {
+//			List<HashMap<Path,List<Integer>>> files = new ArrayList<>(Arrays.asList(map)); //if no location at all, create new list for values
+//			invertedMap.put(word, map);
+//		}
 		return;
 	}
+  
+//	@Override
+//	public void add(String word, HashMap<Path, List<Integer>> map) {
+//		// TODO Auto-generated method stub
+//		
+//	}
 
-	@Override
-	public int size(Path location) {
-		// TODO Auto-generated method stub
-		if(contains(location)) { //check if specific path exists
-			return (indexMap.get(location)).size();
-		}else {
-			return 0;
-		}
-	}
+//	@Override
+//	public int size(String stem) {
+//		// TODO Auto-generated method stub
+//		if(contains(stem)) { //check if specific path exists
+//			return (invertedMap.get(stem)).size();
+//		}else {
+//			return 0;
+//		}
+//	}
 
 	@Override
 	public int size() {
 		// TODO Auto-generated method stub
-		return indexMap.size();
+		return invertedMap.size();
 	}
 
+//	@Override
+//	public boolean contains(Path location) {
+//		// TODO Auto-generated method stub
+//		if(invertedMap.containsKey(location)) {
+//			return true;
+//		}else {
+//			return false;
+//		}
+//	}
+	
 	@Override
-	public boolean contains(Path location) {
+	public boolean contains(String stem) {
 		// TODO Auto-generated method stub
-		if(indexMap.containsKey(location)) {
+		if(invertedMap.containsKey(stem)){
 			return true;
 		}else {
 			return false;
 		}
 	}
 
-	@Override
-	public boolean contains(Path location, String word) {
-		// TODO Auto-generated method stub
-		if(contains(location) && ((indexMap.get(location)).contains(word))) {
-			return true;
-		}else {
-			return false;
-		}
-	}
+//	@Override
+//	public boolean contains(Path location, String word) {
+//		// TODO Auto-generated method stub
+//		if(contains(location) && ((invertedMap.get(location)).contains(word))) {
+//			return true;
+//		}else {
+//			return false;
+//		}
+//	}
 
 	@Override
-	public Collection<Path> get() {
+	public Collection<String> get() {
 		// TODO Auto-generated method stub
-		return Collections.unmodifiableCollection(indexMap.keySet());
+		return Collections.unmodifiableCollection(invertedMap.keySet());
 	}
 
-	@Override
-	public Collection<String> get(Path location) {
-		// TODO Auto-generated method stub
-		if(contains(location)) {
-			return Collections.unmodifiableCollection(indexMap.get(location));
-		}
-		return Collections.emptyList();
-	}
+//	@Override
+//	public Collection<HashMap<Path, List<Integer>>> get(String stem) {
+//		// TODO Auto-generated method stub
+//		if(contains(stem)) {
+//			return Collections.unmodifiableSet(invertedMap.get(stem));
+//		}
+//		return Collections.emptyList();
+//	}
 	/**
 	* overrides to string to handle the index
 	*/
 	@Override
-	public String toString() {
+	public String toString() {   //FIX THIS
 		StringBuilder sb = new StringBuilder();
-		for(HashMap.Entry<Path, List<String>> entry: indexMap.entrySet()) {
+		for(Map.Entry entry: invertedMap.entrySet()) {
 			sb.append(entry.getKey().toString()+": "+ entry.getValue().toString() +"\n");
 		}
 		return sb.toString();
 	}
-	
+
+	@Override
+	public boolean contains(HashMap<Path, List<Integer>> map) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
+
+	@Override
+	public boolean contains(Path location, String word) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public Collection<HashMap<Path, List<Integer>>> get(String stem) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

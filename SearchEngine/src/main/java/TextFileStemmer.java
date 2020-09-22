@@ -155,9 +155,9 @@ public class TextFileStemmer {
 				 return uniqueStems(sb.toString());
 			}
 		}else {
+			System.out.println("doesnt even exist");
 			return null;
 		}
-		
 	}
 
 	/**

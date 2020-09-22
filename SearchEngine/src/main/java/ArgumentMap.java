@@ -59,9 +59,13 @@ public class ArgumentMap {
 					}
 						map.put(args[i], null);   					//set flag as a key
 				}
-				if(i>=1 && isValue(args[i]) && isFlag(args[i-1]) && map.get(args[i-1])==null) {
+				if(i>=1 && isValue(args[i]) && isFlag(args[i-1]) && map.get(args[i-1])==null) { //if value after key, add it 
 					map.put(args[i-1], args[i]);
 				}
+			}
+			//check if -index flag is there without a value
+			if(map.containsKey("-index") && map.get("-index")==null) {
+				map.put("-index", "index.json"); //add default value
 			}
 		}
 	}
