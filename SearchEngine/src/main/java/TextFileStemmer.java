@@ -34,8 +34,6 @@ public class TextFileStemmer {
 	 * @see TextParser#parse(String)
 	 */
 	public static ArrayList<String> listStems(String line, Stemmer stemmer) {
-		// TODO Fill in this method.
-		//parse and find stems, then clean
 		String[] words = TextParser.parse(line);
 		ArrayList<String> theStems = new ArrayList<>();
 		for(String word: words) {
@@ -56,8 +54,6 @@ public class TextFileStemmer {
 	 * @see #listStems(String, Stemmer)
 	 */
 	public static ArrayList<String> listStems(String line) {
-		// TODO Fill in this method.
-		// TODO Use "new SnowballStemmer(DEFAULT)" to create a stemmer object
 		Stemmer stemmer = new SnowballStemmer(DEFAULT);
 		return listStems(line, stemmer);
 	}
@@ -74,7 +70,6 @@ public class TextFileStemmer {
 	 * @see TextParser#parse(String)
 	 */
 	public static ArrayList<String> listStems(Path inputFile) throws IOException {
-		// TODO Fill in this method.
 		if(Files.exists(inputFile)) {
 			 //String fileContents = Files.readString(inputFile);
 			try(BufferedReader buf = Files.newBufferedReader(inputFile, StandardCharsets.UTF_8);){
@@ -103,8 +98,6 @@ public class TextFileStemmer {
 	 * @see #uniqueStems(String, Stemmer)
 	 */
 	public static TreeSet<String> uniqueStems(String line) {
-		// TODO Fill in this method.
-		// TODO Use "new SnowballStemmer(DEFAULT)" to create a stemmer object
 		Stemmer stemmer = new SnowballStemmer(DEFAULT);
 		return uniqueStems(line, stemmer);
 	}
@@ -121,7 +114,6 @@ public class TextFileStemmer {
 	 * @see TextParser#parse(String)
 	 */
 	public static TreeSet<String> uniqueStems(String line, Stemmer stemmer) {
-		// TODO Fill in this method.
 		String[] words = TextParser.parse(line);
 		TreeSet<String> uniqueStems = new TreeSet<>();
 		for(String word: words) {
@@ -142,9 +134,8 @@ public class TextFileStemmer {
 	 * @see TextParser#parse(String)
 	 */
 	public static TreeSet<String> uniqueStems(Path inputFile) throws IOException {
-		// TODO Fill in this method.
 		if(Files.exists(inputFile)) {
-			 //String fileContents = Files.readString(inputFile);
+
 			try(BufferedReader buf = Files.newBufferedReader(inputFile, StandardCharsets.UTF_8);){
 				StringBuilder sb = new StringBuilder();
 				String fileLine = null;

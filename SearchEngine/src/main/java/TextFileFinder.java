@@ -18,17 +18,6 @@ import java.util.stream.Collectors;
  */
 public class TextFileFinder {
 
-	/**
-	 * A lambda function that returns true if the path is a file that ends in a
-	 * .txt or .text extension (case-insensitive). Useful for
-	 * {@link Files#walk(Path, FileVisitOption...)}.
-	 *
-	 * @see Files#isRegularFile(Path, java.nio.file.LinkOption...)
-	 * @see Path#getFileName()
-	 * @see Files#walk(Path, FileVisitOption...)
-	 */
-	public static final Predicate<Path> IS_TEXT = null;
-	// TODO Implement above using an lambda expression
 
 	/**
 	 * Returns a list of text files using traditional approach
@@ -42,7 +31,7 @@ public class TextFileFinder {
 	 */
 	@SuppressWarnings("javadoc")
 	public List<Path> list(Path start) throws IOException {
-		// TODO Implement this method using find(Path)
+
 		List<Path> textfiles = new ArrayList<>();
 		try {
 			DirectoryStream<Path> ds = Files.newDirectoryStream(start);
@@ -56,7 +45,6 @@ public class TextFileFinder {
 			}
 		} catch (IOException e) {
 			
-			e.printStackTrace();
 		}
 
 		return textfiles;

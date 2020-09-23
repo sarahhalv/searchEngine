@@ -24,9 +24,7 @@ public class Driver {
 	 * @param args flag/value pairs used to start this program
 	 */
 	public static void main(String[] args){
-		/*
-		 * TODO Modify this method as necessary. 
-		 */
+		
 		TextFileFinder tff = new TextFileFinder();
 		TextFileIndex tfi = new TextFileIndex();
 		
@@ -96,14 +94,14 @@ public class Driver {
 							stems.add(s); //add new unique stems to main tree set
 						}
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
+
 					}
 			}
 		}else{ //if single file, record it's stems
 				try {
 					stems = TextFileStemmer.uniqueStems(Argmap.getPath("-path"));
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
+
 				}
 		}
 		

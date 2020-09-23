@@ -33,8 +33,7 @@ public class SimpleJsonWriter {
 	 * @throws IOException if an IO error occurs
 	 */
 	public static void asArray(Collection<Integer> elements, Writer writer, int level) throws IOException {
-		// TODO Fill in using iteration (not replace/split/join methods).
-		// TODO Optional: Avoid repeated code and hard-coding the indent level.
+
 		int size = elements.size();
 		int counter = 0;
 		
@@ -64,8 +63,7 @@ public class SimpleJsonWriter {
 	 * @throws IOException if an IO error occurs
 	 */
 	public static void asObject(Map<Path, Integer> elements, Writer writer, int level) throws IOException {
-		// TODO Fill in using iteration (not replace/split/join methods).
-		// TODO Optional: Avoid repeated code and hard-coding the indent level.
+
 		int size = elements.size();
 		int counter = 0;
 		
@@ -94,8 +92,7 @@ public class SimpleJsonWriter {
 	 */
 	public static void asNestedArray(Map<Path, List<Integer>> elements, Writer writer, int level)
 			throws IOException {
-		// TODO Fill in using iteration (not replace/split/join methods).
-		// TODO Optional: Avoid repeated code and hard-coding the indent level.
+
 		int size = elements.size(); 
 		int counter = 0;
 		
@@ -144,10 +141,6 @@ public class SimpleJsonWriter {
 		}
 		writer.write("}");
 	}
-	/*
-	 * TODO: You are encouraged to include helper methods below. Here are a few
-	 * that you might find useful. Consider adding others as well.
-	 */
 
 	/**
 	 * Indents using a tab character by the number of times specified.
