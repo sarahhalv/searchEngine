@@ -1,5 +1,4 @@
 import java.text.Normalizer;
-import java.util.Arrays;
 import java.util.regex.Pattern;
 
 /**

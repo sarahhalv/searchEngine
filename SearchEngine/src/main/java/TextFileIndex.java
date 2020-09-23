@@ -5,9 +5,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.TreeMap;
-import java.util.TreeSet;
+
 
 /**
  * A special type of {@link SimpleIndex} that indexes the UNIQUE words that were
@@ -46,9 +45,6 @@ public class TextFileIndex implements SimpleIndex{
 	}
   
 
-  public TreeMap<String, TreeMap<Path, List<Integer>>> returnIndex() {
-	  return invertedMap;
-  }
 
 
 	@Override
@@ -85,14 +81,6 @@ public class TextFileIndex implements SimpleIndex{
 		return Collections.unmodifiableCollection(invertedMap.keySet());
 	}
 
-	@Override
-	public String toString() {   //FIX THIS
-		StringBuilder sb = new StringBuilder();
-		for(Map.Entry entry: invertedMap.entrySet()) {
-			sb.append(entry.getKey().toString()+": "+ entry.getValue().toString() +"\n");
-		}
-		return sb.toString();
-	}
 
 	@Override
 	public boolean contains(HashMap<Path, List<Integer>> map) {
@@ -112,6 +100,17 @@ public class TextFileIndex implements SimpleIndex{
 	public void add(Path p, Integer i) {
 		// TODO Auto-generated method stub
 		
+	}
+
+
+
+
+	/**
+	 * @return the inverted map in its form
+	 */
+	public TreeMap<String, TreeMap<Path, List<Integer>>> returnIndex() {
+		// TODO Auto-generated method stub
+		return invertedMap;
 	}
 
 }

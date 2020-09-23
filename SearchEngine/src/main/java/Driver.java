@@ -1,5 +1,4 @@
 import java.io.IOException;
-import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -7,7 +6,6 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -24,16 +22,12 @@ public class Driver {
 	 * inverted index.
 	 *
 	 * @param args flag/value pairs used to start this program
-	 * @throws IOException 
 	 */
 	public static void main(String[] args){
 		/*
 		 * TODO Modify this method as necessary. 
 		 */
-		ArgumentMap argm = new ArgumentMap();
 		TextFileFinder tff = new TextFileFinder();
-		TextFileStemmer tfs = new TextFileStemmer();
-		SimpleJsonWriter sjw = new SimpleJsonWriter();
 		TextFileIndex tfi = new TextFileIndex();
 		
 		

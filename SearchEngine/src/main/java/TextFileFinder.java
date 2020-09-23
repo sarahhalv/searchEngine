@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * A utility class for finding all text files in a directory using lambda
@@ -41,6 +40,7 @@ public class TextFileFinder {
 	 * @see #find(Path)
 	 * @see Collectors#toList()
 	 */
+	@SuppressWarnings("javadoc")
 	public List<Path> list(Path start) throws IOException {
 		// TODO Implement this method using find(Path)
 		List<Path> textfiles = new ArrayList<>();

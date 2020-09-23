@@ -25,9 +25,9 @@ public interface SimpleIndex {
 	/**
 	 * Adds the location and word.
 	 *
-	 * @param map the file and locations within it the stem is found
+	 * @param file the location of the textfile
 	 * @param word the stem
-	 * @param file the path to the textfile 
+	 * @param i the index the stem was found
 	 */
 	public default void add(String word, Path file, Integer i) {
 	
