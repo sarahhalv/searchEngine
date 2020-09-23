@@ -55,32 +55,6 @@ public class SimpleJsonWriter {
 	}
 
 	/**
-	 * Writes the elements as a pretty JSON object.
-	 *
-	 * @param elements the elements to write
-	 * @param writer the writer to use
-	 * @param level the initial indent level
-	 * @throws IOException if an IO error occurs
-	 */
-	public static void asObject(Map<Path, Integer> elements, Writer writer, int level) throws IOException {
-
-		int size = elements.size();
-		int counter = 0;
-		
-		writer.write("{\n");
-		for(Path i: elements.keySet()) { //iterate through the keys
-			indent(i, writer, level+1);
-			writer.write(": "+ (elements.get(i)).toString());
-			if(counter != size-1) {
-				writer.write(",");
-			}
-			writer.write("\n");
-			counter++;
-		}
-		writer.write("}");
-	}
-
-	/**
 	 * Writes the elements as a pretty JSON object with a nested array. The
 	 * generic notation used allows this method to be used for any type of map
 	 * with any type of nested collection of integer objects.
@@ -259,58 +233,6 @@ public class SimpleJsonWriter {
 		}
 		catch (IOException e) {
 			return null;
-		}
-	}
-
-	/**
-	 * Writes the elements as a pretty JSON object to file.
-	 *
-	 * @param elements the elements to write
-	 * @param path the file path to use
-	 * @throws IOException if an IO error occurs
-	 *
-	 * @see #asObject(Map, Writer, int)
-	 */
-	public static void asObject(Map<Path, Integer> elements, Path path) throws IOException {
-		// THIS CODE IS PROVIDED FOR YOU; DO NOT MODIFY
-		try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
-			asObject(elements, writer, 0);
-		}
-	}
-
-	/**
-	 * Returns the elements as a pretty JSON object.
-	 *
-	 * @param elements the elements to use
-	 * @return a {@link String} containing the elements in pretty JSON format
-	 *
-	 * @see #asObject(Map, Writer, int)
-	 */
-	public static String asObject(Map<Path, Integer> elements) {
-		// THIS CODE IS PROVIDED FOR YOU; DO NOT MODIFY
-		try {
-			StringWriter writer = new StringWriter();
-			asObject(elements, writer, 0);
-			return writer.toString();
-		}
-		catch (IOException e) {
-			return null;
-		}
-	}
-
-	/**
-	 * Writes the elements as a nested pretty JSON object to file.
-	 *
-	 * @param elements the elements to write
-	 * @param path the file path to use
-	 * @throws IOException if an IO error occurs
-	 *
-	 * @see #asNestedArray(Map, Writer, int)
-	 */
-	public static void asNestedArray(Map<Path, List<Integer>> elements, Path path) throws IOException {
-		// THIS CODE IS PROVIDED FOR YOU; DO NOT MODIFY
-		try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
-			asNestedArray(elements, writer, 0);
 		}
 	}
 

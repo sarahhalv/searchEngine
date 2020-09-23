@@ -71,7 +71,6 @@ public class TextFileStemmer {
 	 */
 	public static ArrayList<String> listStems(Path inputFile) throws IOException {
 		if(Files.exists(inputFile)) {
-			 //String fileContents = Files.readString(inputFile);
 			try(BufferedReader buf = Files.newBufferedReader(inputFile, StandardCharsets.UTF_8);){
 				StringBuilder sb = new StringBuilder();
 				String fileLine = null;
