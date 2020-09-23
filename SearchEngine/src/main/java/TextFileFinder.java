@@ -84,20 +84,14 @@ public class TextFileFinder {
 				if(Files.isRegularFile(p) && ((p.toString().toLowerCase()).endsWith(".txt") || ((p.toString().toLowerCase()).endsWith(".text")))){
 					textfiles.add(p);
 				}else if(Files.isDirectory(p)) {
-					list(p);
+					textfiles.addAll(list(p));
 				}
 			}
 		} catch (IOException e) {
 			
 			e.printStackTrace();
 		}
-//		StringBuilder sb = new StringBuilder();
-//		for(Path p : textfiles) {
-//			sb.append(p.toString());
-//			sb.append(" ");
-//		}
-//		String output = sb.toString();
-//		System.out.println(output);
+
 		return textfiles;
 	}
 }

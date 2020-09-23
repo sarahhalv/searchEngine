@@ -25,31 +25,41 @@ public class TextFileIndex implements SimpleIndex{
 		 * initializes map for the index
 		 */
 	//HashMap<Path, List<String>> indexMap = new HashMap<>();
-	TreeMap<String, HashMap<Path, List<Integer>>> invertedMap = new TreeMap<String, HashMap<Path, List<Integer>>>();
+	TreeMap<String, TreeMap<Path, List<Integer>>> invertedMap = new TreeMap<String, TreeMap<Path, List<Integer>>>();
 	
 	
 	//public void add(String word, HashMap<Path, List<Integer>> map)
   @Override
-	public void add(String word, HashMap<Path, List<Integer>> map){
-//		// TODO Auto-generated method stub
-//		if(contains(word)) {	//if stem is already in there
-//			if(invertedMap.get(word).contains(map)) { //if hashmap is already present under stem
-//				return; //don't add it and end method
-//			}
-//			invertedMap.get(word).add(map); //add hashmap
-//		}else {
-//			List<HashMap<Path,List<Integer>>> files = new ArrayList<>(Arrays.asList(map)); //if no location at all, create new list for values
-//			invertedMap.put(word, map);
-//		}
+	public void add(String word, Path file, Integer i){
+	  
+	  if(contains(word)) { //if stem in index
+		  if(!contains(word,file)) { //if textfile is not already stored for stem 
+			  List<Integer> indices = new ArrayList<>(Arrays.asList(i));  //create new list for indices
+			  invertedMap.get(word).put(file, indices); //add to treemap
+		  }else { //if textfile is already in there
+			  invertedMap.get(word).get(file).add(i);	//add integer to the index list
+		  }  
+	 }else { //if stem not in invertedMap
+		 List<Integer> indices2 = new ArrayList<>(Arrays.asList(i));  //create new list for indices
+		 TreeMap<Path, List<Integer>> fileNindex = new TreeMap<>();		//create new hashmap for stem value
+		 fileNindex.put(file, indices2); //create new hashmap and populate with first value
+		 invertedMap.put(word, fileNindex);
+	 }
 		return;
 	}
   
+/**
+ * @return the inverted index
+ */
 //	@Override
 //	public void add(String word, HashMap<Path, List<Integer>> map) {
 //		// TODO Auto-generated method stub
 //		
 //	}
 
+  public TreeMap<String, TreeMap<Path, List<Integer>>> returnIndex() {
+	  return invertedMap;
+  }
 //	@Override
 //	public int size(String stem) {
 //		// TODO Auto-generated method stub
@@ -86,6 +96,19 @@ public class TextFileIndex implements SimpleIndex{
 		}
 	}
 
+	
+
+	@Override
+	public boolean contains(String word, Path location) {
+		// TODO Auto-generated method stub
+		if(invertedMap.containsKey(word) && invertedMap.get(word).containsKey(location)) {
+			return true;
+		}
+		return false;
+	}
+	
+	
+	
 //	@Override
 //	public boolean contains(Path location, String word) {
 //		// TODO Auto-generated method stub
@@ -131,15 +154,15 @@ public class TextFileIndex implements SimpleIndex{
 
 
 	@Override
-	public boolean contains(Path location, String word) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
 	public Collection<HashMap<Path, List<Integer>>> get(String stem) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void add(Path p, Integer i) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

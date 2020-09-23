@@ -17,10 +17,32 @@ public interface SimpleIndex {
 	/**
 	 * Adds the location and word.
 	 *
+	 * @param p the file where the stem was found
+	 * @param i the index in the file where the word was found 
+	 */
+	public void add(Path p, Integer i);
+	
+	/**
+	 * Adds the location and word.
+	 *
 	 * @param map the file and locations within it the stem is found
 	 * @param word the stem
+	 * @param file the path to the textfile 
 	 */
- public void add(String word, HashMap<Path, List<Integer>> map);
+	public default void add(String word, Path file, Integer i) {
+	
+	}
+	
+	
+	/**
+	 * @param file  the location textfile
+	 * @param indexes the array of integers to add
+	 */
+	public default void add(Path file, Integer[] indexes) {
+		for(int i=0; i<indexes.length; i++) {
+			add(file, indexes[i]);
+		}
+	}
 //	
 	/**
 	 * Adds the location and the provided words.
@@ -28,13 +50,13 @@ public interface SimpleIndex {
 	 * @param maps the paths/files and the locations that stem is found in
 	 * @param word the stem word
 	 */
-	public default void add(String word, HashMap<Path, List<Integer>>[] maps) {
-		
-		for(int i=0; i<maps.length; i++) {
-			add(word, maps[i]);
-		}
-	
-	}
+//	public default void add(String word, HashMap<Path, List<Integer>>[] maps) {
+//		
+//		for(int i=0; i<maps.length; i++) {
+//			add(word, maps[i]);
+//		}
+//	
+//	}
 	
 //	/**
 //	 * Returns the number of words stored for the given path.
@@ -62,14 +84,13 @@ public interface SimpleIndex {
 	public boolean contains(String stem);
 
 	/**
-	 * Determines whether the location is stored in the index and the word is
-	 * stored for that location.
+	 * Determines whether the location is stored in the index for the specific word (stem)
 	 *
 	 * @param location the location to lookup
 	 * @param word the word in that location to lookup
 	 * @return {@true} if the location and word is stored in the index
 	 */
-	public boolean contains(Path location, String word);
+	public boolean contains(String word, Path location);
 
 	/**
 	 * Determines whether the map is stored in index and t

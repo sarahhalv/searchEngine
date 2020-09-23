@@ -105,7 +105,7 @@ public class SimpleJsonWriter {
 			indent(i, writer, level+1); 				//print "key"/non-nested array element
 			
 			writer.write(": ");
-			asArray(elements.get(i), writer, level+1);//write out the integers of path 
+			asArray(elements.get(i), writer, level+2);//write out the integers of path 
 			if(counter != size-1) {
 				writer.write(",");
 			}
