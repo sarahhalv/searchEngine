@@ -113,38 +113,10 @@ public class Driver {
 				}
 		}
 		
-		//System.out.println("word stems: " + stems);
 		
 		
 		//storing a word, file path, and location into an inverted index data structure (similar but lil diff to textfileindex)
-//		TreeMap<String, TreeMap<Path, List<Integer>>> invertm = new TreeMap<String, TreeMap<Path, List<Integer>>>();
-//		for(String s: stems) { //iterate through stems
-//			TreeMap<Path, List<Integer>> stemData = new TreeMap<>(); //text files and locations within them
-//			for(Path yee: textfiles) { //iterate through the files
-//				
-//				ArrayList<String> stemmed = new ArrayList<>(); //word stems 
-//				
-//				try {
-//					stemmed = TextFileStemmer.listStems(yee);
-//				} catch (IOException e) {
-//					// TODO Auto-generated catch block
-//					//e.printStackTrace();
-//				}
-//				
-//				int position = 1;
-//				ArrayList<Integer> positions = new ArrayList<>(); //arraylist of where the stem was found
-//				for(String stemmies: stemmed){
-//					if(s.equals(stemmies)){
-//						positions.add(position);
-//					}
-//					position++;
-//				}
-//				if(positions.size()>0) { //if word was found in file as least once
-//					stemData.put(yee, positions); //hashmap of the files (and their locations) that the stem can b found
-//				}
-//			}
-//			invertm.put(s, stemData);  //put map of files and their positions as value for stem key
-//		}
+//		
 		TreeMap<String, TreeMap<Path, List<Integer>>> invertm = new TreeMap<String, TreeMap<Path, List<Integer>>>();
 		//TreeMap<Path, List<Integer>> stemData = new TreeMap<>(); //text files and locations within them
 		for(Path yee: textfiles) { //iterate through the files
@@ -189,11 +161,4 @@ public class Driver {
 		System.out.printf("Elapsed: %f seconds%n", seconds);
 	}
 
-	/*
-	 * Generally, "driver" classes are responsible for setting up and calling
-	 * other classes, usually from a main() method that parses command-line
-	 * parameters. If the driver were only responsible for a single class, we use
-	 * that class name. For example, "TaxiDriver" is what we would name a driver
-	 * class that just sets up and calls the "Taxi" class.
-	 */
 }

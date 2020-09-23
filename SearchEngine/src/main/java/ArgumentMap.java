@@ -263,13 +263,4 @@ public class ArgumentMap {
 	 *
 	 * @param args the command-line arguments to parse
 	 */
-	public static void main(String[] args) {
-		// Modify as needed to debug code
-		if (args.length < 1) {
-			args = new String[] {"-a", "ant", "-b", "bee", "-b", "bat", "cat", "-d", "-e", "elk", "-f"};
-		}
-		
-		var map = new ArgumentMap(args);
-		System.out.println(map);
-	}
 }

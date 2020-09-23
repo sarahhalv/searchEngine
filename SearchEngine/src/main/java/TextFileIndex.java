@@ -24,11 +24,8 @@ public class TextFileIndex implements SimpleIndex{
 	  /**
 		 * initializes map for the index
 		 */
-	//HashMap<Path, List<String>> indexMap = new HashMap<>();
 	TreeMap<String, TreeMap<Path, List<Integer>>> invertedMap = new TreeMap<String, TreeMap<Path, List<Integer>>>();
 	
-	
-	//public void add(String word, HashMap<Path, List<Integer>> map)
   @Override
 	public void add(String word, Path file, Integer i){
 	  
@@ -48,27 +45,11 @@ public class TextFileIndex implements SimpleIndex{
 		return;
 	}
   
-/**
- * @return the inverted index
- */
-//	@Override
-//	public void add(String word, HashMap<Path, List<Integer>> map) {
-//		// TODO Auto-generated method stub
-//		
-//	}
 
   public TreeMap<String, TreeMap<Path, List<Integer>>> returnIndex() {
 	  return invertedMap;
   }
-//	@Override
-//	public int size(String stem) {
-//		// TODO Auto-generated method stub
-//		if(contains(stem)) { //check if specific path exists
-//			return (invertedMap.get(stem)).size();
-//		}else {
-//			return 0;
-//		}
-//	}
+
 
 	@Override
 	public int size() {
@@ -76,15 +57,6 @@ public class TextFileIndex implements SimpleIndex{
 		return invertedMap.size();
 	}
 
-//	@Override
-//	public boolean contains(Path location) {
-//		// TODO Auto-generated method stub
-//		if(invertedMap.containsKey(location)) {
-//			return true;
-//		}else {
-//			return false;
-//		}
-//	}
 	
 	@Override
 	public boolean contains(String stem) {
@@ -107,35 +79,12 @@ public class TextFileIndex implements SimpleIndex{
 		return false;
 	}
 	
-	
-	
-//	@Override
-//	public boolean contains(Path location, String word) {
-//		// TODO Auto-generated method stub
-//		if(contains(location) && ((invertedMap.get(location)).contains(word))) {
-//			return true;
-//		}else {
-//			return false;
-//		}
-//	}
-
 	@Override
 	public Collection<String> get() {
 		// TODO Auto-generated method stub
 		return Collections.unmodifiableCollection(invertedMap.keySet());
 	}
 
-//	@Override
-//	public Collection<HashMap<Path, List<Integer>>> get(String stem) {
-//		// TODO Auto-generated method stub
-//		if(contains(stem)) {
-//			return Collections.unmodifiableSet(invertedMap.get(stem));
-//		}
-//		return Collections.emptyList();
-//	}
-	/**
-	* overrides to string to handle the index
-	*/
 	@Override
 	public String toString() {   //FIX THIS
 		StringBuilder sb = new StringBuilder();

@@ -32,40 +32,7 @@ public class TextFileFinder {
 	// TODO Implement above using an lambda expression
 
 	/**
-	 * Returns a stream of matching files, following any symbolic links
-	 * encountered.
-	 *
-	 * @param start the initial path to start with
-	 * @param keep function that determines whether to keep a file
-	 * @return a stream of text files
-	 * @throws IOException if an IO error occurs
-	 *
-	 * @see #IS_TEXT
-	 * @see FileVisitOption#FOLLOW_LINKS
-	 * @see Files#walk(Path, FileVisitOption...)
-	 */
-//	public static Stream<Path> find(Path start, Predicate<Path> keep) throws IOException {
-//		// TODO Implement this method using streams
-//		throw new UnsupportedOperationException("Not yet implemented.");
-//	};
-
-	/**
-	 * Returns a stream of text files, following any symbolic links encountered.
-	 *
-	 * @param start the initial path to start with
-	 * @return a stream of text files
-	 * @throws IOException if an IO error occurs
-	 *
-	 * @see #find(Path, Predicate)
-	 * @see #IS_TEXT
-	 */
-//	public static Stream<Path> find(Path start) throws IOException {
-//		// TODO Implement this method using find(Path, Predicate)
-//		throw new UnsupportedOperationException("Not yet implemented.");
-//	}
-
-	/**
-	 * Returns a list of text files using streams.
+	 * Returns a list of text files using traditional approach
 	 *
 	 * @param start the initial path to search
 	 * @return list of text files

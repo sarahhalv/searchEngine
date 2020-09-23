@@ -43,7 +43,7 @@ public class SimpleJsonWriter {
 		
 		for(Integer i: elements) {
 			
-			indent(i, writer, level+1);  			//Tab wont work?? what? issue with level??
+			indent(i, writer, level+1);  
 
 			
 			if(counter != size-1) {			//if not last element, place a comma

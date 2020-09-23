@@ -61,16 +61,4 @@ public class TextParser {
 		return TextParser.split(text);
 	}
 
-	/**
-	 * A simple main method that demonstrates this class.
-	 *
-	 * @param args unused
-	 */
-//	public static void main(String[] args) {
-//		String text = "Sally Sue...\t sells 76 sea-shells    at THE sEa_shorE soirée!";
-//
-//		System.out.println("clean: " + clean(text));
-//		System.out.println("split: " + Arrays.toString(split(text)));
-//		System.out.println("parse: " + Arrays.toString(parse(text)));
-//	}
 }
