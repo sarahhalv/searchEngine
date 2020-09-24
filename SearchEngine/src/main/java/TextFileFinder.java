@@ -24,10 +24,8 @@ public class TextFileFinder {
 	 * @return list of text files
 	 * @throws IOException if an IO error occurs
 	 *
-	 * @see #find(Path)
 	 * @see Collectors#toList()
 	 */
-	@SuppressWarnings("javadoc")
 	public List<Path> list(Path start) throws IOException {
 
 		List<Path> textfiles = new ArrayList<>();
