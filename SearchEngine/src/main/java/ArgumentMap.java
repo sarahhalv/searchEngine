@@ -227,7 +227,7 @@ public class ArgumentMap {
 	}
 
 	/**
-	 * Returns the value the specified flag is mapped as an int value, or the
+	 * Returns the value the specified flag is mapped as an integer value, or the
 	 * default value if unable to retrieve this mapping (including being unable to
 	 * convert the value to an integer or if no value exists).
 	 *
