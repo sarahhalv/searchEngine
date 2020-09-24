@@ -25,7 +25,7 @@ public interface SimpleIndex {
 	/**
 	 * Adds the location and word.
 	 *
-	 * @param file the location of the textfile
+	 * @param file the location of the text file
 	 * @param word the stem
 	 * @param i the index the stem was found
 	 */
@@ -35,7 +35,7 @@ public interface SimpleIndex {
 	
 	
 	/**
-	 * @param file  the location textfile
+	 * @param file  the location text file
 	 * @param indexes the array of integers to add
 	 */
 	public default void add(Path file, Integer[] indexes) {
@@ -43,30 +43,7 @@ public interface SimpleIndex {
 			add(file, indexes[i]);
 		}
 	}
-//	
-	/**
-	 * Adds the location and the provided words.
-	 *
-	 * @param maps the paths/files and the locations that stem is found in
-	 * @param word the stem word
-	 */
-//	public default void add(String word, HashMap<Path, List<Integer>>[] maps) {
-//		
-//		for(int i=0; i<maps.length; i++) {
-//			add(word, maps[i]);
-//		}
-//	
-//	}
 	
-//	/**
-//	 * Returns the number of words stored for the given path.
-//	 *
-//	 * @param location the location to lookup
-//	 * @return 0 if the location is not in the index or has no words, otherwise
-//	 *         the number of words stored for that element
-//	 */
-//	public int size(Path location);
-
 	/**
 	 * Returns the number of locations stored in the index.
 	 *

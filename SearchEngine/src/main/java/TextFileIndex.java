@@ -29,16 +29,16 @@ public class TextFileIndex implements SimpleIndex{
 	public void add(String word, Path file, Integer i){
 	  
 	  if(contains(word)) { //if stem in index
-		  if(!contains(word,file)) { //if textfile is not already stored for stem 
+		  if(!contains(word,file)) { //if text file is not already stored for stem 
 			  List<Integer> indices = new ArrayList<>(Arrays.asList(i));  //create new list for indices
-			  invertedMap.get(word).put(file, indices); //add to treemap
+			  invertedMap.get(word).put(file, indices); //add to tree map
 		  }else { //if textfile is already in there
 			  invertedMap.get(word).get(file).add(i);	//add integer to the index list
 		  }  
 	 }else { //if stem not in invertedMap
 		 List<Integer> indices2 = new ArrayList<>(Arrays.asList(i));  //create new list for indices
-		 TreeMap<Path, List<Integer>> fileNindex = new TreeMap<>();		//create new hashmap for stem value
-		 fileNindex.put(file, indices2); //create new hashmap and populate with first value
+		 TreeMap<Path, List<Integer>> fileNindex = new TreeMap<>();		//create new hash map for stem value
+		 fileNindex.put(file, indices2); //create new hash map and populate with first value
 		 invertedMap.put(word, fileNindex);
 	 }
 		return;
