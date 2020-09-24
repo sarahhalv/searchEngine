@@ -229,12 +229,12 @@ public class ArgumentMap {
 	/**
 	 * Returns the value the specified flag is mapped as an int value, or the
 	 * default value if unable to retrieve this mapping (including being unable to
-	 * convert the value to an int or if no value exists).
+	 * convert the value to an integer or if no value exists).
 	 *
 	 * @param flag the flag whose associated value will be returned
 	 * @param defaultValue the default value to return if there is no valid
 	 *        mapping
-	 * @return the value the specified flag is mapped as a int, or the default
+	 * @return the value the specified flag is mapped as a integer, or the default
 	 *         value if there is no valid mapping
 	 */
 	public int getInteger(String flag, int defaultValue) {
