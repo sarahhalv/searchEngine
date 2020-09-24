@@ -130,7 +130,7 @@ public class Driver {
 
 		
 		//writing a nested data structure (matching your inverted index data structure) to a file in JSON format (SimpleJSONWriter)
-		if(Arrays.asList(args).contains("-index")) {  //write JSON to a file bc index flag present
+		if(Arrays.asList(args).contains("-index")) {  //write JSON to a file because index flag present
 			if(Argmap.getPath("-index") != null) { //if has path value, use it 
 				try {
 					SimpleJsonWriter.asDoubleNestedArray(invertm, Argmap.getPath("-index"));
