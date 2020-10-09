@@ -26,7 +26,7 @@ public class TextFileStemmer {
 	/**
 	 * Returns a list of cleaned and stemmed words parsed from the provided line.
 	 *
-	 * @param line the line of words to clean, split, and stem
+	 * @param line    the line of words to clean, split, and stem
 	 * @param stemmer the stemmer to use
 	 * @return a list of cleaned and stemmed words
 	 *
@@ -36,7 +36,7 @@ public class TextFileStemmer {
 	public static ArrayList<String> listStems(String line, Stemmer stemmer) {
 		String[] words = TextParser.parse(line);
 		ArrayList<String> theStems = new ArrayList<>();
-		for(String word: words) {
+		for (String word : words) {
 			theStems.add((stemmer.stem(word)).toString());
 		}
 		return theStems;
@@ -70,24 +70,24 @@ public class TextFileStemmer {
 	 * @see TextParser#parse(String)
 	 */
 	public static ArrayList<String> listStems(Path inputFile) throws IOException {
-		if(Files.exists(inputFile)) {
-			try(BufferedReader buf = Files.newBufferedReader(inputFile, StandardCharsets.UTF_8);){
+		if (Files.exists(inputFile)) {
+			try (BufferedReader buf = Files.newBufferedReader(inputFile, StandardCharsets.UTF_8);) {
 				StringBuilder sb = new StringBuilder();
 				String fileLine = null;
-				while((fileLine = buf.readLine()) != null) {
+				while ((fileLine = buf.readLine()) != null) {
 					sb.append(fileLine + " ");
 				}
-				 return listStems(sb.toString());
+				return listStems(sb.toString());
 			}
-		}else {
+		} else {
 			return null;
 		}
-		
+
 	}
 
 	/**
-	 * Returns a set of unique (no duplicates) cleaned and stemmed words parsed
-	 * from the provided line using the default stemmer.
+	 * Returns a set of unique (no duplicates) cleaned and stemmed words parsed from
+	 * the provided line using the default stemmer.
 	 *
 	 * @param line the line of words to clean, split, and stem
 	 * @return a sorted set of unique cleaned and stemmed words
@@ -102,10 +102,10 @@ public class TextFileStemmer {
 	}
 
 	/**
-	 * Returns a set of unique (no duplicates) cleaned and stemmed words parsed
-	 * from the provided line.
+	 * Returns a set of unique (no duplicates) cleaned and stemmed words parsed from
+	 * the provided line.
 	 *
-	 * @param line the line of words to clean, split, and stem
+	 * @param line    the line of words to clean, split, and stem
 	 * @param stemmer the stemmer to use
 	 * @return a sorted set of unique cleaned and stemmed words
 	 *
@@ -115,7 +115,7 @@ public class TextFileStemmer {
 	public static TreeSet<String> uniqueStems(String line, Stemmer stemmer) {
 		String[] words = TextParser.parse(line);
 		TreeSet<String> uniqueStems = new TreeSet<>();
-		for(String word: words) {
+		for (String word : words) {
 			uniqueStems.add((stemmer.stem(word)).toString());
 		}
 		return uniqueStems;
@@ -133,17 +133,17 @@ public class TextFileStemmer {
 	 * @see TextParser#parse(String)
 	 */
 	public static TreeSet<String> uniqueStems(Path inputFile) throws IOException {
-		if(Files.exists(inputFile)) {
+		if (Files.exists(inputFile)) {
 
-			try(BufferedReader buf = Files.newBufferedReader(inputFile, StandardCharsets.UTF_8);){
+			try (BufferedReader buf = Files.newBufferedReader(inputFile, StandardCharsets.UTF_8);) {
 				StringBuilder sb = new StringBuilder();
 				String fileLine = null;
-				while((fileLine = buf.readLine()) != null) {
+				while ((fileLine = buf.readLine()) != null) {
 					sb.append(fileLine + " ");
 				}
-				 return uniqueStems(sb.toString());
+				return uniqueStems(sb.toString());
 			}
-		}else {
+		} else {
 			return null;
 		}
 	}

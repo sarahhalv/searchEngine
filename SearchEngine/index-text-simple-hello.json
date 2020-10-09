@@ -1,305 +1,348 @@
 {
 	"aardvark": {
 		"../../project-tests/SearchEngineTest/input/text/simple/digits.txt": [
-			1,
-			2
-		]
+				1,
+				2
+			]
+},
+	"alpaca": {
+		"../../project-tests/SearchEngineTest/input/text/simple/a/b/c/d/subdir.txt": [
+				1
+			]
 },
 	"antelop": {
 		"../../project-tests/SearchEngineTest/input/text/simple/symbols.txt": [
-			1,
-			2,
-			3,
-			4,
-			5,
-			6,
-			7,
-			8,
-			9,
-			10
-		]
+				1,
+				2,
+				3,
+				4,
+				5,
+				6,
+				7,
+				8,
+				9,
+				10
+			]
 },
 	"axolotl": {
 		"../../project-tests/SearchEngineTest/input/text/simple/animals.text": [
-			7
-		],
+				7
+			],
 		"../../project-tests/SearchEngineTest/input/text/simple/animals_copy.text": [
-			7
-		],
+				7
+			],
 		"../../project-tests/SearchEngineTest/input/text/simple/animals_double.text": [
-			7,
-			18
-		]
+				7,
+				18
+			]
 },
 	"capybara": {
 		"../../project-tests/SearchEngineTest/input/text/simple/capital_extension.TXT": [
-			1
-		]
+				1
+			]
 },
 	"echidna": {
 		"../../project-tests/SearchEngineTest/input/text/simple/animals.text": [
-			10
-		],
+				10
+			],
 		"../../project-tests/SearchEngineTest/input/text/simple/animals_copy.text": [
-			10
-		],
+				10
+			],
 		"../../project-tests/SearchEngineTest/input/text/simple/animals_double.text": [
-			10,
-			21
-		]
+				10,
+				21
+			]
 },
 	"eight": {
 		"../../project-tests/SearchEngineTest/input/text/simple/position.teXt": [
-			8
-		]
+				8
+			]
 },
 	"eighteen": {
 		"../../project-tests/SearchEngineTest/input/text/simple/position.teXt": [
-			18
-		]
+				18
+			]
 },
 	"eleph": {
 		"../../project-tests/SearchEngineTest/input/text/simple/capitals.txt": [
-			1,
-			2,
-			3,
-			4
-		]
+				1,
+				2,
+				3,
+				4
+			]
 },
 	"eleven": {
 		"../../project-tests/SearchEngineTest/input/text/simple/position.teXt": [
-			11
-		]
+				11
+			]
 },
 	"fifteen": {
 		"../../project-tests/SearchEngineTest/input/text/simple/position.teXt": [
-			15
-		]
+				15
+			]
 },
 	"five": {
 		"../../project-tests/SearchEngineTest/input/text/simple/position.teXt": [
-			5
-		]
+				5
+			]
 },
 	"four": {
 		"../../project-tests/SearchEngineTest/input/text/simple/position.teXt": [
-			4
-		]
+				4
+			]
 },
 	"fourteen": {
 		"../../project-tests/SearchEngineTest/input/text/simple/position.teXt": [
-			14
-		]
+				14
+			]
 },
 	"hello": {
 		"../../project-tests/SearchEngineTest/input/text/simple/hello.txt": [
-			1,
-			3,
-			5
-		]
+				1,
+				3,
+				5
+			]
+},
+	"hidden": {
+		"../../project-tests/SearchEngineTest/input/text/simple/.txt/hidden.txt": [
+				1
+			]
 },
 	"lori": {
 		"../../project-tests/SearchEngineTest/input/text/simple/animals.text": [
-			4,
-			5,
-			6
-		],
+				4,
+				5,
+				6
+			],
 		"../../project-tests/SearchEngineTest/input/text/simple/animals_copy.text": [
-			4,
-			5,
-			6
-		],
+				4,
+				5,
+				6
+			],
 		"../../project-tests/SearchEngineTest/input/text/simple/animals_double.text": [
-			4,
-			5,
-			6,
-			15,
-			16,
-			17
-		]
+				4,
+				5,
+				6,
+				15,
+				16,
+				17
+			]
 },
 	"mongoos": {
 		"../../project-tests/SearchEngineTest/input/text/simple/animals.text": [
-			3
-		],
+				3
+			],
 		"../../project-tests/SearchEngineTest/input/text/simple/animals_copy.text": [
-			3
-		],
+				3
+			],
 		"../../project-tests/SearchEngineTest/input/text/simple/animals_double.text": [
-			3,
-			14
-		]
+				3,
+				14
+			]
 },
 	"narwhal": {
 		"../../project-tests/SearchEngineTest/input/text/simple/animals.text": [
-			8
-		],
+				8
+			],
 		"../../project-tests/SearchEngineTest/input/text/simple/animals_copy.text": [
-			8
-		],
+				8
+			],
 		"../../project-tests/SearchEngineTest/input/text/simple/animals_double.text": [
-			8,
-			19
-		]
+				8,
+				19
+			]
 },
 	"nine": {
 		"../../project-tests/SearchEngineTest/input/text/simple/position.teXt": [
-			9
-		]
+				9
+			]
 },
 	"nineteen": {
 		"../../project-tests/SearchEngineTest/input/text/simple/position.teXt": [
-			19
-		]
+				19
+			]
 },
 	"observ": {
 		"../../project-tests/SearchEngineTest/input/text/simple/words.tExT": [
-			2,
-			4,
-			5,
-			6,
-			7,
-			8,
-			9,
-			10,
-			11,
-			12,
-			13
-		]
+				2,
+				4,
+				5,
+				6,
+				7,
+				8,
+				9,
+				10,
+				11,
+				12,
+				13
+			]
 },
 	"observa": {
 		"../../project-tests/SearchEngineTest/input/text/simple/words.tExT": [
-			1
-		]
+				1
+			]
 },
 	"observacion": {
 		"../../project-tests/SearchEngineTest/input/text/simple/words.tExT": [
-			3
-		]
+				3
+			]
 },
 	"okapi": {
 		"../../project-tests/SearchEngineTest/input/text/simple/animals.text": [
-			1,
-			2
-		],
+				1,
+				2
+			],
 		"../../project-tests/SearchEngineTest/input/text/simple/animals_copy.text": [
-			1,
-			2
-		],
+				1,
+				2
+			],
 		"../../project-tests/SearchEngineTest/input/text/simple/animals_double.text": [
-			1,
-			2,
-			12,
-			13
-		]
+				1,
+				2,
+				12,
+				13
+			]
 },
 	"one": {
 		"../../project-tests/SearchEngineTest/input/text/simple/position.teXt": [
-			1
-		]
+				1
+			]
 },
 	"perfor": {
 		"../../project-tests/SearchEngineTest/input/text/simple/words.tExT": [
-			14,
-			15
-		]
+				14,
+				15
+			]
 },
 	"perforc": {
 		"../../project-tests/SearchEngineTest/input/text/simple/words.tExT": [
-			16
-		]
+				16
+			]
 },
 	"perform": {
 		"../../project-tests/SearchEngineTest/input/text/simple/words.tExT": [
-			17,
-			18,
-			19,
-			20,
-			21,
-			22,
-			23,
-			24
-		]
+				17,
+				18,
+				19,
+				20,
+				21,
+				22,
+				23,
+				24
+			]
 },
 	"platypus": {
 		"../../project-tests/SearchEngineTest/input/text/simple/animals.text": [
-			9
-		],
+				9
+			],
 		"../../project-tests/SearchEngineTest/input/text/simple/animals_copy.text": [
-			9
-		],
+				9
+			],
 		"../../project-tests/SearchEngineTest/input/text/simple/animals_double.text": [
-			9,
-			20
-		]
+				9,
+				20
+			]
+},
+	"practi": {
+		"../../project-tests/SearchEngineTest/input/text/simple/dir.txt/findme.Txt": [
+				8
+			]
+},
+	"practic": {
+		"../../project-tests/SearchEngineTest/input/text/simple/dir.txt/findme.Txt": [
+				1,
+				2,
+				3,
+				4,
+				5,
+				6,
+				7
+			]
+},
+	"practis": {
+		"../../project-tests/SearchEngineTest/input/text/simple/dir.txt/findme.Txt": [
+				9,
+				10,
+				11,
+				12,
+				13,
+				14,
+				15
+			]
+},
+	"practition": {
+		"../../project-tests/SearchEngineTest/input/text/simple/dir.txt/findme.Txt": [
+				16,
+				17
+			]
 },
 	"seven": {
 		"../../project-tests/SearchEngineTest/input/text/simple/position.teXt": [
-			7
-		]
+				7
+			]
 },
 	"seventeen": {
 		"../../project-tests/SearchEngineTest/input/text/simple/position.teXt": [
-			17
-		]
+				17
+			]
 },
 	"six": {
 		"../../project-tests/SearchEngineTest/input/text/simple/position.teXt": [
-			6
-		]
+				6
+			]
 },
 	"sixteen": {
 		"../../project-tests/SearchEngineTest/input/text/simple/position.teXt": [
-			16
-		]
+				16
+			]
 },
 	"tarsier": {
 		"../../project-tests/SearchEngineTest/input/text/simple/animals.text": [
-			11
-		],
+				11
+			],
 		"../../project-tests/SearchEngineTest/input/text/simple/animals_copy.text": [
-			11
-		],
+				11
+			],
 		"../../project-tests/SearchEngineTest/input/text/simple/animals_double.text": [
-			11,
-			22
-		]
+				11,
+				22
+			]
 },
 	"ten": {
 		"../../project-tests/SearchEngineTest/input/text/simple/position.teXt": [
-			10
-		]
+				10
+			]
 },
 	"thirteen": {
 		"../../project-tests/SearchEngineTest/input/text/simple/position.teXt": [
-			13
-		]
+				13
+			]
 },
 	"three": {
 		"../../project-tests/SearchEngineTest/input/text/simple/position.teXt": [
-			3
-		]
+				3
+			]
 },
 	"twelv": {
 		"../../project-tests/SearchEngineTest/input/text/simple/position.teXt": [
-			12
-		]
+				12
+			]
 },
 	"twenti": {
 		"../../project-tests/SearchEngineTest/input/text/simple/position.teXt": [
-			20
-		]
+				20
+			]
 },
 	"two": {
 		"../../project-tests/SearchEngineTest/input/text/simple/position.teXt": [
-			2
-		]
+				2
+			]
 },
 	"world": {
 		"../../project-tests/SearchEngineTest/input/text/simple/hello.txt": [
-			2,
-			4,
-			6
-		]
+				2,
+				4,
+				6
+			]
 }
 }

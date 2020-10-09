@@ -1,6 +1,6 @@
 import java.nio.file.Path;
 import java.util.HashMap;
-//import java.util.Map;
+// import java.util.Map;
 
 /**
  * Parses and stores command-line arguments into simple key = value pairs.
@@ -28,9 +28,9 @@ public class ArgumentMap {
 	}
 
 	/**
-	 * Initializes this argument map and then parsers the arguments into
-	 * flag/value pairs where possible. Some flags may not have associated values.
-	 * If a flag is repeated, its value is overwritten.
+	 * Initializes this argument map and then parsers the arguments into flag/value
+	 * pairs where possible. Some flags may not have associated values. If a flag is
+	 * repeated, its value is overwritten.
 	 *
 	 * @param args the command line arguments to parse
 	 */
@@ -41,29 +41,31 @@ public class ArgumentMap {
 	}
 
 	/**
-	 * Parses the arguments into flag/value pairs where possible. Some flags may
-	 * not have associated values. If a flag is repeated, its value is
-	 * overwritten.
+	 * Parses the arguments into flag/value pairs where possible. Some flags may not
+	 * have associated values. If a flag is repeated, its value is overwritten.
 	 *
 	 * @param args the command line arguments to parse
 	 */
 	public void parse(String[] args) {
 
-		if(args.length>0) { //if argument is not null
-			for(int i = 0; i<args.length; i++) { 					//iterate through command line arguments
-				if(isFlag(args[i])) {								//if argument is a flag
-					if (map.containsKey(args[i]) == false) { 		//if key isn't in the hashmap yet
+		if (args.length > 0) { // if argument is not null
+			for (int i = 0; i < args.length; i++) { // iterate through command line arguments
+				if (isFlag(args[i])) { // if argument is a flag
+					if (map.containsKey(args[i]) == false) { // if key isn't in the hashmap yet
 						uniqueFlags++;
 					}
-						map.put(args[i], null);   					//set flag as a key
+					map.put(args[i], null); // set flag as a key
 				}
-				if(i>=1 && isValue(args[i]) && isFlag(args[i-1]) && map.get(args[i-1])==null) { //if value after key, add it 
-					map.put(args[i-1], args[i]);
+				if (i >= 1 && isValue(args[i]) && isFlag(args[i - 1]) && map.get(args[i - 1]) == null) { // if value
+																											// after
+																											// key, add
+																											// it
+					map.put(args[i - 1], args[i]);
 				}
 			}
-			//check if -index flag is there without a value
-			if(map.containsKey("-index") && map.get("-index")==null) {
-				map.put("-index", "index.json"); //add default value
+			// check if -index flag is there without a value
+			if (map.containsKey("-index") && map.get("-index") == null) {
+				map.put("-index", "index.json"); // add default value
 			}
 		}
 	}
@@ -82,13 +84,13 @@ public class ArgumentMap {
 	 */
 	public static boolean isFlag(String arg) {
 
-		if(arg ==null) {
+		if (arg == null) {
 			return false;
 		}
-		if(arg.length()>=2) {
-			if(arg.charAt(0)=='-') { 						//if starts with dash
-				if(!Character.isDigit(arg.charAt(1)) ) { 	//if followed by number
-					return true;							//is a flag
+		if (arg.length() >= 2) {
+			if (arg.charAt(0) == '-') { // if starts with dash
+				if (!Character.isDigit(arg.charAt(1))) { // if followed by number
+					return true; // is a flag
 				}
 			}
 		}
@@ -128,7 +130,7 @@ public class ArgumentMap {
 	 */
 	public boolean hasFlag(String flag) {
 
-		if(map.containsKey(flag)) {
+		if (map.containsKey(flag)) {
 			return true;
 		}
 		return false;
@@ -141,16 +143,16 @@ public class ArgumentMap {
 	 * @return {@code true} if the flag is mapped to a non-null value
 	 */
 	public boolean hasValue(String flag) {
-		
-		if(map.get(flag)!=null) {		//if that flag/key has a value thats not null...
+
+		if (map.get(flag) != null) { // if that flag/key has a value thats not null...
 			return true;
 		}
 		return false;
 	}
 
 	/**
-	 * Returns the value to which the specified flag is mapped as a
-	 * {@link String}, or null if there is no mapping.
+	 * Returns the value to which the specified flag is mapped as a {@link String},
+	 * or null if there is no mapping.
 	 *
 	 * @param flag the flag whose associated value is to be returned
 	 * @return the value to which the specified flag is mapped, or {@code null} if
@@ -158,34 +160,34 @@ public class ArgumentMap {
 	 */
 	public String getString(String flag) {
 
-		if(hasValue(flag)) {
+		if (hasValue(flag)) {
 			return (map.get(flag));
 		}
 		return null;
 	}
 
 	/**
-	 * Returns the value to which the specified flag is mapped as a
-	 * {@link String}, or the default value if there is no mapping.
+	 * Returns the value to which the specified flag is mapped as a {@link String},
+	 * or the default value if there is no mapping.
 	 *
-	 * @param flag the flag whose associated value is to be returned
+	 * @param flag         the flag whose associated value is to be returned
 	 * @param defaultValue the default value to return if there is no mapping
-	 * @return the value to which the specified flag is mapped, or the default
-	 *         value if there is no mapping
+	 * @return the value to which the specified flag is mapped, or the default value
+	 *         if there is no mapping
 	 */
 	public String getString(String flag, String defaultValue) {
 
-		if(map.get(flag)==null) {
+		if (map.get(flag) == null) {
 			return defaultValue;
-		}else {
+		} else {
 			return map.get(flag);
 		}
 	}
 
 	/**
-	 * Returns the value to which the specified flag is mapped as a {@link Path},
-	 * or {@code null} if unable to retrieve this mapping (including being unable
-	 * to convert the value to a {@link Path} or no value exists).
+	 * Returns the value to which the specified flag is mapped as a {@link Path}, or
+	 * {@code null} if unable to retrieve this mapping (including being unable to
+	 * convert the value to a {@link Path} or no value exists).
 	 *
 	 * This method should not throw any exceptions!
 	 *
@@ -197,9 +199,9 @@ public class ArgumentMap {
 	 */
 	public Path getPath(String flag) {
 
-		if(hasValue(flag)) {
+		if (hasValue(flag)) {
 			return Path.of(getString(flag));
-		}else {
+		} else {
 			return null;
 		}
 	}
@@ -211,17 +213,16 @@ public class ArgumentMap {
 	 *
 	 * This method should not throw any exceptions!
 	 *
-	 * @param flag the flag whose associated value will be returned
-	 * @param defaultValue the default value to return if there is no valid
-	 *        mapping
+	 * @param flag         the flag whose associated value will be returned
+	 * @param defaultValue the default value to return if there is no valid mapping
 	 * @return the value the specified flag is mapped as a {@link Path}, or the
 	 *         default value if there is no valid mapping
 	 */
 	public Path getPath(String flag, Path defaultValue) {
 
-		if(hasValue(flag)) {
+		if (hasValue(flag)) {
 			return Path.of(getString(flag));
-		}else {
+		} else {
 			return defaultValue;
 		}
 	}
@@ -231,19 +232,18 @@ public class ArgumentMap {
 	 * default value if unable to retrieve this mapping (including being unable to
 	 * convert the value to an integer or if no value exists).
 	 *
-	 * @param flag the flag whose associated value will be returned
-	 * @param defaultValue the default value to return if there is no valid
-	 *        mapping
+	 * @param flag         the flag whose associated value will be returned
+	 * @param defaultValue the default value to return if there is no valid mapping
 	 * @return the value the specified flag is mapped as a integer, or the default
 	 *         value if there is no valid mapping
 	 */
 	public int getInteger(String flag, int defaultValue) {
 
-		if(map.get(flag)!=null) {
-			try { 
+		if (map.get(flag) != null) {
+			try {
 				return Integer.parseInt(map.get(flag));
-			}catch(NumberFormatException e) {
-				return defaultValue; 
+			} catch (NumberFormatException e) {
+				return defaultValue;
 			}
 		}
 		return defaultValue;

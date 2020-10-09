@@ -16,7 +16,6 @@ import java.util.stream.Collectors;
  */
 public class TextFileFinder {
 
-
 	/**
 	 * Returns a list of text files using traditional approach
 	 *
@@ -31,16 +30,17 @@ public class TextFileFinder {
 		List<Path> textfiles = new ArrayList<>();
 		try {
 			DirectoryStream<Path> ds = Files.newDirectoryStream(start);
-			for(Path p: ds) {
-				//if its a text file
-				if(Files.isRegularFile(p) && ((p.toString().toLowerCase()).endsWith(".txt") || ((p.toString().toLowerCase()).endsWith(".text")))){
+			for (Path p : ds) {
+				// if its a text file
+				if (Files.isRegularFile(p) && ((p.toString().toLowerCase()).endsWith(".txt")
+						|| ((p.toString().toLowerCase()).endsWith(".text")))) {
 					textfiles.add(p);
-				}else if(Files.isDirectory(p)) {
+				} else if (Files.isDirectory(p)) {
 					textfiles.addAll(list(p));
 				}
 			}
 		} catch (IOException e) {
-			
+
 		}
 
 		return textfiles;
