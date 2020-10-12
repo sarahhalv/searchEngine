@@ -124,26 +124,30 @@ public class SearchResult implements Comparable<SearchResult> {
 					for (int j = 0; j < results.size(); j++) {
 						if (!results.get(j).containsValue(s)) {
 							HashMap<String, Object> result = new HashMap<String, Object>();
-							result.put("where", s);
+							result.put("where", s); //add location
 
 							// calculate count
 							int count1 = 0;
 							for (int x = 0; x < parsedWords.size(); x++) {
 								count1 += getCount(parsedWords.get(x), s);
 							}
-							result.put("count", count1);
+							result.put("count", count1); //add number of matches
 							// input score of query line in file
 							result.put("score", (count1 / nestedInvertedIndex1.wordCountGetter(s.toString())));
 							// add hashmap to arraylist
-							results.add(result);
+							results.add(result); //add hashmap to arraylist
+							
+							System.out.println("single hashmap content -- " + result);
 						}
 					}
 				}
 			}
 
 		}
+		System.out.println("results from single exact search method: " + results);
 		// return arraylist of results
 		return results;
+		
 	}
 
 	/**
@@ -163,8 +167,8 @@ public class SearchResult implements Comparable<SearchResult> {
 				String line;
 				while ((line = buff.readLine()) != null) { // while still lines in query file, parse
 					System.out.println(line);
-					System.out.println("calling exact search");
-					fullExactResults.put(line, exactSearch(TextFileStemmer.uniqueStems(line)));
+					System.out.println("calling exact search in complete exact search using line: "+ (TextFileStemmer.uniqueStems(line)).toString());
+					fullExactResults.put((TextFileStemmer.uniqueStems(line)).toString(), exactSearch(TextFileStemmer.uniqueStems(line)));
 				}
 			}
 		}

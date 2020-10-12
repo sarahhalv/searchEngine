@@ -145,7 +145,7 @@ public class Driver {
 			} else { // path provided
 				System.out.println("search results outputted to: " + map.getString("-results"));
 				SimpleJsonWriter.asFullResults(searchResults, map.getPath("-results"));
-				System.out.println(SimpleJsonWriter.asFullResults(searchResults));
+				System.out.println("\n***SIMPLE JSON OUTPUT****\n"+ SimpleJsonWriter.asFullResults(searchResults));
 			}
 		}
 
