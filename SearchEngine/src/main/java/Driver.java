@@ -5,6 +5,7 @@ import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -36,7 +37,8 @@ public class Driver {
 	public static void main(String[] args) throws IOException {
 
 		NestedInvertedIndex nestedInvertedIndex1 = new NestedInvertedIndex();
-		SearchResult searchResult1 = new SearchResult();
+		SearchResult searchResult1 = new SearchResult(nestedInvertedIndex1);
+		TreeMap<String, ArrayList<HashMap<String, Object>>> searchResults = new TreeMap<String, ArrayList<HashMap<String, Object>>>();
 
 		if (args.length == 0) { // no arguments provided
 			System.out.println("no arguments!");
@@ -113,32 +115,37 @@ public class Driver {
 				SimpleJsonWriter.asMap(nestedInvertedIndex1.returnCountMap(), map.getPath("-counts"));
 			}
 		}
-
+	
 		// if queries, use path to a text file of queries to perform search
-		if (map.hasFlag("-query")) {
+		if (map.hasFlag("-queries")) {
 			// check what type of search
+			System.out.println("queries flag found");
 			if (map.hasFlag("-exact")) { // perform exact searching
 				System.out.println("exact searching");
-				searchResult1.completeExactSearch(map.getPath("-query"));
+				
+				searchResults = searchResult1.completeExactSearch(searchResult1.getAllFiles(map.getPath("-queries")));
+				System.out.println("raw results: " +searchResults);
 				
 			} else { // perform partial searching
 				System.out.println("partial searching");
 				// parse query file, perform partial search and make results tree map
 			}
 		}
-
+		
 		// if results, use provided path for the search results output file
 		if (map.hasFlag("-results")) {
 			// if no file path provided, use default
 			if (map.getString("-results") == null) {
 				System.out.println("using default output search path");
 				Path p = Paths.get("results.json");
-				SimpleJsonWriter.asFullResults(searchResult1.completeExactSearch(map.getPath("-query")), p);
-				System.out.println(SimpleJsonWriter.asFullResults(searchResult1.completeExactSearch(map.getPath("-query"))));
-
+				SimpleJsonWriter.asFullResults(searchResults, p);
+				System.out.println(SimpleJsonWriter.asFullResults(searchResults));
+				System.out.println("search results outputted to: " + p);
+				
 			} else { // path provided
-				System.out.println("using provided output search path: " + map.getString("-results"));
-				SimpleJsonWriter.asFullResults(searchResult1.completeExactSearch(map.getPath("-query")), map.getPath("-results"));
+				System.out.println("search results outputted to: " + map.getString("-results"));
+				SimpleJsonWriter.asFullResults(searchResults, map.getPath("-results"));
+				System.out.println(SimpleJsonWriter.asFullResults(searchResults));
 			}
 		}
 

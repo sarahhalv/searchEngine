@@ -437,6 +437,10 @@ public class SimpleJsonWriter {
 		}
 	}
 
+	/**
+	 * @param elements results to format
+	 * @return the results as a JSON string
+	 */
 	public static String asFullResults(TreeMap<String, ArrayList<HashMap<String, Object>>> elements) {
 
 		try {

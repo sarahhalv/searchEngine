@@ -3,14 +3,16 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 /**
  * @author sarah Class that works with and creates the nested Inverted Index
  *
  */
 public class NestedInvertedIndex {
-	
+
 	/**
 	 * the inverted index
 	 */
@@ -41,7 +43,6 @@ public class NestedInvertedIndex {
 			// find and process all of the text files (with .txt and .text extensions) in
 			// that directory and its subdirectories.
 			isDir = true;
-			System.out.println("dir is " + isDir);
 			try {
 				textfiles = textFileFinder1.list(map.getPath("-path"));
 			} catch (IOException e) {
@@ -55,13 +56,14 @@ public class NestedInvertedIndex {
 
 		// storing a word, file path, and location into an inverted index data structure
 		// (similar but lil diff to textfileindex)
-		
-		//TreeMap<String, TreeMap<Path, List<Integer>>> invertm = new TreeMap<String, TreeMap<Path, List<Integer>>>();
-		
+
+		// TreeMap<String, TreeMap<Path, List<Integer>>> invertm = new TreeMap<String,
+		// TreeMap<Path, List<Integer>>>();
+
 		// TreeMap<Path, List<Integer>> stemData = new TreeMap<>(); //text files and
 		// locations within them
 		for (Path yee : textfiles) { // iterate through the files
-			int i = 0;				 //number of words in file
+			int i = 0; // number of words in file
 			ArrayList<String> stems1 = new ArrayList<>();
 			try {
 				stems1 = TextFileStemmer.listStems(yee);
@@ -75,27 +77,42 @@ public class NestedInvertedIndex {
 				// index
 				textFileIndex1.add(stemmies, yee, index1);
 				index1++;
-				i++; 	//increment how many words in file
+				i++; // increment how many words in file
 			}
-			//if theres a count at input file and its number of words into word count map
-			if(i != 0) {
+			// if theres a count at input file and its number of words into word count map
+			if (i != 0) {
 				countMap.putIfAbsent(yee.toString(), i);
 			}
-			//System.out.println(yee.toString() + " -- word count of: " + i);
+			// System.out.println(yee.toString() + " -- word count of: " + i);
 		}
 		invertedIndex = textFileIndex1.returnIndex();
 		return invertedIndex;
 	}
-	
+
+	/**
+	 * @param word the word from which to grab files
+	 * @return list of files where word is located
+	 */
+	public Set<Path> fileGetter(String word) {
+		System.out.println(invertedIndex.get(word));
+		if(invertedIndex.get(word)!= null) {
+			if(invertedIndex.get(word).keySet() != null) {
+				return invertedIndex.get(word).keySet();
+			}
+		}
+			Set<Path> emptyPathSet = new TreeSet<Path>();
+			return emptyPathSet;
+	}
+
 	/**
 	 * @param word the word to get count for
 	 * @param file the file in which to search for appearances of the word
 	 * @return count of appearances of word in file
 	 */
 	public int wordGetter(String word, Path file) {
-		return invertedIndex.get(word).get(file).size(); //return how many times in file for this particular word
+		return invertedIndex.get(word).get(file).size(); // return how many times in file for this particular word
 	}
-	
+
 	/**
 	 * @param filename the file which to count the words
 	 * @return the number of words in the passed in file
@@ -107,8 +124,8 @@ public class NestedInvertedIndex {
 	/**
 	 * @return the countMap created alongside the inverted index
 	 */
-	public TreeMap<String, Integer> returnCountMap(){
+	public TreeMap<String, Integer> returnCountMap() {
 		return countMap;
 	}
-	
+
 }
