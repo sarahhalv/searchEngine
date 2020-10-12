@@ -5,7 +5,10 @@ import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -51,6 +54,34 @@ public class SimpleJsonWriter {
 		}
 		indent(writer, level);
 		writer.write("]");
+	}
+
+	/**
+	 * @param map    the map to write
+	 * @param writer the writer to use
+	 * @param level  the initial indent to use
+	 * @throws IOException if an IO error occurs
+	 */
+	public static void asMap(TreeMap<String, Integer> map, Writer writer, int level) throws IOException {
+
+		int size = map.size();
+		int counter = 0;
+
+		writer.write("{\n");
+
+		for (String i : map.keySet()) {
+
+			indent(i, writer, level + 1);
+			writer.write(": " + map.get(i));
+
+			if (counter != size - 1) { // if not last element, place a comma
+				writer.write(",");
+			}
+			writer.write("\n");
+			counter++;
+		}
+		indent(writer, level);
+		writer.write("}");
 	}
 
 	/**
@@ -104,6 +135,96 @@ public class SimpleJsonWriter {
 
 			writer.write(": ");
 			asNestedArray(elements.get(i), writer, level + 1);// write out the content of the nested array
+			if (counter != size - 1) {
+				writer.write(",");
+			}
+			writer.write("\n");
+			counter++;
+		}
+		writer.write("}");
+	}
+
+	/**
+	 * @param map    the map to write
+	 * @param writer the writer to use
+	 * @param level  the indent level
+	 * @throws IOException if encounter IO error
+	 */
+	public static void asResultMap(HashMap<String, Object> map, Writer writer, int level) throws IOException {
+
+		int size = map.size();
+		int counter = 0;
+
+		writer.write("{\n");
+
+		for (String i : map.keySet()) {
+
+			indent(i, writer, level + 1);
+
+			if (i.equalsIgnoreCase("score")) { // if it's the score, format appropriately
+				DecimalFormat FORMATTER = new DecimalFormat("0.00000000");
+				writer.write(": " + FORMATTER.format(map.get(i)));
+			} else {
+				writer.write(": " + map.get(i));
+			}
+
+			if (counter != size - 1) { // if not last element, place a comma
+				writer.write(",");
+			}
+			writer.write("\n");
+			counter++;
+		}
+		indent(writer, level);
+		writer.write("}");
+	}
+
+	/**
+	 * @param elements list of hash maps to format
+	 * @param writer   writer to use
+	 * @param level    indent level
+	 * @throws IOException if error
+	 */
+	public static void asArrayOfResultMap(ArrayList<HashMap<String, Object>> elements, Writer writer, int level)
+			throws IOException {
+
+		int size = elements.size();
+		int counter = 0;
+
+		writer.write("[\n");
+
+		for (HashMap<String, Object> i : elements) { // for every hashmap
+
+			// indent(i, writer, level + 1); //string
+			asResultMap(i, writer, level + 1);
+
+			if (counter != size - 1) { // if not last element, place a comma
+				writer.write(",");
+			}
+			writer.write("\n");
+			counter++;
+		}
+		indent(writer, level);
+		writer.write("]");
+
+	}
+
+	/**
+	 * @param elements elements to format
+	 * @param writer   writer to use
+	 * @param level    indentation level
+	 * @throws IOException if IO error occurs
+	 */
+	public static void asFullResults(TreeMap<String, ArrayList<HashMap<String, Object>>> elements, Writer writer,
+			int level) throws IOException {
+		int size = elements.size();
+		int counter = 0;
+
+		writer.write("{\n");
+		for (String i : elements.keySet()) { // iterate through the keys of nested array
+			indent(i, writer, level + 1); // print "key"/non-nested array element
+
+			writer.write(": ");
+			asArrayOfResultMap(elements.get(i), writer, level + 1);// write out the content of the nested array
 			if (counter != size - 1) {
 				writer.write(",");
 			}
@@ -232,6 +353,20 @@ public class SimpleJsonWriter {
 	}
 
 	/**
+	 * Returns the elements as a pretty JSON map. to an output file
+	 *
+	 * @param map  the map to return in JSON
+	 * @param path the file path to use
+	 * @throws IOException if IO error occurs
+	 *
+	 */
+	public static void asMap(TreeMap<String, Integer> map, Path path) throws IOException {
+		try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
+			asMap(map, writer, 0);
+		}
+	}
+
+	/**
 	 * Returns the elements as a nested pretty JSON object.
 	 *
 	 * @param elements the elements to use
@@ -280,6 +415,33 @@ public class SimpleJsonWriter {
 		try {
 			StringWriter writer = new StringWriter();
 			asDoubleNestedArray(elements, writer, 0);
+			return writer.toString();
+		} catch (IOException e) {
+			return null;
+		}
+
+	}
+
+	/**
+	 * Writes the search result elements as a pretty JSON object to file.
+	 * 
+	 * @param elements the elements to format
+	 * @param path the file to write to 
+	 * @throws IOException if IO error occurs
+	 */
+	public static void asFullResults(TreeMap<String, ArrayList<HashMap<String, Object>>> elements, Path path)
+			throws IOException {
+
+		try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
+			asFullResults(elements, writer, 0);
+		}
+	}
+
+	public static String asFullResults(TreeMap<String, ArrayList<HashMap<String, Object>>> elements) {
+
+		try {
+			StringWriter writer = new StringWriter();
+			asFullResults(elements, writer, 0);
 			return writer.toString();
 		} catch (IOException e) {
 			return null;
