@@ -94,14 +94,13 @@ public class NestedInvertedIndex {
 	 * @return list of files where word is located
 	 */
 	public Set<Path> fileGetter(String word) {
-		System.out.println(invertedIndex.get(word));
+		//System.out.println("filegetter content: " +invertedIndex.get(word));
 		if(invertedIndex.get(word)!= null) {
 			if(invertedIndex.get(word).keySet() != null) {
 				return invertedIndex.get(word).keySet();
 			}
 		}
-			Set<Path> emptyPathSet = new TreeSet<Path>();
-			return emptyPathSet;
+			return null;
 	}
 
 	/**

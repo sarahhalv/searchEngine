@@ -37,25 +37,23 @@ public class SearchResult implements Comparable<SearchResult> {
 	 */
 	double frequency;
 
-	
-	
 	/**
 	 * @param n the nested inverted index to use for results
 	 */
 	public SearchResult(NestedInvertedIndex n) {
 		nestedInvertedIndex1 = n;
 	}
+
 	/**
 	 * @param word the word which to base & create a single search result off of
 	 * @param p    the path of the text file for the result
 	 */
-	 public void buildSearchResult(String word, Path p) {
-	 where = p;
-	 count = nestedInvertedIndex1.wordGetter(word, p);
-	 totalWords = nestedInvertedIndex1.wordCountGetter(p.toString());
-	 frequency = (nestedInvertedIndex1.wordGetter(word, p)) /
-	 (nestedInvertedIndex1.wordCountGetter(p.toString()));
-	 }
+	public void buildSearchResult(String word, Path p) {
+		where = p;
+		count = nestedInvertedIndex1.wordGetter(word, p);
+		totalWords = nestedInvertedIndex1.wordCountGetter(p.toString());
+		frequency = (nestedInvertedIndex1.wordGetter(word, p)) / (nestedInvertedIndex1.wordCountGetter(p.toString()));
+	}
 
 	/**
 	 * @param word the stem word to look for matches
@@ -66,12 +64,11 @@ public class SearchResult implements Comparable<SearchResult> {
 		return nestedInvertedIndex1.wordGetter(word, p);
 	}
 
-	
 	/**
 	 * @param p the path to a file or potential directory
 	 * @return list of text files
 	 */
-	public List<Path> getAllFiles(Path p){
+	public List<Path> getAllFiles(Path p) {
 		TextFileFinder textFileFinder1 = new TextFileFinder();
 		List<Path> textfiles = new ArrayList<>();
 		if (Files.isDirectory(p)) { // if path is directory
@@ -89,8 +86,7 @@ public class SearchResult implements Comparable<SearchResult> {
 		}
 		return textfiles;
 	}
-	
-	
+
 	/**
 	 * @param word the query word from which to base the results
 	 * @return list of all files and results for query word
@@ -114,31 +110,33 @@ public class SearchResult implements Comparable<SearchResult> {
 		ArrayList<String> parsedWords = new ArrayList<String>(treeSet);
 		// for each word go thru key set, arraylist doesn't contain file key set, make
 		// results and add together to put in hashmap
-		for (String i: parsedWords) {
+		for (String i : parsedWords) {
 			System.out.println("parsed words content: " + parsedWords.toString());
 			// System.out.println(nestedInvertedIndex1.invertedIndex.get(parsedWords.get(i)).keySet());
 			// incorrect
 
 			// NULL POINTER EXCEPTION HERE
 			// go through every file that these words appear in
-			for (Path s : nestedInvertedIndex1.fileGetter(i)) {
+			if (nestedInvertedIndex1.fileGetter(i) != null) {
+				for (Path s : nestedInvertedIndex1.fileGetter(i)) {
 
-				// check if file is not mapped in a hash map in the Array list already
-				for (int j = 0; j < results.size(); j++) {
-					if (!results.get(j).containsValue(s)) {
-						HashMap<String, Object> result = new HashMap<String, Object>();
-						result.put("where", s);
+					// check if file is not mapped in a hash map in the Array list already
+					for (int j = 0; j < results.size(); j++) {
+						if (!results.get(j).containsValue(s)) {
+							HashMap<String, Object> result = new HashMap<String, Object>();
+							result.put("where", s);
 
-						// calculate count
-						int count1 = 0;
-						for (int x = 0; x < parsedWords.size(); x++) {
-							count1 += getCount(parsedWords.get(x), s);
+							// calculate count
+							int count1 = 0;
+							for (int x = 0; x < parsedWords.size(); x++) {
+								count1 += getCount(parsedWords.get(x), s);
+							}
+							result.put("count", count1);
+							// input score of query line in file
+							result.put("score", (count1 / nestedInvertedIndex1.wordCountGetter(s.toString())));
+							// add hashmap to arraylist
+							results.add(result);
 						}
-						result.put("count", count1);
-						// input score of query line in file
-						result.put("score", (count1 / nestedInvertedIndex1.wordCountGetter(s.toString())));
-						// add hashmap to arraylist
-						results.add(result);
 					}
 				}
 			}
@@ -160,7 +158,7 @@ public class SearchResult implements Comparable<SearchResult> {
 			throws FileNotFoundException, IOException {
 		TreeMap<String, ArrayList<HashMap<String, Object>>> fullExactResults = new TreeMap<String, ArrayList<HashMap<String, Object>>>();
 		// parse query file by line
-		for(Path file: p) { //loop through all files
+		for (Path file : p) { // loop through all files
 			try (BufferedReader buff = Files.newBufferedReader(file, StandardCharsets.UTF_8);) {
 				String line;
 				while ((line = buff.readLine()) != null) { // while still lines in query file, parse
