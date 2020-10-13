@@ -6,9 +6,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -144,58 +142,52 @@ public class SimpleJsonWriter {
 		writer.write("}");
 	}
 
-	/**
-	 * @param map    the map to write
-	 * @param writer the writer to use
-	 * @param level  the indent level
-	 * @throws IOException if encounter IO error
-	 */
-	public static void asResultMap(HashMap<String, Object> map, Writer writer, int level) throws IOException {
+	
 
-		int size = map.size();
+	/**
+	 * @param elements elements to format
+	 * @param writer   writer to use
+	 * @param level    indentation level
+	 * @throws IOException if IO error occurs
+	 */
+	public static void asFullResults(TreeMap<String, List<SearchResult>> elements, Writer writer, int level)
+			throws IOException {
+		int size = elements.size();
 		int counter = 0;
 
 		writer.write("{\n");
+		for (String i : elements.keySet()) { // iterate through the keys of nested array
+			
+			indent(i.replaceAll("[\\[\\]\\,]",""), writer, level + 1); // print "key"/non-nested array element
 
-		for (String i : map.keySet()) {
-
-			indent(i, writer, level + 1);
-
-			if (i.equalsIgnoreCase("score")) { // if it's the score, format appropriately
-				DecimalFormat FORMATTER = new DecimalFormat("0.00000000");
-				writer.write(": " + FORMATTER.format(map.get(i)));
-			} else {
-				writer.write(": " + map.get(i));
-			}
-
-			if (counter != size - 1) { // if not last element, place a comma
+			writer.write(": ");
+			asObjectList(elements.get(i), writer, level + 1);// write out the content of the nested array
+			if (counter != size - 1) {
 				writer.write(",");
 			}
 			writer.write("\n");
 			counter++;
 		}
-		indent(writer, level);
 		writer.write("}");
 	}
 
 	/**
-	 * @param elements list of hash maps to format
-	 * @param writer   writer to use
-	 * @param level    indent level
-	 * @throws IOException if error
+	 * @param elements the search result objects to format
+	 * @param writer   the writer to use
+	 * @param level    the indentation level
+	 * @throws IOException if encounter IO error
 	 */
-	public static void asArrayOfResultMap(ArrayList<HashMap<String, Object>> elements, Writer writer, int level)
-			throws IOException {
+	public static void asObjectList(List<SearchResult> elements, Writer writer, int level) throws IOException {
+		// for each result in list
 
 		int size = elements.size();
 		int counter = 0;
 
 		writer.write("[\n");
 
-		for (HashMap<String, Object> i : elements) { // for every hashmap
+		for (SearchResult i : elements) { // for every result in list
 
-			// indent(i, writer, level + 1); //string
-			asResultMap(i, writer, level + 1);
+			asObject(i, writer, level + 1);
 
 			if (counter != size - 1) { // if not last element, place a comma
 				writer.write(",");
@@ -205,33 +197,30 @@ public class SimpleJsonWriter {
 		}
 		indent(writer, level);
 		writer.write("]");
-
 	}
 
 	/**
-	 * @param elements elements to format
-	 * @param writer   writer to use
-	 * @param level    indentation level
-	 * @throws IOException if IO error occurs
+	 * @param i      the search result object to format
+	 * @param writer the writer to use
+	 * @param level  the indentation level
+	 * @throws IOException if encounter IO error
 	 */
-	public static void asFullResults(TreeMap<String, ArrayList<HashMap<String, Object>>> elements, Writer writer,
-			int level) throws IOException {
-		int size = elements.size();
-		int counter = 0;
+	private static void asObject(SearchResult i, Writer writer, int level) throws IOException {
 
+		indent(writer, level);
 		writer.write("{\n");
-		for (String i : elements.keySet()) { // iterate through the keys of nested array
-			indent(i, writer, level + 1); // print "key"/non-nested array element
 
-			writer.write(": ");
-			asArrayOfResultMap(elements.get(i), writer, level + 1);// write out the content of the nested array
-			if (counter != size - 1) {
-				writer.write(",");
-			}
-			writer.write("\n");
-			counter++;
-		}
+		indent(writer, level+1);
+		writer.write("\"where\": " + "\"" + i.where.toString() + "\",\n");
+		indent(writer, level+1);
+		writer.write("\"count\": " + i.count + ",\n");
+		indent(writer, level+1);
+		DecimalFormat FORMATTER = new DecimalFormat("0.00000000");
+		writer.write("\"score\": " + FORMATTER.format(i.score)+"\n");
+
+		indent(writer, level);
 		writer.write("}");
+
 	}
 
 	/**
@@ -426,11 +415,10 @@ public class SimpleJsonWriter {
 	 * Writes the search result elements as a pretty JSON object to file.
 	 * 
 	 * @param elements the elements to format
-	 * @param path the file to write to 
+	 * @param path     the file to write to
 	 * @throws IOException if IO error occurs
 	 */
-	public static void asFullResults(TreeMap<String, ArrayList<HashMap<String, Object>>> elements, Path path)
-			throws IOException {
+	public static void asFullResults(TreeMap<String, List<SearchResult>> elements, Path path) throws IOException {
 
 		try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
 			asFullResults(elements, writer, 0);
@@ -441,7 +429,7 @@ public class SimpleJsonWriter {
 	 * @param elements results to format
 	 * @return the results as a JSON string
 	 */
-	public static String asFullResults(TreeMap<String, ArrayList<HashMap<String, Object>>> elements) {
+	public static String asFullResults(TreeMap<String, List<SearchResult>> elements) {
 
 		try {
 			StringWriter writer = new StringWriter();

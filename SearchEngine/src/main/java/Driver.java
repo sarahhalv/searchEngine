@@ -4,11 +4,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.TreeMap;
-import java.util.TreeSet;
 
 /*
  * TODO Code style and variable names
@@ -37,8 +34,8 @@ public class Driver {
 	public static void main(String[] args) throws IOException {
 
 		NestedInvertedIndex nestedInvertedIndex1 = new NestedInvertedIndex();
-		SearchResult searchResult1 = new SearchResult(nestedInvertedIndex1);
-		TreeMap<String, ArrayList<HashMap<String, Object>>> searchResults = new TreeMap<String, ArrayList<HashMap<String, Object>>>();
+		SearchResult searchResult1 = new SearchResult();
+		TreeMap<String, List<SearchResult>> searchResults = new TreeMap<String, List<SearchResult>>();
 
 		if (args.length == 0) { // no arguments provided
 			System.out.println("no arguments!");
@@ -109,43 +106,58 @@ public class Driver {
 
 				Path p = Paths.get("counts.json"); // default path
 				SimpleJsonWriter.asMap(nestedInvertedIndex1.returnCountMap(), p);
-				System.out.println("word count was written to: counts.json");
+				// System.out.println("word count was written to: counts.json");
 			} else { // path provided
-				System.out.println("word count written to: " + map.getString("-counts"));
+				// System.out.println("word count written to: " + map.getString("-counts"));
 				SimpleJsonWriter.asMap(nestedInvertedIndex1.returnCountMap(), map.getPath("-counts"));
 			}
 		}
-	
+
 		// if queries, use path to a text file of queries to perform search
 		if (map.hasFlag("-queries")) {
-			// check what type of search
-			System.out.println("queries flag found");
+
+			// check for no query path provided or if query is empty
+			if (map.getString("-queries") == null) {
+				System.out.println("query path is missing");
+				return;
+			}
+			// check for invalid query path
+			if (!Files.isDirectory(map.getPath("-queries")) && !Files.exists(map.getPath("-queries"))) {
+				System.out.println("invalid query path");
+				return;
+			}
+
 			if (map.hasFlag("-exact")) { // perform exact searching
-				System.out.println("exact searching");
-				
-				searchResults = searchResult1.completeExactSearch(searchResult1.getAllFiles(map.getPath("-queries")));
-				System.out.println("raw results: " +searchResults);
-				
+				// System.out.println("exact searching");
+
+				searchResults = nestedInvertedIndex1
+						.completeExactSearch(searchResult1.getAllFiles(map.getPath("-queries")));
+				// System.out.println("raw results: " +searchResults);
+
 			} else { // perform partial searching
-				System.out.println("partial searching");
-				// parse query file, perform partial search and make results tree map
+				// System.out.println("partial searching");
+				searchResults = nestedInvertedIndex1
+						.completePartialSearch(searchResult1.getAllFiles(map.getPath("-queries")));
+				// System.out.println("raw results: " +searchResults);
 			}
 		}
-		
+
 		// if results, use provided path for the search results output file
 		if (map.hasFlag("-results")) {
 			// if no file path provided, use default
 			if (map.getString("-results") == null) {
-				System.out.println("using default output search path");
+				// System.out.println("using default output search path");
 				Path p = Paths.get("results.json");
 				SimpleJsonWriter.asFullResults(searchResults, p);
-				System.out.println(SimpleJsonWriter.asFullResults(searchResults));
-				System.out.println("search results outputted to: " + p);
-				
+				// System.out.println(SimpleJsonWriter.asFullResults(searchResults));
+				// System.out.println("search results outputted to: " + p);
+
 			} else { // path provided
-				System.out.println("search results outputted to: " + map.getString("-results"));
+				// System.out.println("search results outputted to: " +
+				// map.getString("-results"));
 				SimpleJsonWriter.asFullResults(searchResults, map.getPath("-results"));
-				System.out.println("\n***SIMPLE JSON OUTPUT****\n"+ SimpleJsonWriter.asFullResults(searchResults));
+				// System.out.println("\n***SIMPLE JSON OUTPUT****\n"+
+				// SimpleJsonWriter.asFullResults(searchResults));
 			}
 		}
 
