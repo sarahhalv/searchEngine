@@ -142,8 +142,6 @@ public class SimpleJsonWriter {
 		writer.write("}");
 	}
 
-	
-
 	/**
 	 * @param elements elements to format
 	 * @param writer   writer to use
@@ -157,8 +155,8 @@ public class SimpleJsonWriter {
 
 		writer.write("{\n");
 		for (String i : elements.keySet()) { // iterate through the keys of nested array
-			
-			indent(i.replaceAll("[\\[\\]\\,]",""), writer, level + 1); // print "key"/non-nested array element
+
+			indent(i.replaceAll("[\\[\\]\\,]", ""), writer, level + 1); // print "key"/non-nested array element
 
 			writer.write(": ");
 			asObjectList(elements.get(i), writer, level + 1);// write out the content of the nested array
@@ -210,13 +208,13 @@ public class SimpleJsonWriter {
 		indent(writer, level);
 		writer.write("{\n");
 
-		indent(writer, level+1);
+		indent(writer, level + 1);
 		writer.write("\"where\": " + "\"" + i.where.toString() + "\",\n");
-		indent(writer, level+1);
+		indent(writer, level + 1);
 		writer.write("\"count\": " + i.count + ",\n");
-		indent(writer, level+1);
+		indent(writer, level + 1);
 		DecimalFormat FORMATTER = new DecimalFormat("0.00000000");
-		writer.write("\"score\": " + FORMATTER.format(i.score)+"\n");
+		writer.write("\"score\": " + FORMATTER.format(i.score) + "\n");
 
 		indent(writer, level);
 		writer.write("}");

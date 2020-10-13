@@ -95,21 +95,20 @@ public class SearchResult implements Comparable<SearchResult> {
 		return textfiles;
 	}
 
-	
 	/**
 	 * @return frequency/score of relative matches to number of words in file
 	 */
 	public double getScore() {
 		return score;
 	}
-	
+
 	/**
 	 * @return location of result
 	 */
 	public Path getWhere() {
 		return where;
 	}
-	
+
 	/**
 	 * @return number of matches in result
 	 */
@@ -128,14 +127,16 @@ public class SearchResult implements Comparable<SearchResult> {
 		 * String.compareToIgnoreCase(…) for these comparisons and the built-in sort
 		 * methods in Java.
 		 */
-		//if equal in score
-		if(Double.compare(getScore(), o.score) == 0) {
-			if(Integer.compare(getCount(), o.count) ==0) {
+		// if equal in score
+		if (Double.compare(getScore(), o.score) == 0) {
+			if (Integer.compare(getCount(), o.count) == 0) {
 				return (getWhere().toString()).compareToIgnoreCase((o.where.toString()));
-				}
-			return Integer.compare(o.count, getCount());
 			}
+			return Integer.compare(o.count, getCount());
+		}
 		return Double.compare(o.score, getScore());
 	}
+	
+
 
 }

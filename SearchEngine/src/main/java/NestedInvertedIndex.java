@@ -1,5 +1,4 @@
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -102,7 +101,7 @@ public class NestedInvertedIndex {
 
 	/**
 	 * @param word the word from which to grab files for partial search
-	 * @return list of files where word is located
+	 * @return set of files where word is located
 	 */
 	public Set<Path> partialFileGetter(String word) {
 		Set<Path> files = new TreeSet<Path>();
@@ -230,7 +229,7 @@ public class NestedInvertedIndex {
 						// "
 						// + (TextFileStemmer.uniqueStems(line)).toString());
 						// System.out.println();
-						fullExactResults.put((TextFileStemmer.uniqueStems(line)).toString(),
+						fullExactResults.put(String.join(" ", (TextFileStemmer.uniqueStems(line))),
 								exactSearch(TextFileStemmer.uniqueStems(line)));
 					}
 				}
@@ -238,6 +237,7 @@ public class NestedInvertedIndex {
 				System.out.println("no file found or buffered reader unable to work with file");
 			}
 		}
+
 		return fullExactResults;
 	}
 
@@ -255,7 +255,7 @@ public class NestedInvertedIndex {
 			if (partialFileGetter(i) != null) {
 				// System.out.println("filegetter not null, going IN");
 				for (Path s : partialFileGetter(i)) {
-					// System.out.println("inside file -- " + s.toString() + " -- now");
+					
 					// if file is not already been used
 					if (!usedFiles.contains(s)) {
 						usedFiles.add(s);
@@ -270,7 +270,7 @@ public class NestedInvertedIndex {
 						nextResult.score = ((double) count1 / (double) (wordCountGetter(s.toString())));
 
 						results.add(nextResult);
-						
+
 					}
 
 				}
@@ -289,6 +289,7 @@ public class NestedInvertedIndex {
 	public TreeMap<String, List<SearchResult>> completePartialSearch(List<Path> p) {
 		TreeMap<String, List<SearchResult>> fullPartialResults = new TreeMap<String, List<SearchResult>>();
 		// parse query file by line
+
 		for (Path file : p) { // loop through all files
 			try (BufferedReader buff = Files.newBufferedReader(file, StandardCharsets.UTF_8);) {
 				String line;
@@ -296,21 +297,15 @@ public class NestedInvertedIndex {
 
 					if (TextFileStemmer.uniqueStems(line) != null && TextFileStemmer.uniqueStems(line).size() != 0) {
 
-						// System.out.println();
-						// System.out.println("calling partial search in complete exact search using
-						// line: "
-						// + (TextFileStemmer.uniqueStems(line)).toString());
-						// System.out.println();
-
-						fullPartialResults.put((TextFileStemmer.uniqueStems(line)).toString(),
+						fullPartialResults.put(String.join(" ", (TextFileStemmer.uniqueStems(line))),
 								partialSearch(TextFileStemmer.uniqueStems(line)));
 					}
 				}
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				System.out.print("buffered reader was unable to work with file");
 			}
 		}
+
 		return fullPartialResults;
 	}
 
