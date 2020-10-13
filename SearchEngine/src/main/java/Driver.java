@@ -68,15 +68,7 @@ public class Driver {
 
 		} else { // if no path flag/bad arguments
 			System.out.println("bad arguments !");
-			// write empty inverted index to default file
-			Path p = Paths.get("index.json");
-			try {
-				SimpleJsonWriter.asDoubleNestedArray(index, p);
-			} catch (IOException e) {
-				System.out.println(
-						"unable to output nested inverted index in simple JSON format to path: " + p.toString());
-			}
-			return;
+			//don't try to build index
 		}
 
 		// writing a nested data structure (matching your inverted index data structure)

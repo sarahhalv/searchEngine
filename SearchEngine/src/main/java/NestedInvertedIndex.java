@@ -270,10 +270,7 @@ public class NestedInvertedIndex {
 						nextResult.score = ((double) count1 / (double) (wordCountGetter(s.toString())));
 
 						results.add(nextResult);
-						// System.out.println("*************");
-						// System.out.println("search result being added to list: " +
-						// nextResult.toString() + "SCORE IS =" + nextResult.score);
-						// System.out.println("*****************");
+						
 					}
 
 				}
