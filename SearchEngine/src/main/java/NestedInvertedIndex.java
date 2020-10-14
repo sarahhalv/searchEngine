@@ -105,12 +105,15 @@ public class NestedInvertedIndex {
 	 */
 	public Set<Path> partialFileGetter(String word) {
 		Set<Path> files = new TreeSet<Path>();
+
 		for (String i : invertedIndex.keySet()) {
 			if (i.startsWith(word)) { // if word in index begins with query word
 				if (invertedIndex.get(i) != null) {
 					if (invertedIndex.get(i).keySet() != null) {
 						for (Path p : invertedIndex.get(i).keySet()) {
+
 							files.add(p); // add every file to set
+
 						}
 					}
 				}
@@ -196,10 +199,7 @@ public class NestedInvertedIndex {
 						nextResult.score = ((double) count1 / (double) (wordCountGetter(s.toString())));
 
 						results.add(nextResult);
-						// System.out.println("*************");
-						// System.out.println("search result being added to list: " +
-						// nextResult.toString() + "SCORE IS =" + nextResult.score);
-						// System.out.println("*****************");
+
 					}
 
 				}
@@ -255,7 +255,7 @@ public class NestedInvertedIndex {
 			if (partialFileGetter(i) != null) {
 				// System.out.println("filegetter not null, going IN");
 				for (Path s : partialFileGetter(i)) {
-					
+
 					// if file is not already been used
 					if (!usedFiles.contains(s)) {
 						usedFiles.add(s);
