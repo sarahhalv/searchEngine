@@ -46,6 +46,7 @@ public class Driver {
 		TreeMap<String, TreeMap<Path, List<Integer>>> index = new TreeMap<String, TreeMap<Path, List<Integer>>>();
 		// parsing command-line arguments into flag/value pairs, and supports default
 		ArgumentMap map = new ArgumentMap(args);
+		// TODO InvertedIndex index = new InvertedIndex();
 
 		if (map.hasFlag("-path")) {
 
@@ -81,6 +82,7 @@ public class Driver {
 		if (map.hasFlag("-index")) { // write JSON to a file because index flag present
 			if (map.getPath("-index") != null) { // if has path value, use it
 				try {
+					// TODO index.toJson(map.getPath("-index"));
 					SimpleJsonWriter.asDoubleNestedArray(index, map.getPath("-index"));
 				} catch (IOException e) {
 					System.out.println("unable to write inverted index to file: " + map.getPath("-index").toString());

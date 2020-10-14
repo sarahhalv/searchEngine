@@ -1,6 +1,6 @@
 import java.nio.file.Path;
 import java.util.HashMap;
-// import java.util.Map;
+// import java.util.Map; // TODO Clean up commented out code
 
 /**
  * Parses and stores command-line arguments into simple key = value pairs.
@@ -18,7 +18,7 @@ public class ArgumentMap {
 	/**
 	 * public counter for unique flags
 	 */
-	int uniqueFlags = 0;
+	int uniqueFlags = 0; // TODO Remove
 
 	/**
 	 * Initializes this argument map.
@@ -63,6 +63,8 @@ public class ArgumentMap {
 					map.put(args[i - 1], args[i]);
 				}
 			}
+			
+			// TODO This makes ArgumentMap less general, remove
 			// check if -index flag is there without a value
 			if (map.containsKey("-index") && map.get("-index") == null) {
 				map.put("-index", "index.json"); // add default value
@@ -95,6 +97,8 @@ public class ArgumentMap {
 			}
 		}
 		return false;
+		
+		// TODO return (arg != null) && (arg.length() >= 2) && (arg.charAt(0) == '-') && (!Character.isDigit(arg.charAt(1)));
 	}
 
 	/**
@@ -118,7 +122,7 @@ public class ArgumentMap {
 	 * @return number of unique flags
 	 */
 	public int numFlags() {
-
+		// TODO return map.size();
 		return uniqueFlags;
 	}
 
@@ -130,7 +134,7 @@ public class ArgumentMap {
 	 */
 	public boolean hasFlag(String flag) {
 
-		if (map.containsKey(flag)) {
+		if (map.containsKey(flag)) { // TODO Simplify to a single return
 			return true;
 		}
 		return false;
@@ -142,7 +146,7 @@ public class ArgumentMap {
 	 * @param flag the flag to find
 	 * @return {@code true} if the flag is mapped to a non-null value
 	 */
-	public boolean hasValue(String flag) {
+	public boolean hasValue(String flag) { // TODO Simplify to a single return
 
 		if (map.get(flag) != null) { // if that flag/key has a value thats not null...
 			return true;
@@ -161,7 +165,7 @@ public class ArgumentMap {
 	public String getString(String flag) {
 
 		if (hasValue(flag)) {
-			return (map.get(flag));
+			return (map.get(flag)); // TODO Only line need
 		}
 		return null;
 	}
@@ -219,7 +223,6 @@ public class ArgumentMap {
 	 *         default value if there is no valid mapping
 	 */
 	public Path getPath(String flag, Path defaultValue) {
-
 		if (hasValue(flag)) {
 			return Path.of(getString(flag));
 		} else {
@@ -254,11 +257,4 @@ public class ArgumentMap {
 		// DO NOT MODIFY; THIS METHOD IS PROVIDED
 		return this.map.toString();
 	}
-
-	/**
-	 * A simple main method that parses the command-line arguments provided and
-	 * prints the result to the console.
-	 *
-	 * @param args the command-line arguments to parse
-	 */
 }

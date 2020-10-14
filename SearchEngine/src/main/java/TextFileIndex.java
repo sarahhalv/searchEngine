@@ -7,6 +7,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.TreeMap;
 
+/*
+ * TODO 
+ * Consider combining SimpleIndex and TextFileIndex... optional.
+ * Rename this to InvertedIndex
+ */
+
 /**
  * A special type of {@link SimpleIndex} that indexes the UNIQUE words that were
  * found in a text file.
@@ -25,6 +31,13 @@ public class TextFileIndex implements SimpleIndex {
 	 */
 	TreeMap<String, TreeMap<Path, List<Integer>>> invertedMap = new TreeMap<String, TreeMap<Path, List<Integer>>>();
 
+	/*
+	 * TODO 
+	 * private final TreeMap<String, TreeMap<String, TreeSet<Integer>>> invertedMap;
+	 * 
+	 * Initialize instance members in a constructor
+	 */
+	// TODO public void add(String word, String file, Integer position) {
 	@Override
 	public void add(String word, Path file, Integer i) {
 
@@ -42,18 +55,42 @@ public class TextFileIndex implements SimpleIndex {
 			invertedMap.put(word, fileNindex);
 		}
 		return;
+		
+		/* TODO Refactor round 1
+		if (!invertedMap.containsKey(word)) {
+			invertedMap.put(word, new TreeMap<>());
+		}
+		
+		if (!invertedMap.get(word).containsKey(file)) {
+			invertedMap.get(word).put(file, new ArrayList<>());
+		}
+		
+		invertedMap.get(word).get(file).add(i);
+		*/
+		
+		/* TODO 
+		invertedMap.putIfAbsent(word, new TreeMap<>());
+		invertedMap.get(word).putIfAbsent(file, new ArrayList<>());
+		invertedMap.get(word).get(file).add(i);
+		*/
 	}
 
 	@Override
-	public int size() {
+	public int size() { // TODO Returns number of words.
 		// TODO Auto-generated method stub
 		return invertedMap.size();
 	}
+	
+	/*
+	 * TODO 
+	 * public int size(String word) ---> # of paths stored for that word
+	 * public int size(String word, String location) --> # of positions stored
+	 */
 
 	@Override
 	public boolean contains(String stem) {
 		// TODO Auto-generated method stub
-		if (invertedMap.containsKey(stem)) {
+		if (invertedMap.containsKey(stem)) { // TODO Single return statement
 			return true;
 		} else {
 			return false;
@@ -68,6 +105,8 @@ public class TextFileIndex implements SimpleIndex {
 		}
 		return false;
 	}
+	
+	// TODO public boolean contains(String word, Path location, int position) {
 
 	@Override
 	public Collection<String> get() {
@@ -75,6 +114,7 @@ public class TextFileIndex implements SimpleIndex {
 		return Collections.unmodifiableCollection(invertedMap.keySet());
 	}
 
+	// TODO Remove?
 	@Override
 	public boolean contains(HashMap<Path, List<Integer>> map) {
 		// TODO Auto-generated method stub
@@ -84,8 +124,26 @@ public class TextFileIndex implements SimpleIndex {
 	@Override
 	public Collection<HashMap<Path, List<Integer>>> get(String stem) {
 		// TODO Auto-generated method stub
-		return null;
+		return null; // TODO ???
 	}
+	
+	/*
+	 * TODO
+
+	Methods currently are breaking encapsulation
+
+	public Set<String> get()
+	
+	public Set<String> get(String word) {
+		if the word exists
+			return Collections.unmodifiableSet(invertedMap.get(word).keySet());
+		else
+			return Collections.emtpySet();
+	}
+	
+	public Set<Integer> get(String word, String location)
+
+	 */
 
 	@Override
 	public void add(Path p, Integer i) {
@@ -101,4 +159,9 @@ public class TextFileIndex implements SimpleIndex {
 		return invertedMap;
 	}
 
+	/* TODO 
+	public void toJson(Path path) throws IOException {
+		SimpleJsonWriter.asDoubleNestedArray(invertedMap, path);
+	}
+	*/
 }

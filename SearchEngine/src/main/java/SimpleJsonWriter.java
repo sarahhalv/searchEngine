@@ -24,6 +24,11 @@ import java.util.Map.Entry;
  */
 public class SimpleJsonWriter {
 
+	/*
+	 * TODO Try this:
+	 * https://piazza.com/class/kdw23x4qxws3oz?cid=411
+	 */
+	
 	/**
 	 * Writes the elements as a pretty JSON array.
 	 *

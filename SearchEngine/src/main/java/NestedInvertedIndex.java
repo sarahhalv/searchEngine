@@ -5,11 +5,26 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
+// TODO Clean up
+
 /**
  * @author sarah Class that works with and creates the nested Inverted Index
  *
  */
-public class NestedInvertedIndex {
+public class NestedInvertedIndex { // TODO InvertedIndexBuilder
+	/* TODO 
+	public static void build(Path path, InvertedIndex index) {
+		if this is a directory
+			get the listing
+			on each path in the listing
+				addFile(file, index);
+		else
+				addFile(path, index);
+	}
+	
+	public static void addFile(Path file, InvertedIndex index) {
+	
+	}
 
 	/**
 	 * creates the nested inverted index
@@ -50,6 +65,7 @@ public class NestedInvertedIndex {
 		// locations within them
 		for (Path yee : textfiles) { // iterate through the files
 			ArrayList<String> stems1 = new ArrayList<>();
+			// TODO This moves into an addFile method instead
 			try {
 				stems1 = TextFileStemmer.listStems(yee);
 			} catch (IOException e) {
