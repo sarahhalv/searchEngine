@@ -1,6 +1,8 @@
 import java.text.Normalizer;
 import java.util.regex.Pattern;
 
+// TODO Remove old TODO comments, including from homework
+
 /**
  * Utility class for parsing text in a consistent manner.
  *

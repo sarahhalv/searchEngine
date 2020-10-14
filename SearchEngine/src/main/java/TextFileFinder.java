@@ -25,10 +25,11 @@ public class TextFileFinder {
 	 *
 	 * @see Collectors#toList()
 	 */
-	public List<Path> list(Path start) throws IOException {
+	public List<Path> list(Path start) throws IOException { // TODO static
 
 		List<Path> textfiles = new ArrayList<>();
 		try {
+			// TODO Try with resources
 			DirectoryStream<Path> ds = Files.newDirectoryStream(start);
 			for (Path p : ds) {
 				// if its a text file
@@ -39,10 +40,14 @@ public class TextFileFinder {
 					textfiles.addAll(list(p));
 				}
 			}
-		} catch (IOException e) {
+		} catch (IOException e) { // TODO Remove catch block
 
 		}
 
 		return textfiles;
 	}
+	
+	/*
+	 * TODO Pull out whether a path is a text file into its own method
+	 */
 }

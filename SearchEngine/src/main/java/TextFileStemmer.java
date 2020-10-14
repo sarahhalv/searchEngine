@@ -40,7 +40,22 @@ public class TextFileStemmer {
 			theStems.add((stemmer.stem(word)).toString());
 		}
 		return theStems;
+		
+		/* TODO 
+		ArrayList<String> theStems = new ArrayList<>();
+		stemLine(line, stemmer, theStems);
+		return theStems;
+		*/
 	}
+	
+	/* TODO
+	private void stemLine(String line, Stemmer stemmer, Collection<String> stems) {
+		String[] words = TextParser.parse(line);
+		for (String word : words) {
+			stems.add((stemmer.stem(word)).toString());
+		}
+	}
+	*/
 
 	/**
 	 * Returns a list of cleaned and stemmed words parsed from the provided line
@@ -70,6 +85,21 @@ public class TextFileStemmer {
 	 * @see TextParser#parse(String)
 	 */
 	public static ArrayList<String> listStems(Path inputFile) throws IOException {
+		/* TODO 
+		ArrayList<String> stems = new ArrayList<>();
+		Stemmer stemmer = 
+		try (BufferedReader reader = Files.newBufferedReader(inputFile, StandardCharsets.UTF_8);) {
+			String line = null;
+			
+			while ((line = reader.readLine()) != null) {
+				stemLine(line, stemmer, stems);
+			}
+		}
+		
+		return stems;
+		*/
+		
+		// TODO Make more efficient
 		if (Files.exists(inputFile)) {
 			try (BufferedReader buf = Files.newBufferedReader(inputFile, StandardCharsets.UTF_8);) {
 				StringBuilder sb = new StringBuilder();
