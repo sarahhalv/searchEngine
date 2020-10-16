@@ -25,29 +25,35 @@ public class TextFileFinder {
 	 *
 	 * @see Collectors#toList()
 	 */
-	public List<Path> list(Path start) throws IOException { // TODO static
+	public static List<Path> list(Path start) throws IOException {
 
 		List<Path> textfiles = new ArrayList<>();
-		try {
-			// TODO Try with resources
-			DirectoryStream<Path> ds = Files.newDirectoryStream(start);
+		try (DirectoryStream<Path> ds = Files.newDirectoryStream(start)) {
+
 			for (Path p : ds) {
 				// if its a text file
-				if (Files.isRegularFile(p) && ((p.toString().toLowerCase()).endsWith(".txt")
-						|| ((p.toString().toLowerCase()).endsWith(".text")))) {
+				if (isTextFile(p)) {
 					textfiles.add(p);
 				} else if (Files.isDirectory(p)) {
 					textfiles.addAll(list(p));
 				}
 			}
-		} catch (IOException e) { // TODO Remove catch block
-
 		}
 
 		return textfiles;
 	}
-	
-	/*
-	 * TODO Pull out whether a path is a text file into its own method
+
+	/**
+	 * checks if path is of a text file
+	 * 
+	 * @param filepath path to see if text file
+	 * @return true if text file
 	 */
+	public static boolean isTextFile(Path filepath) {
+		if (Files.isRegularFile(filepath) && ((filepath.toString().toLowerCase()).endsWith(".txt")
+				|| ((filepath.toString().toLowerCase()).endsWith(".text")))) {
+			return true;
+		}
+		return false;
+	}
 }

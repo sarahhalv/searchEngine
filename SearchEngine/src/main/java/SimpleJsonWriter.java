@@ -6,12 +6,10 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
-import java.util.List;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
-
-import javax.swing.text.html.HTMLDocument.Iterator;
-
+import java.util.TreeSet;
 import java.util.Map.Entry;
 
 /**
@@ -27,7 +25,6 @@ import java.util.Map.Entry;
  */
 public class SimpleJsonWriter {
 
-
 	/**
 	 * Writes the elements as a pretty JSON array.
 	 *
@@ -36,21 +33,19 @@ public class SimpleJsonWriter {
 	 * @param level    the initial indent level
 	 * @throws IOException if an IO error occurs
 	 */
-	public static void asArray(Collection<Integer> elements, Writer writer, int level) throws IOException {
+	public static void asCollection(Collection<Integer> elements, Writer writer, int level) throws IOException {
 
-		
 		java.util.Iterator<Integer> iterator = elements.iterator();
 		writer.write("[");
-		
 
 		if (iterator.hasNext()) {
 			writer.write("\n\t");
-			indent((iterator.next()), writer, level+1);
+			indent((iterator.next()), writer, level + 1);
 		}
 
 		while (iterator.hasNext()) {
 			writer.write(",\n\t");
-			indent((iterator.next()), writer, level+1);
+			indent((iterator.next()), writer, level + 1);
 		}
 		writer.write("\n");
 		indent(writer, level);
@@ -58,41 +53,42 @@ public class SimpleJsonWriter {
 	}
 
 	/**
-	 * Writes the elements as a pretty JSON object with a nested array. The generic
-	 * notation used allows this method to be used for any type of map with any type
-	 * of nested collection of integer objects.
+	 * Writes the elements as a pretty JSON object with a set. The generic notation
+	 * used allows this method to be used for any type of map with any type of
+	 * nested collection of integer objects.
 	 *
 	 * @param elements the elements to write
 	 * @param writer   the writer to use
 	 * @param level    the initial indent level
 	 * @throws IOException if an IO error occurs
 	 */
-	public static void asNestedArray(Map<Path, List<Integer>> elements, Writer writer, int level) throws IOException {
+	public static void asNestedSet(Map<String, TreeSet<Integer>> elements, Writer writer, int level)
+			throws IOException {
 
-		java.util.Iterator<Path> iterator = elements.keySet().iterator();
-		
+		Iterator<String> iterator = elements.keySet().iterator();
+
 		writer.write("{");
-		
+
 		if (iterator.hasNext()) {
 			writer.write("\n\t");
 			var i = iterator.next();
-			indent(i, writer, level+1);
+			indent(i, writer, level + 1);
 			writer.write(": ");
-			asArray(elements.get(i), writer, level + 2);// write out the integers of path
-			
+			asCollection(elements.get(i), writer, level + 2);// write out the integers of path
+
 		}
 
 		while (iterator.hasNext()) {
 			writer.write(",\n\t");
 			var i = iterator.next();
-			indent(i, writer, level+1);
+			indent(i, writer, level + 1);
 			writer.write(": ");
-			asArray(elements.get(i), writer, level + 2);// write out the integers of path
+			asCollection(elements.get(i), writer, level + 2);// write out the integers of path
 		}
 		writer.write("\n");
 		indent(writer, level);
 		writer.write("}");
-		
+
 	}
 
 	/**
@@ -105,34 +101,32 @@ public class SimpleJsonWriter {
 	 * @param level    initial indent level
 	 * @throws IOException if an IO error occurs
 	 */
-	public static void asDoubleNestedArray(Map<String, TreeMap<Path, List<Integer>>> elements, Writer writer, int level)
-			throws IOException {
-		
-	java.util.Iterator<String> iterator = elements.keySet().iterator();
-		
+	public static void asDoubleNestedStructure(Map<String, TreeMap<String, TreeSet<Integer>>> elements, Writer writer,
+			int level) throws IOException {
+
+		java.util.Iterator<String> iterator = elements.keySet().iterator();
+
 		writer.write("{");
-		
+
 		if (iterator.hasNext()) {
 			writer.write("\n\t");
 			var i = iterator.next();
-			indent(i, writer, level+1);
+			indent(i, writer, level + 1);
 			writer.write(": ");
-			asNestedArray(elements.get(i), writer, level + 2);// write out the integers of path
-			
+			asNestedSet(elements.get(i), writer, level + 2);// write out the integers of path
+
 		}
 
 		while (iterator.hasNext()) {
 			writer.write(",\n\t");
 			var i = iterator.next();
-			indent(i, writer, level+1);
+			indent(i, writer, level + 1);
 			writer.write(": ");
-			asNestedArray(elements.get(i), writer, level + 2);// write out the integers of path
+			asNestedSet(elements.get(i), writer, level + 2);// write out the integers of path
 		}
 		writer.write("\n");
 		indent(writer, level);
 		writer.write("}");
-		
-		
 
 	}
 
@@ -215,10 +209,6 @@ public class SimpleJsonWriter {
 		writer.write(entry.getValue().toString());
 	}
 
-	/*
-	 * These methods are provided for you. No changes are required.
-	 */
-
 	/**
 	 * Writes the elements as a pretty JSON array to file.
 	 *
@@ -226,12 +216,12 @@ public class SimpleJsonWriter {
 	 * @param path     the file path to use
 	 * @throws IOException if an IO error occurs
 	 *
-	 * @see #asArray(Collection, Writer, int)
+	 * @see #asCollection(Collection, Writer, int)
 	 */
 	public static void asArray(Collection<Integer> elements, Path path) throws IOException {
-		// THIS CODE IS PROVIDED FOR YOU; DO NOT MODIFY
+
 		try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
-			asArray(elements, writer, 0);
+			asCollection(elements, writer, 0);
 		}
 	}
 
@@ -241,13 +231,13 @@ public class SimpleJsonWriter {
 	 * @param elements the elements to use
 	 * @return a {@link String} containing the elements in pretty JSON format
 	 *
-	 * @see #asArray(Collection, Writer, int)
+	 * @see #asCollection(Collection, Writer, int)
 	 */
 	public static String asArray(Collection<Integer> elements) {
-		// THIS CODE IS PROVIDED FOR YOU; DO NOT MODIFY
+
 		try {
 			StringWriter writer = new StringWriter();
-			asArray(elements, writer, 0);
+			asCollection(elements, writer, 0);
 			return writer.toString();
 		} catch (IOException e) {
 			return null;
@@ -260,13 +250,13 @@ public class SimpleJsonWriter {
 	 * @param elements the elements to use
 	 * @return a {@link String} containing the elements in pretty JSON format
 	 *
-	 * @see #asNestedArray(Map, Writer, int)
+	 * @see #asNestedSet(Map, Writer, int)
 	 */
-	public static String asNestedArray(Map<Path, List<Integer>> elements) {
-		// THIS CODE IS PROVIDED FOR YOU; DO NOT MODIFY
+	public static String asNestedSet(Map<String, TreeSet<Integer>> elements) {
+
 		try {
 			StringWriter writer = new StringWriter();
-			asNestedArray(elements, writer, 0);
+			asNestedSet(elements, writer, 0);
 			return writer.toString();
 		} catch (IOException e) {
 			return null;
@@ -280,34 +270,14 @@ public class SimpleJsonWriter {
 	 * @param path     the file path to use
 	 * @throws IOException if an IO error occurs
 	 *
-	 * @see #asDoubleNestedArray(Map, Writer, int)
+	 * @see #asDoubleNestedStructure(Map, Writer, int)
 	 */
-	public static void asDoubleNestedArray(Map<String, TreeMap<Path, List<Integer>>> elements, Path path)
+	public static void asDoubleNestedStructure(Map<String, TreeMap<String, TreeSet<Integer>>> elements, Path path)
 			throws IOException {
-		// THIS CODE IS PROVIDED FOR YOU; DO NOT MODIFY
+
 		try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
-			asDoubleNestedArray(elements, writer, 0);
+			asDoubleNestedStructure(elements, writer, 0);
 		}
-	}
-
-	/**
-	 * Returns the elements as a nested pretty JSON object.
-	 *
-	 * @param elements the elements to use
-	 * @return a {@link String} containing the elements in pretty JSON format
-	 *
-	 * @see #asNestedArray(Map, Writer, int)
-	 */
-	public static String asDoubleNestedArray(Map<String, TreeMap<Path, List<Integer>>> elements) {
-
-		try {
-			StringWriter writer = new StringWriter();
-			asDoubleNestedArray(elements, writer, 0);
-			return writer.toString();
-		} catch (IOException e) {
-			return null;
-		}
-
 	}
 
 }

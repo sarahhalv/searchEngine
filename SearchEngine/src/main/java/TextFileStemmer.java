@@ -38,7 +38,6 @@ public class TextFileStemmer {
 		ArrayList<String> theStems = new ArrayList<>();
 		stemLine(line, stemmer, theStems);
 		return theStems;
-
 	}
 
 	/**
@@ -91,9 +90,7 @@ public class TextFileStemmer {
 				stemLine(line, stemmer, stems);
 			}
 		}
-
 		return stems;
-
 	}
 
 	/**

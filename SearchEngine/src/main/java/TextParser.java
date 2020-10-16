@@ -1,8 +1,6 @@
 import java.text.Normalizer;
 import java.util.regex.Pattern;
 
-// TODO Remove old TODO comments, including from homework
-
 /**
  * Utility class for parsing text in a consistent manner.
  *
@@ -19,8 +17,8 @@ public class TextParser {
 
 	/**
 	 * Cleans the text by removing any non-alphabetic characters (e.g. non-letters
-	 * like digits, punctuation, symbols, and diacritical marks like the umlaut)
-	 * and converting the remaining characters to lowercase.
+	 * like digits, punctuation, symbols, and diacritical marks like the umlaut) and
+	 * converting the remaining characters to lowercase.
 	 *
 	 * @param text the text to clean
 	 * @return cleaned text
@@ -52,7 +50,7 @@ public class TextParser {
 	 * @see #parse(String)
 	 */
 	public static String[] parse(String text) {
-		
+
 		text = TextParser.clean(text);
 		return TextParser.split(text);
 	}

@@ -1,6 +1,5 @@
 import java.nio.file.Path;
 import java.util.HashMap;
-// import java.util.Map; // TODO Clean up commented out code
 
 /**
  * Parses and stores command-line arguments into simple key = value pairs.
@@ -15,10 +14,6 @@ public class ArgumentMap {
 	 * Stores command-line arguments in key = value pairs.
 	 */
 	private final HashMap<String, String> map;
-	/**
-	 * public counter for unique flags
-	 */
-	int uniqueFlags = 0; // TODO Remove
 
 	/**
 	 * Initializes this argument map.
@@ -35,7 +30,6 @@ public class ArgumentMap {
 	 * @param args the command line arguments to parse
 	 */
 	public ArgumentMap(String[] args) {
-		// DO NOT MODIFY; THIS METHOD IS PROVIDED
 		this();
 		parse(args);
 	}
@@ -51,23 +45,15 @@ public class ArgumentMap {
 		if (args.length > 0) { // if argument is not null
 			for (int i = 0; i < args.length; i++) { // iterate through command line arguments
 				if (isFlag(args[i])) { // if argument is a flag
-					if (map.containsKey(args[i]) == false) { // if key isn't in the hashmap yet
-						uniqueFlags++;
+					if (map.containsKey(args[i]) == false) { // if key isn't in the hash map yet
+
 					}
 					map.put(args[i], null); // set flag as a key
 				}
-				if (i >= 1 && isValue(args[i]) && isFlag(args[i - 1]) && map.get(args[i - 1]) == null) { // if value
-																											// after
-																											// key, add
-																											// it
+				// if value is after key, add it
+				if (i >= 1 && isValue(args[i]) && isFlag(args[i - 1]) && map.get(args[i - 1]) == null) {
 					map.put(args[i - 1], args[i]);
 				}
-			}
-			
-			// TODO This makes ArgumentMap less general, remove
-			// check if -index flag is there without a value
-			if (map.containsKey("-index") && map.get("-index") == null) {
-				map.put("-index", "index.json"); // add default value
 			}
 		}
 	}
@@ -86,19 +72,8 @@ public class ArgumentMap {
 	 */
 	public static boolean isFlag(String arg) {
 
-		if (arg == null) {
-			return false;
-		}
-		if (arg.length() >= 2) {
-			if (arg.charAt(0) == '-') { // if starts with dash
-				if (!Character.isDigit(arg.charAt(1))) { // if followed by number
-					return true; // is a flag
-				}
-			}
-		}
-		return false;
-		
-		// TODO return (arg != null) && (arg.length() >= 2) && (arg.charAt(0) == '-') && (!Character.isDigit(arg.charAt(1)));
+		return (arg != null) && (arg.length() >= 2) && (arg.charAt(0) == '-') && (!Character.isDigit(arg.charAt(1)));
+
 	}
 
 	/**
@@ -112,7 +87,7 @@ public class ArgumentMap {
 	 * @see String#length()
 	 */
 	public static boolean isValue(String arg) {
-		// DO NOT MODIFY; THIS METHOD IS PROVIDED
+
 		return !isFlag(arg);
 	}
 
@@ -122,8 +97,9 @@ public class ArgumentMap {
 	 * @return number of unique flags
 	 */
 	public int numFlags() {
-		// TODO return map.size();
-		return uniqueFlags;
+
+		return map.size();
+
 	}
 
 	/**
@@ -134,10 +110,8 @@ public class ArgumentMap {
 	 */
 	public boolean hasFlag(String flag) {
 
-		if (map.containsKey(flag)) { // TODO Simplify to a single return
-			return true;
-		}
-		return false;
+		return (map.containsKey(flag));
+
 	}
 
 	/**
@@ -146,12 +120,10 @@ public class ArgumentMap {
 	 * @param flag the flag to find
 	 * @return {@code true} if the flag is mapped to a non-null value
 	 */
-	public boolean hasValue(String flag) { // TODO Simplify to a single return
+	public boolean hasValue(String flag) {
 
-		if (map.get(flag) != null) { // if that flag/key has a value thats not null...
-			return true;
-		}
-		return false;
+		return (map.get(flag) != null);
+
 	}
 
 	/**
@@ -164,10 +136,8 @@ public class ArgumentMap {
 	 */
 	public String getString(String flag) {
 
-		if (hasValue(flag)) {
-			return (map.get(flag)); // TODO Only line need
-		}
-		return null;
+		return (map.get(flag));
+
 	}
 
 	/**
@@ -254,7 +224,6 @@ public class ArgumentMap {
 
 	@Override
 	public String toString() {
-		// DO NOT MODIFY; THIS METHOD IS PROVIDED
 		return this.map.toString();
 	}
 }
