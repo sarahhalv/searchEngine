@@ -9,6 +9,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+
+import javax.swing.text.html.HTMLDocument.Iterator;
+
 import java.util.Map.Entry;
 
 /**
@@ -24,11 +27,7 @@ import java.util.Map.Entry;
  */
 public class SimpleJsonWriter {
 
-	/*
-	 * TODO Try this:
-	 * https://piazza.com/class/kdw23x4qxws3oz?cid=411
-	 */
-	
+
 	/**
 	 * Writes the elements as a pretty JSON array.
 	 *
@@ -39,21 +38,21 @@ public class SimpleJsonWriter {
 	 */
 	public static void asArray(Collection<Integer> elements, Writer writer, int level) throws IOException {
 
-		int size = elements.size();
-		int counter = 0;
+		
+		java.util.Iterator<Integer> iterator = elements.iterator();
+		writer.write("[");
+		
 
-		writer.write("[\n");
-
-		for (Integer i : elements) {
-
-			indent(i, writer, level + 1);
-
-			if (counter != size - 1) { // if not last element, place a comma
-				writer.write(",");
-			}
-			writer.write("\n");
-			counter++;
+		if (iterator.hasNext()) {
+			writer.write("\n\t");
+			indent((iterator.next()), writer, level+1);
 		}
+
+		while (iterator.hasNext()) {
+			writer.write(",\n\t");
+			indent((iterator.next()), writer, level+1);
+		}
+		writer.write("\n");
 		indent(writer, level);
 		writer.write("]");
 	}
@@ -70,22 +69,30 @@ public class SimpleJsonWriter {
 	 */
 	public static void asNestedArray(Map<Path, List<Integer>> elements, Writer writer, int level) throws IOException {
 
-		int size = elements.size();
-		int counter = 0;
-
-		writer.write("{\n");
-		for (Path i : elements.keySet()) { // iterate through path keys of nested array
-			indent(i, writer, level + 1); // print "key"/non-nested array element
-
+		java.util.Iterator<Path> iterator = elements.keySet().iterator();
+		
+		writer.write("{");
+		
+		if (iterator.hasNext()) {
+			writer.write("\n\t");
+			var i = iterator.next();
+			indent(i, writer, level+1);
 			writer.write(": ");
 			asArray(elements.get(i), writer, level + 2);// write out the integers of path
-			if (counter != size - 1) {
-				writer.write(",");
-			}
-			writer.write("\n");
-			counter++;
+			
 		}
+
+		while (iterator.hasNext()) {
+			writer.write(",\n\t");
+			var i = iterator.next();
+			indent(i, writer, level+1);
+			writer.write(": ");
+			asArray(elements.get(i), writer, level + 2);// write out the integers of path
+		}
+		writer.write("\n");
+		indent(writer, level);
 		writer.write("}");
+		
 	}
 
 	/**
@@ -100,22 +107,33 @@ public class SimpleJsonWriter {
 	 */
 	public static void asDoubleNestedArray(Map<String, TreeMap<Path, List<Integer>>> elements, Writer writer, int level)
 			throws IOException {
-		int size = elements.size();
-		int counter = 0;
-
-		writer.write("{\n");
-		for (String i : elements.keySet()) { // iterate through the keys of nested array
-			indent(i, writer, level + 1); // print "key"/non-nested array element
-
+		
+	java.util.Iterator<String> iterator = elements.keySet().iterator();
+		
+		writer.write("{");
+		
+		if (iterator.hasNext()) {
+			writer.write("\n\t");
+			var i = iterator.next();
+			indent(i, writer, level+1);
 			writer.write(": ");
-			asNestedArray(elements.get(i), writer, level + 1);// write out the content of the nested array
-			if (counter != size - 1) {
-				writer.write(",");
-			}
-			writer.write("\n");
-			counter++;
+			asNestedArray(elements.get(i), writer, level + 2);// write out the integers of path
+			
 		}
+
+		while (iterator.hasNext()) {
+			writer.write(",\n\t");
+			var i = iterator.next();
+			indent(i, writer, level+1);
+			writer.write(": ");
+			asNestedArray(elements.get(i), writer, level + 2);// write out the integers of path
+		}
+		writer.write("\n");
+		indent(writer, level);
 		writer.write("}");
+		
+		
+
 	}
 
 	/**

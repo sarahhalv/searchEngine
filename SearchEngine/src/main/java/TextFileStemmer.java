@@ -4,6 +4,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.TreeSet;
 
 import opennlp.tools.stemmer.Stemmer;
@@ -34,28 +35,23 @@ public class TextFileStemmer {
 	 * @see TextParser#parse(String)
 	 */
 	public static ArrayList<String> listStems(String line, Stemmer stemmer) {
-		String[] words = TextParser.parse(line);
-		ArrayList<String> theStems = new ArrayList<>();
-		for (String word : words) {
-			theStems.add((stemmer.stem(word)).toString());
-		}
-		return theStems;
-		
-		/* TODO 
 		ArrayList<String> theStems = new ArrayList<>();
 		stemLine(line, stemmer, theStems);
 		return theStems;
-		*/
+
 	}
-	
-	/* TODO
-	private void stemLine(String line, Stemmer stemmer, Collection<String> stems) {
+
+	/**
+	 * @param line    the line to stem and add
+	 * @param stemmer the stemmer to use
+	 * @param stems   the collection
+	 */
+	private static void stemLine(String line, Stemmer stemmer, Collection<String> stems) {
 		String[] words = TextParser.parse(line);
 		for (String word : words) {
 			stems.add((stemmer.stem(word)).toString());
 		}
 	}
-	*/
 
 	/**
 	 * Returns a list of cleaned and stemmed words parsed from the provided line
@@ -85,33 +81,18 @@ public class TextFileStemmer {
 	 * @see TextParser#parse(String)
 	 */
 	public static ArrayList<String> listStems(Path inputFile) throws IOException {
-		/* TODO 
+
 		ArrayList<String> stems = new ArrayList<>();
-		Stemmer stemmer = 
+		Stemmer stemmer = new SnowballStemmer(DEFAULT);
 		try (BufferedReader reader = Files.newBufferedReader(inputFile, StandardCharsets.UTF_8);) {
 			String line = null;
-			
+
 			while ((line = reader.readLine()) != null) {
 				stemLine(line, stemmer, stems);
 			}
 		}
-		
+
 		return stems;
-		*/
-		
-		// TODO Make more efficient
-		if (Files.exists(inputFile)) {
-			try (BufferedReader buf = Files.newBufferedReader(inputFile, StandardCharsets.UTF_8);) {
-				StringBuilder sb = new StringBuilder();
-				String fileLine = null;
-				while ((fileLine = buf.readLine()) != null) {
-					sb.append(fileLine + " ");
-				}
-				return listStems(sb.toString());
-			}
-		} else {
-			return null;
-		}
 
 	}
 

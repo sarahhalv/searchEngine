@@ -52,12 +52,7 @@ public class TextParser {
 	 * @see #parse(String)
 	 */
 	public static String[] parse(String text) {
-		/*
-		 * TODO Fill in this method. This method is either:
-		 * - calling clean(...) then split(...)
-		 * - calling split(...) then clean(...)
-		 * Choose the option that does not generate empty strings.
-		 */
+		
 		text = TextParser.clean(text);
 		return TextParser.split(text);
 	}

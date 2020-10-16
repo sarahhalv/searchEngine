@@ -32,7 +32,7 @@ public class Driver {
 	 */
 	public static void main(String[] args) {
 
-		NestedInvertedIndex nestedInvertedIndex1 = new NestedInvertedIndex();
+		InvertedIndexBuilder nestedInvertedIndex1 = new InvertedIndexBuilder();
 
 		if (args.length == 0) { // no arguments provided
 			System.out.println("no arguments!");
@@ -84,6 +84,8 @@ public class Driver {
 				try {
 					// TODO index.toJson(map.getPath("-index"));
 					SimpleJsonWriter.asDoubleNestedArray(index, map.getPath("-index"));
+					//System.out.println(SimpleJsonWriter.asDoubleNestedArray(index));
+		
 				} catch (IOException e) {
 					System.out.println("unable to write inverted index to file: " + map.getPath("-index").toString());
 				}
@@ -91,11 +93,13 @@ public class Driver {
 				Path p = Paths.get("index.json");
 				try {
 					SimpleJsonWriter.asDoubleNestedArray(index, p);
+					
 				} catch (IOException e) {
 					System.out.println("unable to write inverted index to file: " + p.toString());
 				}
 			}
 		}
+		
 
 		// calculate time elapsed and output
 		Duration elapsed = Duration.between(start, Instant.now());
