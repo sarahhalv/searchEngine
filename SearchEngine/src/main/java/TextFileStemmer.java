@@ -121,6 +121,7 @@ public class TextFileStemmer {
 	 * @see TextParser#parse(String)
 	 */
 	public static TreeSet<String> uniqueStems(String line, Stemmer stemmer) {
+		// TODO Call stemLine here too
 		String[] words = TextParser.parse(line);
 		TreeSet<String> uniqueStems = new TreeSet<>();
 		for (String word : words) {
@@ -141,6 +142,7 @@ public class TextFileStemmer {
 	 * @see TextParser#parse(String)
 	 */
 	public static TreeSet<String> uniqueStems(Path inputFile) throws IOException {
+		// TODO Fix to use same approach as listStems(Path)
 		if (Files.exists(inputFile)) {
 
 			try (BufferedReader buf = Files.newBufferedReader(inputFile, StandardCharsets.UTF_8);) {

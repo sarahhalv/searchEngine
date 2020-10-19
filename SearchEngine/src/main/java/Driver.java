@@ -30,6 +30,28 @@ public class Driver {
 		ArgumentMap map = new ArgumentMap(args);
 		InvertedIndex index = new InvertedIndex(); // create index
 
+		/*
+		 * TODO I like how much output you are giving to the user, but you are going to
+		 * want a simpler approach here before moving on to future projects. Try:
+		 * 
+		if (map.hasFlag("-path")) {
+			Path path = map.getPath("-path");
+			
+			try {
+				InvertedIndexBuilder.build(path, index);
+			}
+			catch (NullPointerException e) {
+				System.out.println("The -path flag is missing a value.");
+				return;
+			}
+			catch (IOException e) {
+				unable to build index from path...
+				return;
+			}
+			
+		}
+		 */
+		
 		if (map.hasFlag("-path")) {
 
 			// check for no path provided
@@ -46,7 +68,7 @@ public class Driver {
 			Path path = map.getPath("-path");
 			InvertedIndexBuilder.build(path, index);
 
-		} else { // if no path flag/bad arguments
+		} else { // if no path flag/bad arguments // TODO Remove this, shouldn't need 
 			System.out.println("bad arguments !");
 			// write empty inverted index to default file
 			Path p = Paths.get("index.json");
@@ -85,6 +107,17 @@ public class Driver {
 				}
 			}
 		}
+		
+		/* TODO Simplify to this:
+		if (map.hasFlag("-index")) {
+			Path path = map.getPath("-index", Path.of("index.json"));
+			
+			try {
+				index.toJson(path);
+			} catch (IOException e) {
+				System.out.println("unable to write inverted index to file: " + path.toString());
+			}
+		}*/
 
 		// calculate time elapsed and output
 		Duration elapsed = Duration.between(start, Instant.now());

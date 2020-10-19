@@ -50,7 +50,6 @@ public class TextParser {
 	 * @see #parse(String)
 	 */
 	public static String[] parse(String text) {
-
 		text = TextParser.clean(text);
 		return TextParser.split(text);
 	}
