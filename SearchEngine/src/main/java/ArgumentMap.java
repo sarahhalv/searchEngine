@@ -42,11 +42,11 @@ public class ArgumentMap {
 	 */
 	public void parse(String[] args) {
 
-		if (args.length > 0) { // if argument is not null
+		if (args.length > 0) { // if argument is not null // TODO Remove? Do you need this? Does it break without?
 			for (int i = 0; i < args.length; i++) { // iterate through command line arguments
 				if (isFlag(args[i])) { // if argument is a flag
 					if (map.containsKey(args[i]) == false) { // if key isn't in the hash map yet
-
+						// TODO Why is this if statement here?
 					}
 					map.put(args[i], null); // set flag as a key
 				}

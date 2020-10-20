@@ -14,7 +14,7 @@ public class InvertedIndex {
 	/**
 	 * data structure for inverted index object
 	 */
-	private final TreeMap<String, TreeMap<String, TreeSet<Integer>>> invertedIndex1;
+	private final TreeMap<String, TreeMap<String, TreeSet<Integer>>> invertedIndex1; // TODO Better name
 
 	/**
 	 * inverted index class object constructor
@@ -46,6 +46,10 @@ public class InvertedIndex {
 	 * @return # of paths stored for that word
 	 */
 	public int size(String word) {
+		/*
+		 * TODO Throws a null pointer exception if get(word) returns null. Use your
+		 * contains methods to make sure the word is in your index, if not, return 0.
+		 */
 		return invertedIndex1.get(word).keySet().size();
 	}
 
@@ -55,7 +59,7 @@ public class InvertedIndex {
 	 * @return # of positions stored in that location
 	 */
 	int size(String word, String location) {
-		return invertedIndex1.get(word).get(location).size();
+		return invertedIndex1.get(word).get(location).size(); // TODO Same null pointer problem.
 	}
 
 	/**
@@ -76,6 +80,8 @@ public class InvertedIndex {
 	}
 
 	/**
+	 * TODO Description here and all the other Javadoc where it is missing
+	 * 
 	 * @param word     stem
 	 * @param location file location
 	 * @param position location in file where word may be
@@ -86,6 +92,7 @@ public class InvertedIndex {
 				&& invertedIndex1.get(word).get(location).contains(position);
 	}
 
+	// TODO Breaks encapsulation, remove
 	/**
 	 * @return the inverted map in its form
 	 */
@@ -100,5 +107,16 @@ public class InvertedIndex {
 	public void toJson(Path path) throws IOException {
 		SimpleJsonWriter.asDoubleNestedStructure(invertedIndex1, path);
 	}
+	
+	/*
+	 * TODO Contains methods look great, size methods look great, but need get methods
+	 * that are safe...
+	 * 
+	 * Set<String> get() or getWords() ---> safely return all of the words (i.e. invertedIndex1.keySet() as unmodifiable set)
+	 * Set<String> get(String word) or getLocations(String word) --> safely returns locations for a word if that word exists, otherwise Collections.emptySet()
+	 * Set<Integer> get(String word, String location) or getPositions(String word, String location) --> safely return positions if exist
+	 * 
+	 * ...also override toString!
+	 */
 
 }

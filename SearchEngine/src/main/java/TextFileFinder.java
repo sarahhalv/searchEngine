@@ -50,6 +50,7 @@ public class TextFileFinder {
 	 * @return true if text file
 	 */
 	public static boolean isTextFile(Path filepath) {
+		// TODO String lower = filepath.toString().toLowerCase()) <--- save and then reuse, don't call twice
 		if (Files.isRegularFile(filepath) && ((filepath.toString().toLowerCase()).endsWith(".txt")
 				|| ((filepath.toString().toLowerCase()).endsWith(".text")))) {
 			return true;
