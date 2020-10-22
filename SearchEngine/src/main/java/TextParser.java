@@ -24,7 +24,6 @@ public class TextParser {
 	 * @return cleaned text
 	 */
 	public static String clean(String text) {
-		// DO NOT MODIFY; THIS METHOD IS PROVIDED
 		String cleaned = Normalizer.normalize(text, Normalizer.Form.NFD);
 		cleaned = CLEAN_REGEX.matcher(cleaned).replaceAll("");
 		return cleaned.toLowerCase();

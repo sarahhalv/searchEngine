@@ -1,5 +1,7 @@
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Collections;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
@@ -14,73 +16,89 @@ public class InvertedIndex {
 	/**
 	 * data structure for inverted index object
 	 */
-	private final TreeMap<String, TreeMap<String, TreeSet<Integer>>> invertedIndex1; // TODO Better name
+	private final TreeMap<String, TreeMap<String, TreeSet<Integer>>> index;
 
 	/**
 	 * inverted index class object constructor
 	 */
 	public InvertedIndex() {
-		this.invertedIndex1 = new TreeMap<String, TreeMap<String, TreeSet<Integer>>>();
+		this.index = new TreeMap<String, TreeMap<String, TreeSet<Integer>>>();
 	}
 
 	/**
+	 * adds a set of specific data to the index
+	 * 
 	 * @param word     stem word to be an index key
 	 * @param file     location to add to index
 	 * @param position positions where word is found in that loation
 	 */
 	public void add(String word, String file, Integer position) {
-		invertedIndex1.putIfAbsent(word, new TreeMap<>());
-		invertedIndex1.get(word).putIfAbsent(file, new TreeSet<>());
-		invertedIndex1.get(word).get(file).add(position);
+		index.putIfAbsent(word, new TreeMap<>());
+		index.get(word).putIfAbsent(file, new TreeSet<>());
+		index.get(word).get(file).add(position);
 	}
 
 	/**
+	 * finds the number of stemmed words in the index
+	 * 
 	 * @return number of words in index
 	 */
 	public int size() {
-		return invertedIndex1.size();
+		return index.size();
 	}
 
 	/**
+	 * finds the number of files this word is found in
+	 * 
 	 * @param word the specific stem/word
 	 * @return # of paths stored for that word
 	 */
 	public int size(String word) {
-		/*
-		 * TODO Throws a null pointer exception if get(word) returns null. Use your
-		 * contains methods to make sure the word is in your index, if not, return 0.
-		 */
-		return invertedIndex1.get(word).keySet().size();
+
+		if (contains(word)) {
+			return index.get(word).keySet().size();
+		}
+		return 0;
 	}
 
 	/**
+	 * finds the number of times the passed in word is in the index
+	 * 
 	 * @param word     the stem word
 	 * @param location the specific text file
 	 * @return # of positions stored in that location
 	 */
 	int size(String word, String location) {
-		return invertedIndex1.get(word).get(location).size(); // TODO Same null pointer problem.
+		if (contains(word, location)) {
+			return index.get(word).get(location).size();
+		}
+		return 0;
 	}
 
 	/**
+	 * finds if stem word is present in the inverted index
+	 * 
 	 * @param stem the specific word being looked for
 	 * @return true if stem word is in index
 	 */
 	public boolean contains(String stem) {
-		return invertedIndex1.containsKey(stem);
+		return index.containsKey(stem);
 	}
 
 	/**
+	 * finds if stem word is present in specified file
+	 * 
 	 * @param word     the specific stem word
 	 * @param location the specific text file
 	 * @return true if word can be found in that file (if file is in words key set)
 	 */
 	public boolean contains(String word, String location) {
-		return invertedIndex1.containsKey(word) && invertedIndex1.get(word).containsKey(location);
+		return index.containsKey(word) && index.get(word).containsKey(location);
 	}
 
 	/**
-	 * TODO Description here and all the other Javadoc where it is missing
+	 * finds if passed in word exists in the specified file at the specified
+	 * position
 	 * 
 	 * @param word     stem
 	 * @param location file location
@@ -88,35 +106,77 @@ public class InvertedIndex {
 	 * @return if word exists in file in that location
 	 */
 	public boolean contains(String word, String location, int position) {
-		return invertedIndex1.containsKey(word) && invertedIndex1.get(word).containsKey(location)
-				&& invertedIndex1.get(word).get(location).contains(position);
-	}
-
-	// TODO Breaks encapsulation, remove
-	/**
-	 * @return the inverted map in its form
-	 */
-	public TreeMap<String, TreeMap<String, TreeSet<Integer>>> returnIndex() {
-		return invertedIndex1;
+		return index.containsKey(word) && index.get(word).containsKey(location)
+				&& index.get(word).get(location).contains(position);
 	}
 
 	/**
+	 * outputs the index to an output file in JSON format
+	 * 
 	 * @param path output file path to write to
 	 * @throws IOException if encounter IO error
 	 */
 	public void toJson(Path path) throws IOException {
-		SimpleJsonWriter.asDoubleNestedStructure(invertedIndex1, path);
+		SimpleJsonWriter.asDoubleNestedStructure(index, path);
 	}
-	
+
 	/*
-	 * TODO Contains methods look great, size methods look great, but need get methods
-	 * that are safe...
+	 * TODO Contains methods look great, size methods look great, but need get
+	 * methods that are safe...
 	 * 
-	 * Set<String> get() or getWords() ---> safely return all of the words (i.e. invertedIndex1.keySet() as unmodifiable set)
-	 * Set<String> get(String word) or getLocations(String word) --> safely returns locations for a word if that word exists, otherwise Collections.emptySet()
-	 * Set<Integer> get(String word, String location) or getPositions(String word, String location) --> safely return positions if exist
+	 * Set<String> get() or getWords() ---> safely return all of the words (i.e.
+	 * invertedIndex1.keySet() as unmodifiable set)
+	 * 
+	 * Set<String> get(String word) or getLocations(String word) --> safely returns
+	 * locations for a word if that word exists, otherwise Collections.emptySet()
+	 * 
+	 * Set<Integer> get(String word, String location) or getPositions(String word,
+	 * String location) --> safely return positions if exist
 	 * 
 	 * ...also override toString!
 	 */
 
+	/**
+	 * grabs and returns all of the words in the index
+	 * 
+	 * @return an unmodifiable set of the words
+	 */
+	Set<String> getWords() {
+		return Collections.unmodifiableSet(index.keySet());
+	}
+
+	/**
+	 * grabs and returns all of the locations for the specified word
+	 * 
+	 * @param word the specified stem word
+	 * @return Set of locations
+	 */
+	Set<String> getLocations(String word) {
+		if (contains(word)) { // if word exists
+			return Collections.unmodifiableSet(index.get(word).keySet());
+		}
+		return Collections.emptySet();
+	}
+
+	/**
+	 * grabs and returns a set of locations for a specified word in a specified file
+	 * 
+	 * @param word     the specified stem
+	 * @param location the filename
+	 * @return set of locations where the stem is found
+	 */
+	Set<Integer> getPositions(String word, String location) {
+		if (contains(word, location)) { // if word is present in file
+			return Collections.unmodifiableSet(index.get(word).get(location));
+		}
+		return Collections.emptySet();
+	}
+
+	// correct override?
+	/*
+	 * returns string value of index
+	 */
+	public String toString() {
+		return index.toString();
+	}
 }

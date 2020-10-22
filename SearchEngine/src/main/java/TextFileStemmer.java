@@ -41,6 +41,8 @@ public class TextFileStemmer {
 	}
 
 	/**
+	 * stems a line of text and adds the stems to the collection that is passed in
+	 * 
 	 * @param line    the line to stem and add
 	 * @param stemmer the stemmer to use
 	 * @param stems   the collection
@@ -121,12 +123,8 @@ public class TextFileStemmer {
 	 * @see TextParser#parse(String)
 	 */
 	public static TreeSet<String> uniqueStems(String line, Stemmer stemmer) {
-		// TODO Call stemLine here too
-		String[] words = TextParser.parse(line);
 		TreeSet<String> uniqueStems = new TreeSet<>();
-		for (String word : words) {
-			uniqueStems.add((stemmer.stem(word)).toString());
-		}
+		stemLine(line, stemmer, uniqueStems);
 		return uniqueStems;
 	}
 
@@ -142,20 +140,18 @@ public class TextFileStemmer {
 	 * @see TextParser#parse(String)
 	 */
 	public static TreeSet<String> uniqueStems(Path inputFile) throws IOException {
-		// TODO Fix to use same approach as listStems(Path)
-		if (Files.exists(inputFile)) {
 
-			try (BufferedReader buf = Files.newBufferedReader(inputFile, StandardCharsets.UTF_8);) {
-				StringBuilder sb = new StringBuilder();
-				String fileLine = null;
-				while ((fileLine = buf.readLine()) != null) {
-					sb.append(fileLine + " ");
-				}
-				return uniqueStems(sb.toString());
+		TreeSet<String> uniqueStems = new TreeSet<>();
+		Stemmer stemmer = new SnowballStemmer(DEFAULT);
+		try (BufferedReader reader = Files.newBufferedReader(inputFile, StandardCharsets.UTF_8);) {
+			String line = null;
+
+			while ((line = reader.readLine()) != null) {
+				stemLine(line, stemmer, uniqueStems);
 			}
-		} else {
-			return null;
 		}
+		return uniqueStems;
+
 	}
 
 }
