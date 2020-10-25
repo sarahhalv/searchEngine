@@ -1,10 +1,11 @@
 import java.io.IOException;
-import java.nio.file.DirectoryStream;
+import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * A utility class for finding all text files in a directory using lambda
@@ -17,47 +18,51 @@ import java.util.stream.Collectors;
 public class TextFileFinder {
 
 	/**
-	 * Returns a list of text files using traditional approach
+	 * A lambda function that returns true if the path is a file that ends in a .txt
+	 * or .text extension (case-insensitive).
+	 */
+	public static final Predicate<Path> IS_TEXT = i -> Files.isRegularFile(i)
+			&& (i.getFileName().toString().toLowerCase().endsWith(".txt")
+					|| i.getFileName().toString().toLowerCase().endsWith(".text"));
+
+	/**
+	 * Returns a stream of matching files, following any symbolic links encountered.
+	 *
+	 * @param start the initial path to start with
+	 * @param keep  function that determines whether to keep a file
+	 * @return a stream of text files
+	 * @throws IOException if an IO error occurs
+	 */
+	public static Stream<Path> find(Path start, Predicate<Path> keep) throws IOException {
+
+		Stream<Path> matchingFiles = Files.walk(start, FileVisitOption.FOLLOW_LINKS).filter(keep); //if fits predicate
+		return matchingFiles; // return files
+	}
+
+	/**
+	 * Returns a stream of text files, following any symbolic links encountered.
+	 *
+	 * @param start the initial path to start with
+	 * @return a stream of text files
+	 * @throws IOException if an IO error occurs
+	 */
+	public static Stream<Path> find(Path start) throws IOException {
+
+		Stream<Path> textFiles = find(start, IS_TEXT); // keep if text file
+		return textFiles; // return text files
+	}
+
+	/**
+	 * Returns a list of text files using streams.
 	 *
 	 * @param start the initial path to search
 	 * @return list of text files
 	 * @throws IOException if an IO error occurs
-	 *
-	 * @see Collectors#toList()
 	 */
 	public static List<Path> list(Path start) throws IOException {
-		// TODO Avoid the abbreviated and 1 letter variable names except for a few cases (like using lambda expressions)
 
-		List<Path> textfiles = new ArrayList<>();
-		try (DirectoryStream<Path> ds = Files.newDirectoryStream(start)) {
-
-			for (Path p : ds) {
-				// if its a text file
-				if (isTextFile(p)) {
-					textfiles.add(p);
-				} else if (Files.isDirectory(p)) {
-					textfiles.addAll(list(p)); // TODO Not the most efficient approach since creates lots of little lists and copy operations
-				}
-			}
-		}
-
-		return textfiles;
-	}
-	
-	// TODO Rethink how to traverse or use your TextFileFinder here!
-
-	/**
-	 * checks if path is of a text file
-	 * 
-	 * @param filepath path to see if text file
-	 * @return true if text file
-	 */
-	public static boolean isTextFile(Path filepath) {
-		String lower = filepath.toString().toLowerCase();
-		// TODO return Files.isRegularFile(filepath) && (lower.endsWith(".txt") || lower.endsWith(".text"));
-		if (Files.isRegularFile(filepath) && (lower.endsWith(".txt") || lower.endsWith(".text"))) {
-			return true;
-		}
-		return false;
+		Stream<Path> textFiles = find(start); // gather stream via previous find()
+		List<Path> textFileList = textFiles.collect(Collectors.toList()); // convert Stream to list
+		return textFileList; // return list of text files
 	}
 }

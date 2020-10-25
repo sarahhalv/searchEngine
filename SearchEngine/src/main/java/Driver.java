@@ -36,7 +36,7 @@ public class Driver {
 				System.out.println("The -path flag is missing a value.");
 				return;
 			} catch (IOException e) {
-				System.out.println("Unable to build index from path."); // TODO Include path in ouput
+				System.out.println("Unable to build index from path: " + path);
 				return;
 			}
 		}

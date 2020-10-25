@@ -3,7 +3,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
 import opennlp.tools.stemmer.Stemmer;
 import opennlp.tools.stemmer.snowball.SnowballStemmer;
@@ -25,26 +24,17 @@ public class InvertedIndexBuilder {
 	 */
 	public static void build(Path path, InvertedIndex index) throws IOException {
 
-		List<Path> files = new ArrayList<>(); // TODO Don't create a list you won't use, remove from here
 		if (Files.isDirectory(path)) {
 			// find and process all of the text files (with .txt and .text extensions) in
 			// that directory and its sub directories.
-
-			files = TextFileFinder.list(path); // TODO Declare and define here
-
+			List<Path> files = TextFileFinder.list(path);
 			// storing a word, file path, and location into an inverted index data structure
 			for (Path file : files) { // iterate through the files
-
 				addFile(file, index);
 			}
-
 		} else { // if single file, add it
-			if (path != null) { // TODO Don't null check here... hiding potential bugs (if you get a null pointer in Driver you need to handle it)
-
-				addFile(path, index);
-			}
+			addFile(path, index);
 		}
-
 		return;
 	}
 
@@ -56,20 +46,21 @@ public class InvertedIndexBuilder {
 	 * @throws IOException if IO exception occurs
 	 */
 	public static void addFile(Path file, InvertedIndex index) throws IOException {
-
 		Stemmer stemmer = new SnowballStemmer(DEFAULT);
+
 		try (BufferedReader reader = Files.newBufferedReader(file, StandardCharsets.UTF_8);) {
 			String line = null;
 			int location = 1;
-			// TODO String location = file.toString() <--- and reuse below rather than call file.toString() over and over again in a loop
+			String fileLocation = file.toString();
+
 			while ((line = reader.readLine()) != null) {
 				String[] words = TextParser.parse(line);
+
 				for (String word : words) {
-					index.add((stemmer.stem(word)).toString(), file.toString(), location);
+					index.add((stemmer.stem(word)).toString(), fileLocation, location);
 					location++;
 				}
-
-			} // TODO Fix up use of blank lines!
+			}
 		}
 	}
 

@@ -68,7 +68,7 @@ public class InvertedIndex {
 	 * @param location the specific text file
 	 * @return # of positions stored in that location
 	 */
-	int size(String word, String location) {
+	public int size(String word, String location) {
 		if (contains(word, location)) {
 			return index.get(word).get(location).size();
 		}
@@ -119,32 +119,13 @@ public class InvertedIndex {
 	public void toJson(Path path) throws IOException {
 		SimpleJsonWriter.asDoubleNestedStructure(index, path);
 	}
-	
-	// TODO Don't leave old TODO comments in your code
-	// if you have a question, ask it on Piazza before your offline review request
-
-	/*
-	 * TODO Contains methods look great, size methods look great, but need get
-	 * methods that are safe...
-	 * 
-	 * Set<String> get() or getWords() ---> safely return all of the words (i.e.
-	 * invertedIndex1.keySet() as unmodifiable set)
-	 * 
-	 * Set<String> get(String word) or getLocations(String word) --> safely returns
-	 * locations for a word if that word exists, otherwise Collections.emptySet()
-	 * 
-	 * Set<Integer> get(String word, String location) or getPositions(String word,
-	 * String location) --> safely return positions if exist
-	 * 
-	 * ...also override toString!
-	 */
 
 	/**
 	 * grabs and returns all of the words in the index
 	 * 
 	 * @return an unmodifiable set of the words
 	 */
-	Set<String> getWords() {
+	public Set<String> getWords() {
 		return Collections.unmodifiableSet(index.keySet());
 	}
 
@@ -154,7 +135,7 @@ public class InvertedIndex {
 	 * @param word the specified stem word
 	 * @return Set of locations
 	 */
-	Set<String> getLocations(String word) {
+	public Set<String> getLocations(String word) {
 		if (contains(word)) { // if word exists
 			return Collections.unmodifiableSet(index.get(word).keySet());
 		}
@@ -168,21 +149,18 @@ public class InvertedIndex {
 	 * @param location the filename
 	 * @return set of locations where the stem is found
 	 */
-	Set<Integer> getPositions(String word, String location) {
+	public Set<Integer> getPositions(String word, String location) {
 		if (contains(word, location)) { // if word is present in file
 			return Collections.unmodifiableSet(index.get(word).get(location));
 		}
 		return Collections.emptySet();
 	}
 
-	// TODO Use @Override annotation
-	// correct override?
 	/*
 	 * returns string value of index
 	 */
 	public String toString() {
 		return index.toString();
 	}
-	
-	// TODO Always use the public or private keyword... except index all of these should be public
+
 }

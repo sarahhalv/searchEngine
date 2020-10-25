@@ -47,6 +47,7 @@ public class SimpleJsonWriter {
 			writer.write(",\n\t");
 			indent((iterator.next()), writer, level + 1);
 		}
+		
 		writer.write("\n");
 		indent(writer, level);
 		writer.write("]");
@@ -66,7 +67,6 @@ public class SimpleJsonWriter {
 			throws IOException {
 
 		Iterator<String> iterator = elements.keySet().iterator();
-
 		writer.write("{");
 
 		if (iterator.hasNext()) {
@@ -75,8 +75,7 @@ public class SimpleJsonWriter {
 			indent(i, writer, level + 1);
 			writer.write(": ");
 			asCollection(elements.get(i), writer, level + 2);// write out the integers of path
-
-		} // TODO Careful with the extra blank lines --- be consistent how you use them
+		}
 
 		while (iterator.hasNext()) {
 			writer.write(",\n\t");
@@ -85,10 +84,10 @@ public class SimpleJsonWriter {
 			writer.write(": ");
 			asCollection(elements.get(i), writer, level + 2);// write out the integers of path
 		}
+		
 		writer.write("\n");
 		indent(writer, level);
 		writer.write("}");
-
 	}
 
 	/**
@@ -105,7 +104,6 @@ public class SimpleJsonWriter {
 			int level) throws IOException {
 
 		java.util.Iterator<String> iterator = elements.keySet().iterator();
-
 		writer.write("{");
 
 		if (iterator.hasNext()) {
@@ -114,7 +112,6 @@ public class SimpleJsonWriter {
 			indent(i, writer, level + 1);
 			writer.write(": ");
 			asNestedSet(elements.get(i), writer, level + 2);// write out the integers of path
-
 		}
 
 		while (iterator.hasNext()) {
@@ -124,10 +121,10 @@ public class SimpleJsonWriter {
 			writer.write(": ");
 			asNestedSet(elements.get(i), writer, level + 2);// write out the integers of path
 		}
+		
 		writer.write("\n");
 		indent(writer, level);
 		writer.write("}");
-
 	}
 
 	/**
@@ -219,7 +216,6 @@ public class SimpleJsonWriter {
 	 * @see #asCollection(Collection, Writer, int)
 	 */
 	public static void asArray(Collection<Integer> elements, Path path) throws IOException {
-
 		try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
 			asCollection(elements, writer, 0);
 		}
@@ -234,7 +230,6 @@ public class SimpleJsonWriter {
 	 * @see #asCollection(Collection, Writer, int)
 	 */
 	public static String asArray(Collection<Integer> elements) {
-
 		try {
 			StringWriter writer = new StringWriter();
 			asCollection(elements, writer, 0);
@@ -253,7 +248,6 @@ public class SimpleJsonWriter {
 	 * @see #asNestedSet(Map, Writer, int)
 	 */
 	public static String asNestedSet(Map<String, TreeSet<Integer>> elements) {
-
 		try {
 			StringWriter writer = new StringWriter();
 			asNestedSet(elements, writer, 0);
@@ -274,7 +268,6 @@ public class SimpleJsonWriter {
 	 */
 	public static void asDoubleNestedStructure(Map<String, TreeMap<String, TreeSet<Integer>>> elements, Path path)
 			throws IOException {
-
 		try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
 			asDoubleNestedStructure(elements, writer, 0);
 		}
