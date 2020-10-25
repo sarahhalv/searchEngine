@@ -26,6 +26,7 @@ public class TextFileFinder {
 	 * @see Collectors#toList()
 	 */
 	public static List<Path> list(Path start) throws IOException {
+		// TODO Avoid the abbreviated and 1 letter variable names except for a few cases (like using lambda expressions)
 
 		List<Path> textfiles = new ArrayList<>();
 		try (DirectoryStream<Path> ds = Files.newDirectoryStream(start)) {
@@ -35,13 +36,15 @@ public class TextFileFinder {
 				if (isTextFile(p)) {
 					textfiles.add(p);
 				} else if (Files.isDirectory(p)) {
-					textfiles.addAll(list(p));
+					textfiles.addAll(list(p)); // TODO Not the most efficient approach since creates lots of little lists and copy operations
 				}
 			}
 		}
 
 		return textfiles;
 	}
+	
+	// TODO Rethink how to traverse or use your TextFileFinder here!
 
 	/**
 	 * checks if path is of a text file
@@ -51,6 +54,7 @@ public class TextFileFinder {
 	 */
 	public static boolean isTextFile(Path filepath) {
 		String lower = filepath.toString().toLowerCase();
+		// TODO return Files.isRegularFile(filepath) && (lower.endsWith(".txt") || lower.endsWith(".text"));
 		if (Files.isRegularFile(filepath) && (lower.endsWith(".txt") || lower.endsWith(".text"))) {
 			return true;
 		}

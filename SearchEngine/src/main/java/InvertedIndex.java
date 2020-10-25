@@ -119,6 +119,9 @@ public class InvertedIndex {
 	public void toJson(Path path) throws IOException {
 		SimpleJsonWriter.asDoubleNestedStructure(index, path);
 	}
+	
+	// TODO Don't leave old TODO comments in your code
+	// if you have a question, ask it on Piazza before your offline review request
 
 	/*
 	 * TODO Contains methods look great, size methods look great, but need get
@@ -172,6 +175,7 @@ public class InvertedIndex {
 		return Collections.emptySet();
 	}
 
+	// TODO Use @Override annotation
 	// correct override?
 	/*
 	 * returns string value of index
@@ -179,4 +183,6 @@ public class InvertedIndex {
 	public String toString() {
 		return index.toString();
 	}
+	
+	// TODO Always use the public or private keyword... except index all of these should be public
 }

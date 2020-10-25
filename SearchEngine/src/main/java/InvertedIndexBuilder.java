@@ -25,12 +25,12 @@ public class InvertedIndexBuilder {
 	 */
 	public static void build(Path path, InvertedIndex index) throws IOException {
 
-		List<Path> files = new ArrayList<>();
+		List<Path> files = new ArrayList<>(); // TODO Don't create a list you won't use, remove from here
 		if (Files.isDirectory(path)) {
 			// find and process all of the text files (with .txt and .text extensions) in
 			// that directory and its sub directories.
 
-			files = TextFileFinder.list(path);
+			files = TextFileFinder.list(path); // TODO Declare and define here
 
 			// storing a word, file path, and location into an inverted index data structure
 			for (Path file : files) { // iterate through the files
@@ -39,7 +39,7 @@ public class InvertedIndexBuilder {
 			}
 
 		} else { // if single file, add it
-			if (path != null) {
+			if (path != null) { // TODO Don't null check here... hiding potential bugs (if you get a null pointer in Driver you need to handle it)
 
 				addFile(path, index);
 			}
@@ -61,6 +61,7 @@ public class InvertedIndexBuilder {
 		try (BufferedReader reader = Files.newBufferedReader(file, StandardCharsets.UTF_8);) {
 			String line = null;
 			int location = 1;
+			// TODO String location = file.toString() <--- and reuse below rather than call file.toString() over and over again in a loop
 			while ((line = reader.readLine()) != null) {
 				String[] words = TextParser.parse(line);
 				for (String word : words) {
@@ -68,7 +69,7 @@ public class InvertedIndexBuilder {
 					location++;
 				}
 
-			}
+			} // TODO Fix up use of blank lines!
 		}
 	}
 

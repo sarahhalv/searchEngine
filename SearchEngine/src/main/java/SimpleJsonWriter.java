@@ -76,7 +76,7 @@ public class SimpleJsonWriter {
 			writer.write(": ");
 			asCollection(elements.get(i), writer, level + 2);// write out the integers of path
 
-		}
+		} // TODO Careful with the extra blank lines --- be consistent how you use them
 
 		while (iterator.hasNext()) {
 			writer.write(",\n\t");
