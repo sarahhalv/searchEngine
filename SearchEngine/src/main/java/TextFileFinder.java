@@ -1,7 +1,9 @@
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
 import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -35,7 +37,7 @@ public class TextFileFinder {
 	 */
 	public static Stream<Path> find(Path start, Predicate<Path> keep) throws IOException {
 
-		Stream<Path> matchingFiles = Files.walk(start, FileVisitOption.FOLLOW_LINKS).filter(keep); //if fits predicate
+		Stream<Path> matchingFiles = Files.walk(start, FileVisitOption.FOLLOW_LINKS).filter(keep); // if fits predicate
 		return matchingFiles; // return files
 	}
 
@@ -64,5 +66,7 @@ public class TextFileFinder {
 		Stream<Path> textFiles = find(start); // gather stream via previous find()
 		List<Path> textFileList = textFiles.collect(Collectors.toList()); // convert Stream to list
 		return textFileList; // return list of text files
+
 	}
+	
 }

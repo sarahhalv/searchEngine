@@ -1,7 +1,11 @@
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.List;
+import java.util.TreeMap;
 
 /**
  * Class responsible for running this project based on the provided command-line
@@ -27,6 +31,8 @@ public class Driver {
 		Instant start = Instant.now();
 		ArgumentMap map = new ArgumentMap(args);
 		InvertedIndex index = new InvertedIndex(); // create index
+		SearchResult searchResult1 = new SearchResult();
+		TreeMap<String, List<SearchResult>> searchResults = new TreeMap<String, List<SearchResult>>();
 
 		if (map.hasFlag("-path")) {
 			Path path = map.getPath("-path");
@@ -52,6 +58,71 @@ public class Driver {
 				index.toJson(path);
 			} catch (IOException e) {
 				System.out.println("unable to write inverted index to file: " + path.toString());
+			}
+		}
+
+		// if counts flag, output locations and their word count to provided path
+		if (map.hasFlag("-counts")) {
+
+			// if path not provided, use default
+			if (map.getString("-counts") == null) {
+
+				Path path = Paths.get("counts.json"); // default path
+				try {
+					SimpleJsonWriter.asMap(InvertedIndexBuilder.returnCountMap(), path);
+				} catch (IOException e) {
+					System.out.println("unable to write counts to file: " + path.toString());
+				}
+				// System.out.println("word count was written to: counts.json");
+			} else { // path provided
+				// System.out.println("word count written to: " + map.getString("-counts"));
+				try {
+					SimpleJsonWriter.asMap(InvertedIndexBuilder.returnCountMap(), map.getPath("-counts"));
+				} catch (IOException e) {
+					System.out.println("unable to write counts to file: " + map.getPath("-counts"));
+				}
+			}
+		}
+
+		// if queries, use path to a text file of queries to perform search
+		if (map.hasFlag("-queries")) {
+
+			// check for no query path provided or if query is empty
+			if (map.getString("-queries") == null) {
+				System.out.println("query path is missing");
+				return;
+			}
+			// check for invalid query path
+			if (!Files.isDirectory(map.getPath("-queries")) && !Files.exists(map.getPath("-queries"))) {
+				System.out.println("invalid query path");
+				return;
+			}
+
+			if (map.hasFlag("-exact")) { // perform exact searching
+
+				searchResults = index.completeExactSearch(searchResult1.getAllFiles(map.getPath("-queries")));
+
+			} else { // perform partial searching
+				searchResults = index.completePartialSearch(searchResult1.getAllFiles(map.getPath("-queries")));
+			}
+		}
+
+		// if results, use provided path for the search results output file
+		if (map.hasFlag("-results")) {
+			// if no file path provided, use default
+			if (map.getString("-results") == null) {
+				Path path = Paths.get("results.json");
+				try {
+					SimpleJsonWriter.asFullResults(searchResults, path);
+				} catch (IOException e) {
+					System.out.println("unable to write results to file: results.json");
+				}
+			} else { // path provided
+				try {
+					SimpleJsonWriter.asFullResults(searchResults, map.getPath("-results"));
+				} catch (IOException e) {
+					System.out.println("unable to write results to file: " + map.getPath("-results"));
+				}
 			}
 		}
 

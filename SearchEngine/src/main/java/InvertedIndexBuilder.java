@@ -3,7 +3,10 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.List;
+import java.util.TreeMap;
+
 import opennlp.tools.stemmer.Stemmer;
 import opennlp.tools.stemmer.snowball.SnowballStemmer;
 
@@ -14,6 +17,11 @@ import opennlp.tools.stemmer.snowball.SnowballStemmer;
 public class InvertedIndexBuilder {
 	/** The default stemmer algorithm used by this class. */
 	public static final SnowballStemmer.ALGORITHM DEFAULT = SnowballStemmer.ALGORITHM.ENGLISH;
+	static TextFileFinder textFileFinder = new TextFileFinder();
+	/**
+	 * map that records how many words in a textfile
+	 */
+	static TreeMap<String, Integer> countMap;
 
 	/**
 	 * builds the inverted index that is passed in
@@ -23,11 +31,13 @@ public class InvertedIndexBuilder {
 	 * @throws IOException if IO exception encountered
 	 */
 	public static void build(Path path, InvertedIndex index) throws IOException {
+		countMap = new TreeMap<String, Integer>();
 
 		if (Files.isDirectory(path)) {
 			// find and process all of the text files (with .txt and .text extensions) in
 			// that directory and its sub directories.
-			List<Path> files = TextFileFinder.list(path);
+			List<Path> files = textFileFinder.list(path);
+			//System.out.println("THE FILES: " + files.toString());
 			// storing a word, file path, and location into an inverted index data structure
 			for (Path file : files) { // iterate through the files
 				addFile(file, index);
@@ -51,6 +61,7 @@ public class InvertedIndexBuilder {
 		try (BufferedReader reader = Files.newBufferedReader(file, StandardCharsets.UTF_8);) {
 			String line = null;
 			int location = 1;
+			int fileWordCount = 0;
 			String fileLocation = file.toString();
 
 			while ((line = reader.readLine()) != null) {
@@ -59,9 +70,30 @@ public class InvertedIndexBuilder {
 				for (String word : words) {
 					index.add((stemmer.stem(word)).toString(), fileLocation, location);
 					location++;
+					fileWordCount++;
 				}
 			}
+			if (fileWordCount != 0) {
+				//System.out.println("adding to countmap with: " + fileLocation);
+				countMap.putIfAbsent(fileLocation, fileWordCount);
+			}
 		}
+	}
+
+	/**
+	 * @param filename the file which to count the words
+	 * @return the number of words in the passed in file
+	 */
+	public int wordCountGetter(String filename) {
+		return countMap.get(filename);
+	}
+
+	/**
+	 * @return the countMap created alongside the inverted index
+	 */
+	public static TreeMap<String, Integer> returnCountMap() {
+		System.out.println("COUNTMAP FR : " + countMap.toString());
+		return countMap;
 	}
 
 }

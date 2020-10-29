@@ -5,8 +5,10 @@ import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.DecimalFormat;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -47,10 +49,40 @@ public class SimpleJsonWriter {
 			writer.write(",\n\t");
 			indent((iterator.next()), writer, level + 1);
 		}
-		
+
 		writer.write("\n");
 		indent(writer, level);
 		writer.write("]");
+	}
+
+	/**
+	 * @param map    the map to write
+	 * @param writer the writer to use
+	 * @param level  the initial indent to use
+	 * @throws IOException if an IO error occurs
+	 */
+	public static void asMap(TreeMap<String, Integer> map, Writer writer, int level) throws IOException {
+
+		//TODO: CHANGE TO ITERATOR APPROACH
+		
+		int size = map.size();
+		int counter = 0;
+
+		writer.write("{\n");
+
+		for (String i : map.keySet()) {
+
+			indent(i, writer, level + 1);
+			writer.write(": " + map.get(i));
+
+			if (counter != size - 1) { // if not last element, place a comma
+				writer.write(",");
+			}
+			writer.write("\n");
+			counter++;
+		}
+		indent(writer, level);
+		writer.write("}");
 	}
 
 	/**
@@ -65,7 +97,7 @@ public class SimpleJsonWriter {
 	 */
 	public static void asNestedSet(Map<String, TreeSet<Integer>> elements, Writer writer, int level)
 			throws IOException {
-
+		
 		Iterator<String> iterator = elements.keySet().iterator();
 		writer.write("{");
 
@@ -84,7 +116,7 @@ public class SimpleJsonWriter {
 			writer.write(": ");
 			asCollection(elements.get(i), writer, level + 2);// write out the integers of path
 		}
-		
+
 		writer.write("\n");
 		indent(writer, level);
 		writer.write("}");
@@ -121,10 +153,94 @@ public class SimpleJsonWriter {
 			writer.write(": ");
 			asNestedSet(elements.get(i), writer, level + 2);// write out the integers of path
 		}
-		
+
 		writer.write("\n");
 		indent(writer, level);
 		writer.write("}");
+	}
+
+	/**
+	 * @param elements elements to format
+	 * @param writer   writer to use
+	 * @param level    indentation level
+	 * @throws IOException if IO error occurs
+	 */
+	public static void asFullResults(TreeMap<String, List<SearchResult>> elements, Writer writer, int level)
+			throws IOException {
+		
+		//TODO: CHANGE TO ITERATOR APPROACH
+		
+		int size = elements.size();
+		int counter = 0;
+
+		writer.write("{\n");
+		for (String i : elements.keySet()) { // iterate through the keys of nested array
+
+			indent(i.replaceAll("[\\[\\]\\,]", ""), writer, level + 1); // print "key"/non-nested array element
+
+			writer.write(": ");
+			asObjectList(elements.get(i), writer, level + 1);// write out the content of the nested array
+			if (counter != size - 1) {
+				writer.write(",");
+			}
+			writer.write("\n");
+			counter++;
+		}
+		writer.write("}");
+	}
+
+	/**
+	 * @param elements the search result objects to format
+	 * @param writer   the writer to use
+	 * @param level    the indentation level
+	 * @throws IOException if encounter IO error
+	 */
+	public static void asObjectList(List<SearchResult> elements, Writer writer, int level) throws IOException {
+		// for each result in list
+
+		//TODO: CHANGE TO ITERATOR APPROACH
+		
+		int size = elements.size();
+		int counter = 0;
+
+		writer.write("[\n");
+
+		for (SearchResult i : elements) { // for every result in list
+
+			asObject(i, writer, level + 1);
+
+			if (counter != size - 1) { // if not last element, place a comma
+				writer.write(",");
+			}
+			writer.write("\n");
+			counter++;
+		}
+		indent(writer, level);
+		writer.write("]");
+	}
+
+	/**
+	 * @param i      the search result object to format
+	 * @param writer the writer to use
+	 * @param level  the indentation level
+	 * @throws IOException if encounter IO error
+	 */
+	private static void asObject(SearchResult i, Writer writer, int level) throws IOException {
+		
+		indent(writer, level);
+		writer.write("{\n");
+
+		indent(writer, level + 1);
+		writer.write("\"where\": " + "\"" + i.where.toString() + "\",\n");
+		indent(writer, level + 1);
+		writer.write("\"count\": " + i.count + ",\n");
+		indent(writer, level + 1);
+		DecimalFormat FORMATTER = new DecimalFormat("0.00000000");
+		writer.write("\"score\": " + FORMATTER.format(i.score) + "\n");
+
+		indent(writer, level);
+		writer.write("}");
+
 	}
 
 	/**
@@ -215,7 +331,7 @@ public class SimpleJsonWriter {
 	 *
 	 * @see #asCollection(Collection, Writer, int)
 	 */
-	public static void asArray(Collection<Integer> elements, Path path) throws IOException {
+	public static void asCollection(Collection<Integer> elements, Path path) throws IOException {
 		try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
 			asCollection(elements, writer, 0);
 		}
@@ -229,13 +345,27 @@ public class SimpleJsonWriter {
 	 *
 	 * @see #asCollection(Collection, Writer, int)
 	 */
-	public static String asArray(Collection<Integer> elements) {
+	public static String asCollection(Collection<Integer> elements) {
 		try {
 			StringWriter writer = new StringWriter();
 			asCollection(elements, writer, 0);
 			return writer.toString();
 		} catch (IOException e) {
 			return null;
+		}
+	}
+
+	/**
+	 * Returns the elements as a pretty JSON map. to an output file
+	 *
+	 * @param map  the map to return in JSON
+	 * @param path the file path to use
+	 * @throws IOException if IO error occurs
+	 *
+	 */
+	public static void asMap(TreeMap<String, Integer> map, Path path) throws IOException {
+		try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
+			asMap(map, writer, 0);
 		}
 	}
 
@@ -271,6 +401,36 @@ public class SimpleJsonWriter {
 		try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
 			asDoubleNestedStructure(elements, writer, 0);
 		}
+	}
+
+	/**
+	 * Writes the search result elements as a pretty JSON object to file.
+	 * 
+	 * @param elements the elements to format
+	 * @param path     the file to write to
+	 * @throws IOException if IO error occurs
+	 */
+	public static void asFullResults(TreeMap<String, List<SearchResult>> elements, Path path) throws IOException {
+
+		try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
+			asFullResults(elements, writer, 0);
+		}
+	}
+
+	/**
+	 * @param elements results to format
+	 * @return the results as a JSON string
+	 */
+	public static String asFullResults(TreeMap<String, List<SearchResult>> elements) {
+
+		try {
+			StringWriter writer = new StringWriter();
+			asFullResults(elements, writer, 0);
+			return writer.toString();
+		} catch (IOException e) {
+			return null;
+		}
+
 	}
 
 }
