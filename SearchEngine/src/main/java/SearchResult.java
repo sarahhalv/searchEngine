@@ -53,7 +53,7 @@ public class SearchResult implements Comparable<SearchResult> {
 	}
 
 	/**
-	 * @param word the word which to base & create a single search result off of
+	 * @param word the word which to base and create a single search result off of
 	 * @param fileName    the text file for the result
 	 */
 	public void buildSearchResult(String word, String fileName) {
