@@ -9,7 +9,6 @@ import java.util.List;
  */
 public class SearchResult implements Comparable<SearchResult> {
 
-	TextFileFinder textFileFinder = new TextFileFinder();
 	/**
 	 * NestedInvertedIndex object to use its methods for creating a search result
 	 * object
@@ -64,14 +63,6 @@ public class SearchResult implements Comparable<SearchResult> {
 		//score = (index.wordGetter(word, fileName)) / (index.wordCountGetter(fileName));
 	}
 
-	// /**
-	// * @param word the stem word to look for matches
-	// * @param p text file in which to look
-	// * @return the number of matches within file
-	// */
-	// public int getCount(String word, Path p) {
-	// return nestedInvertedIndex1.wordGetter(word, p);
-	// }
 
 	/**
 	 * @param p the path to a file or potential directory
@@ -84,7 +75,7 @@ public class SearchResult implements Comparable<SearchResult> {
 			// find and process all of the text files (with .txt and .text extensions) in
 			// that directory and its subdirectories.
 			try {
-				textfiles = textFileFinder.list(p);
+				textfiles = TextFileFinder.list(p);
 			} catch (IOException e) {
 				System.out.println("unable to create array of gathered textfiles");
 			}

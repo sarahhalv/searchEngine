@@ -186,13 +186,11 @@ public class InvertedIndex {
 			if (stem.startsWith(word)) { // if word in index begins with query word
 				if (index.get(stem) != null) {
 					if (index.get(stem).keySet() != null) {
-						 for (String p : index.get(stem).keySet()) {
-						//files.addAll(index.get(stem).keySet()); // add every file to set
-							 files.add(p);
+						for (String p : index.get(stem).keySet()) {
+							files.add(p);
 						}
 					}
 				}
-				// files.addAll(getLocations(i));
 			}
 		}
 		return files;
@@ -220,10 +218,16 @@ public class InvertedIndex {
 	 */
 	public int partialWordGetter(String word, String file) {
 		int matches = 0;
-		//System.out.println("text file stemmer output for list stems: " + TextFileStemmer.listStems(file));
-		for (String stem : TextFileStemmer.listStems(file)) { // for every stem in text file
+
+		for (String stem : index.keySet()) {
+			if (index.get(stem) == null) {
+				continue;
+			}
+			if (index.get(stem).get(file) == null) {
+				continue;
+			}
 			if (stem.startsWith(word)) {
-				matches++;
+				matches += index.get(stem).get(file).size();
 			}
 		}
 		return matches;
@@ -240,13 +244,12 @@ public class InvertedIndex {
 
 		for (String i : parsedWords) {
 			if (getLocations(i) != null) {
-				// System.out.println("filegetter not null, going IN");
+
 				for (String file : getLocations(i)) {
-					// System.out.println("inside file -- " + s.toString() + " -- now");
 					// if file is not already been used
 					if (!usedFiles.contains(file)) {
 						usedFiles.add(file);
-						// System.out.println("USING A FILE THAT HASNT BEEN USED ---" + s.toString());
+
 						SearchResult nextResult = new SearchResult();
 						nextResult.where = file;
 						int count1 = 0;
@@ -255,10 +258,7 @@ public class InvertedIndex {
 						}
 						nextResult.count = count1;
 						nextResult.score = ((double) count1 / (double) (builder.wordCountGetter(file)));
-						// ABOVE --> changed from s.tostring()
-
 						results.add(nextResult);
-
 					}
 
 				}
@@ -283,11 +283,6 @@ public class InvertedIndex {
 				while ((line = buff.readLine()) != null) { // while still lines in query file, parse
 
 					if (TextFileStemmer.uniqueStems(line) != null && TextFileStemmer.uniqueStems(line).size() != 0) {
-						// System.out.println();
-						// System.out.println("calling exact search in complete exact search using line:
-						// "
-						// + (TextFileStemmer.uniqueStems(line)).toString());
-						// System.out.println();
 						fullExactResults.put(String.join(" ", (TextFileStemmer.uniqueStems(line))),
 								exactSearch(TextFileStemmer.uniqueStems(line)));
 					}
@@ -310,30 +305,25 @@ public class InvertedIndex {
 		ArrayList<String> parsedWords = new ArrayList<String>(words);
 		ArrayList<String> usedFiles = new ArrayList<String>();
 
-		
 		for (String word : parsedWords) {
 			if (partialFileGetter(word) != null) {
-				// System.out.println("filegetter not null, going IN");
-				for (String file : partialFileGetter(word)) {
 
+				for (String file : partialFileGetter(word)) {
 					// if file is not already been used
 					if (!usedFiles.contains(file)) {
 						usedFiles.add(file);
-						// System.out.println("USING A FILE THAT HASNT BEEN USED ---" + s.toString());
+
 						SearchResult nextResult = new SearchResult();
 						nextResult.where = file;
 						int count1 = 0;
-						//System.out.println("parsed word size == " + parsedWords.size());
+
 						for (int x = 0; x < parsedWords.size(); x++) {
 							count1 += partialWordGetter(parsedWords.get(x), file);
 						}
-						// System.out.println("count : " + count1);
-						//System.out.println("count1 == " + count1);
+
 						nextResult.count = count1;
 						nextResult.score = ((double) count1 / (double) (builder.wordCountGetter(file)));
-						// ABOVE --> changed file.toString() to file
 						results.add(nextResult);
-
 					}
 
 				}

@@ -3,7 +3,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collections;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -17,7 +16,6 @@ import opennlp.tools.stemmer.snowball.SnowballStemmer;
 public class InvertedIndexBuilder {
 	/** The default stemmer algorithm used by this class. */
 	public static final SnowballStemmer.ALGORITHM DEFAULT = SnowballStemmer.ALGORITHM.ENGLISH;
-	static TextFileFinder textFileFinder = new TextFileFinder();
 	/**
 	 * map that records how many words in a textfile
 	 */
@@ -36,8 +34,7 @@ public class InvertedIndexBuilder {
 		if (Files.isDirectory(path)) {
 			// find and process all of the text files (with .txt and .text extensions) in
 			// that directory and its sub directories.
-			List<Path> files = textFileFinder.list(path);
-			//System.out.println("THE FILES: " + files.toString());
+			List<Path> files = TextFileFinder.list(path);
 			// storing a word, file path, and location into an inverted index data structure
 			for (Path file : files) { // iterate through the files
 				addFile(file, index);
@@ -74,7 +71,6 @@ public class InvertedIndexBuilder {
 				}
 			}
 			if (fileWordCount != 0) {
-				//System.out.println("adding to countmap with: " + fileLocation);
 				countMap.putIfAbsent(fileLocation, fileWordCount);
 			}
 		}
@@ -92,7 +88,6 @@ public class InvertedIndexBuilder {
 	 * @return the countMap created alongside the inverted index
 	 */
 	public static TreeMap<String, Integer> returnCountMap() {
-		System.out.println("COUNTMAP FR : " + countMap.toString());
 		return countMap;
 	}
 

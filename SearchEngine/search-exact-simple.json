@@ -1,0 +1,73 @@
+{
+	"ant perf": [
+		{
+			"where": "../../project-tests/SearchEngineTest/input/text/simple/symbols.txt",
+			"count": 0,
+			"score": 0.00000000
+		},
+		{
+			"where": "../../project-tests/SearchEngineTest/input/text/simple/words.tExT",
+			"count": 0,
+			"score": 0.00000000
+		}
+	],
+	"capybara hidden": [
+		{
+			"where": "../../project-tests/SearchEngineTest/input/text/simple/.txt/hidden.txt",
+			"count": 0,
+			"score": 0.00000000
+		},
+		{
+			"where": "../../project-tests/SearchEngineTest/input/text/simple/capital_extension.TXT",
+			"count": 0,
+			"score": 0.00000000
+		}
+	],
+	"cardin": [
+	],
+	"four six": [
+		{
+			"where": "../../project-tests/SearchEngineTest/input/text/simple/position.teXt",
+			"count": 0,
+			"score": 0.00000000
+		}
+	],
+	"hello world": [
+		{
+			"where": "../../project-tests/SearchEngineTest/input/text/simple/hello.txt",
+			"count": 0,
+			"score": 0.00000000
+		}
+	],
+	"lori": [
+		{
+			"where": "../../project-tests/SearchEngineTest/input/text/simple/animals.text",
+			"count": 0,
+			"score": 0.00000000
+		},
+		{
+			"where": "../../project-tests/SearchEngineTest/input/text/simple/animals_copy.text",
+			"count": 0,
+			"score": 0.00000000
+		},
+		{
+			"where": "../../project-tests/SearchEngineTest/input/text/simple/animals_double.text",
+			"count": 0,
+			"score": 0.00000000
+		}
+	],
+	"observ perfor": [
+		{
+			"where": "../../project-tests/SearchEngineTest/input/text/simple/words.tExT",
+			"count": 0,
+			"score": 0.00000000
+		}
+	],
+	"perform": [
+		{
+			"where": "../../project-tests/SearchEngineTest/input/text/simple/words.tExT",
+			"count": 0,
+			"score": 0.00000000
+		}
+	]
+}

@@ -73,9 +73,7 @@ public class Driver {
 				} catch (IOException e) {
 					System.out.println("unable to write counts to file: " + path.toString());
 				}
-				// System.out.println("word count was written to: counts.json");
 			} else { // path provided
-				// System.out.println("word count written to: " + map.getString("-counts"));
 				try {
 					SimpleJsonWriter.asMap(InvertedIndexBuilder.returnCountMap(), map.getPath("-counts"));
 				} catch (IOException e) {
