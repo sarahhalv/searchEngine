@@ -20,11 +20,13 @@ public class InvertedIndex {
 	/**
 	 * inverted index builder object to grab some of the methods
 	 */
-	InvertedIndexBuilder builder = new InvertedIndexBuilder();
+	InvertedIndexBuilder builder = new InvertedIndexBuilder(); // TODO Remove
 	/**
 	 * data structure for inverted index object
 	 */
 	private final TreeMap<String, TreeMap<String, TreeSet<Integer>>> index;
+	
+	// TODO Fix up countMap member (keywords, initialize properly)
 	/**
 	 * map that records how many words in a textfile
 	 */
@@ -48,6 +50,10 @@ public class InvertedIndex {
 		index.putIfAbsent(word, new TreeMap<>());
 		index.get(word).putIfAbsent(file, new TreeSet<>());
 		index.get(word).get(file).add(position);
+		
+		/*
+		 * TODO If add something new, update the countMap for this file
+		 */
 	}
 
 	/**
@@ -171,6 +177,7 @@ public class InvertedIndex {
 	/*
 	 * returns string value of index
 	 */
+	@Override
 	public String toString() {
 		return index.toString();
 	}
@@ -306,9 +313,9 @@ public class InvertedIndex {
 		ArrayList<String> usedFiles = new ArrayList<String>();
 
 		for (String word : parsedWords) {
-			if (partialFileGetter(word) != null) {
+			if (partialFileGetter(word) != null) { // TODO Embed the loop of partialFileGetter here so that you can see the common loop in both search methods
 
-				for (String file : partialFileGetter(word)) {
+				for (String file : partialFileGetter(word)) { // 
 					// if file is not already been used
 					if (!usedFiles.contains(file)) {
 						usedFiles.add(file);
@@ -326,6 +333,8 @@ public class InvertedIndex {
 						results.add(nextResult);
 					}
 
+					// TODO Put the common code between exact and partial search that is
+					// inside the for loop into a private helper method
 				}
 			}
 		}
@@ -354,7 +363,7 @@ public class InvertedIndex {
 								partialSearch(TextFileStemmer.uniqueStems(line)));
 					}
 				}
-			} catch (IOException e) {
+			} catch (IOException e) { // TODO Throw exceptions to Driver
 				System.out.print("buffered reader was unable to work with file");
 			}
 		}
