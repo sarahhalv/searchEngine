@@ -1,8 +1,8 @@
 import java.nio.file.Path;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+//import org.apache.logging.log4j.LogManager;
+//import org.apache.logging.log4j.Logger;
 /**
  * thread safe version of search result class
  * 
@@ -12,7 +12,7 @@ import org.apache.logging.log4j.Logger;
 public class ThreadSafeSearchResult extends SearchResult{
 
 	/** Logger to use for this class. */
-	private static final Logger log = LogManager.getLogger();
+	//private static final Logger log = LogManager.getLogger();
 	/** The lock used to protect concurrent access to the underlying set. */
 	private final ReadWriteLock lock;
 	/**

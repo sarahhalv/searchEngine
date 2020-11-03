@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+//import org.apache.logging.log4j.LogManager;
+//import org.apache.logging.log4j.Logger;
 
 /**
  * Inverted Index class that is thread safe
@@ -21,7 +21,7 @@ import org.apache.logging.log4j.Logger;
 public class ThreadSafeInvertedIndex extends InvertedIndex {
 
 	/** Logger to use for this class. */
-	private static final Logger log = LogManager.getLogger();
+	//private static final Logger log = LogManager.getLogger();
 	/** The lock used to protect concurrent access to the underlying set. */
 	private final ReadWriteLock lock;
 	/**
@@ -218,7 +218,7 @@ public class ThreadSafeInvertedIndex extends InvertedIndex {
 	 * @param p list of files to use
 	 * @return full exact search results as a map
 	 */
-	public TreeMap<String, List<ThreadSafeSearchResult>> threadSafeCompleteExactSearch(List<Path> p) {
+	public TreeMap<String, List<ThreadSafeSearchResult>> CompleteExactSearch(List<Path> p) {
 
 		TreeMap<String, List<ThreadSafeSearchResult>> fullExactResults = new TreeMap<String, List<ThreadSafeSearchResult>>();
 		// parse query file by line
@@ -264,7 +264,7 @@ public class ThreadSafeInvertedIndex extends InvertedIndex {
 	 * @param files the files to use
 	 * @return the search results as a map
 	 */
-	public TreeMap<String, List<ThreadSafeSearchResult>> threadSafeCompletePartialSearch(List<Path> files) {
+	public TreeMap<String, List<ThreadSafeSearchResult>> CompletePartialSearch(List<Path> files) {
 		TreeMap<String, List<ThreadSafeSearchResult>> fullPartialResults = new TreeMap<String, List<ThreadSafeSearchResult>>();
 		// parse query file by line
 
@@ -291,11 +291,6 @@ public class ThreadSafeInvertedIndex extends InvertedIndex {
 	 * The non-static task class (runnable interclass with run method)
 	 */
 	private class Task implements Runnable {
-		/**
-		 * thread safe index to add to
-		 */
-		//private ThreadSafeInvertedIndex safeIndex;
-
 		
 		/**
 		 * the list to add to

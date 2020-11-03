@@ -21,8 +21,6 @@ public class ThreadSafeBuilder extends InvertedIndexBuilder { // access to all i
 	private static final Logger log = LogManager.getLogger();
 
 
-	private final ThreadSafeInvertedIndex index;
-
 	/**
 	 * work queue to use for building
 	 */
@@ -35,7 +33,6 @@ public class ThreadSafeBuilder extends InvertedIndexBuilder { // access to all i
 	 * @param threads the num of threads to use in wq
 	 */
 	public ThreadSafeBuilder(ThreadSafeInvertedIndex index, int threads) {
-		this.index = index;
 		this.workQueue = new WorkQueue(threads);
 	}
 
@@ -60,7 +57,6 @@ public class ThreadSafeBuilder extends InvertedIndexBuilder { // access to all i
 		} else { // if single file, add it
 			addFile(path, index);
 		}
-		//return;
 		workQueue.finish();
 		//return;
 	}
@@ -91,7 +87,7 @@ public class ThreadSafeBuilder extends InvertedIndexBuilder { // access to all i
 		 * Initializes this task.
 		 * 
 		 * @param path  the path
-		 * @param index
+		 * @param index the index to use
 		 *
 		 */
 		public Task(Path path, ThreadSafeInvertedIndex index) {

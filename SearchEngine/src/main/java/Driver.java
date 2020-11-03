@@ -37,9 +37,11 @@ public class Driver {
 		SearchResult searchResult1; 
 		//SearchResult searchResult1 = new SearchResult();
 		TreeMap<String, List<SearchResult>> searchResults = new TreeMap<String, List<SearchResult>>();
+		Boolean threads = false;
 
 		// check if program should be multithreaded
 		if (map.hasFlag("-threads")) {
+			threads = true;
 			// get number of worker threads to use, or 5 if no number provided
 			int workerThreads;
 			if(map.getInteger("-threads", 5) <= 0) {
