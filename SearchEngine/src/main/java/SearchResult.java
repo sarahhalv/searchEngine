@@ -4,6 +4,17 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+/*
+ * TODO Whenever you have a class like this where all of the data depends on a specific
+ * instance of another object (in this case the inverted index), it often makes sense
+ * to nest that class inside as a non-static inner class.
+
+ * Specifically, if we nest this search result class inside of your inverted index,
+ * it will make this relationship  between the two explicit, better encapsulate the
+ * search result members used for sorting, and can even simplify your search code
+ * later on. 
+ */
+
 /**
  * @author sarah class that deals with the search results
  */
@@ -68,7 +79,7 @@ public class SearchResult implements Comparable<SearchResult> {
 	 * @param p the path to a file or potential directory
 	 * @return list of text files
 	 */
-	public List<Path> getAllFiles(Path p) {
+	public List<Path> getAllFiles(Path p) { // TODO Remove
 		//TextFileFinder textFileFinder1 = new TextFileFinder();
 		List<Path> textfiles = new ArrayList<>();
 		if (Files.isDirectory(p)) { // if path is directory

@@ -32,6 +32,18 @@ public class Driver {
 		ArgumentMap map = new ArgumentMap(args);
 		InvertedIndex index = new InvertedIndex(); // create index
 		SearchResult searchResult1 = new SearchResult();
+		
+		/*
+		 * TODO Create a QueryBuilder or QueryParser etc. class that has this data structure in it
+		 * 
+		 * parseQueryFile(Path path, boolean exact)
+		 * 		open up the query file
+		 * 		stem the lines
+		 * 		ask for search results
+		 * 
+		 * writeJson(Path path) 
+		 * 		output the searchResults map to file
+		 */
 		TreeMap<String, List<SearchResult>> searchResults = new TreeMap<String, List<SearchResult>>();
 
 		if (map.hasFlag("-path")) {
@@ -66,6 +78,7 @@ public class Driver {
 
 			// if path not provided, use default
 			if (map.getString("-counts") == null) {
+				// TODO Path path = map.getPath("-counts", Path.of("counts.json"));
 
 				Path path = Paths.get("counts.json"); // default path
 				try {

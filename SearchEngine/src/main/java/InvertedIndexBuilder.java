@@ -19,7 +19,7 @@ public class InvertedIndexBuilder {
 	/**
 	 * map that records how many words in a textfile
 	 */
-	static TreeMap<String, Integer> countMap;
+	static TreeMap<String, Integer> countMap; // TODO Remove
 
 	/**
 	 * builds the inverted index that is passed in
