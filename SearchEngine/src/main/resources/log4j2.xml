@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE log4j:configuration>
+<!-- Status determines which log4j log messages are included. -->
+<Configuration status="warn">
+	<Appenders>
+		<!-- Console output appender/layout -->
+		<Console name="Console" target="SYSTEM_OUT">
+			<PatternLayout pattern="%m%throwable{short.message}%n">
+			</PatternLayout>
+		</Console>
+
+		<!-- FileLog appender/layout -->
+		<File name="FileLog" fileName="debug.log" append="false">
+			<PatternLayout
+				pattern="[00%sequenceNumber %-3level{lowerCase=true}] %C.%M %t: %m %throwable{3}%n" alwaysWriteExceptions="false">
+			</PatternLayout>
+		</File>
+	</Appenders>
+
+	<Loggers>
+		<!-- Logger for driver class -->
+		<Logger name="Driver" additivity="false">
+			<AppenderRef ref="Console" level = "WARN"/>
+			<AppenderRef ref="FileLog" level= "ALL"/>
+		</Logger>
+		
+		<!-- root to only console output info messages and higher (root is like default) -->
+		<Root level="ALL">
+			<AppenderRef ref="Console" level="INFO" />
+		</Root>
+	</Loggers>
+</Configuration>

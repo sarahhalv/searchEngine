@@ -21,6 +21,17 @@ public class InvertedIndexBuilder {
 	 */
 	static TreeMap<String, Integer> countMap;
 
+//	private final InvertedIndex index;
+	//
+	
+//	/**
+//	 * constructor /empty
+//	 * @param index the index to use?
+//	 */
+//	public InvertedIndexBuilder(InvertedIndex index) {
+//		this.index = index;
+//	}
+	
 	/**
 	 * builds the inverted index that is passed in
 	 * 
@@ -28,7 +39,7 @@ public class InvertedIndexBuilder {
 	 * @param index the index to populate
 	 * @throws IOException if IO exception encountered
 	 */
-	public static void build(Path path, InvertedIndex index) throws IOException {
+	public void build(Path path, InvertedIndex index) throws IOException {
 		countMap = new TreeMap<String, Integer>();
 
 		if (Files.isDirectory(path)) {
@@ -64,7 +75,7 @@ public class InvertedIndexBuilder {
 			while ((line = reader.readLine()) != null) {
 				String[] words = TextParser.parse(line);
 
-				for (String word : words) {
+				for (String word : words) { //add all words of file in
 					index.add((stemmer.stem(word)).toString(), fileLocation, location);
 					location++;
 					fileWordCount++;
@@ -90,5 +101,6 @@ public class InvertedIndexBuilder {
 	public static TreeMap<String, Integer> returnCountMap() {
 		return countMap;
 	}
+
 
 }

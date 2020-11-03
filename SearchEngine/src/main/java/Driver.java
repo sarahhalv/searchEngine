@@ -30,14 +30,40 @@ public class Driver {
 		// store initial start time
 		Instant start = Instant.now();
 		ArgumentMap map = new ArgumentMap(args);
-		InvertedIndex index = new InvertedIndex(); // create index
-		SearchResult searchResult1 = new SearchResult();
+		//InvertedIndex index = new InvertedIndex();
+		InvertedIndex index;
+		InvertedIndexBuilder builder;
+		//InvertedIndexBuilder builder = new InvertedIndexBuilder();
+		SearchResult searchResult1; 
+		//SearchResult searchResult1 = new SearchResult();
 		TreeMap<String, List<SearchResult>> searchResults = new TreeMap<String, List<SearchResult>>();
+
+		// check if program should be multithreaded
+		if (map.hasFlag("-threads")) {
+			// get number of worker threads to use, or 5 if no number provided
+			int workerThreads;
+			if(map.getInteger("-threads", 5) <= 0) {
+				workerThreads = 5;
+			}else {
+				workerThreads = map.getInteger("-threads", 5);
+			}
+			//do something with work queue in here?
+			
+			// change all references that should be thread safe
+			index = new ThreadSafeInvertedIndex(workerThreads);
+			builder = new ThreadSafeBuilder((ThreadSafeInvertedIndex)index, workerThreads);
+			searchResult1 = new ThreadSafeSearchResult();
+		}else {
+			//no multithreading
+			index =  new InvertedIndex(); // create index
+			builder =  new InvertedIndexBuilder();
+			searchResult1 = new SearchResult();
+		}
 
 		if (map.hasFlag("-path")) {
 			Path path = map.getPath("-path");
 			try {
-				InvertedIndexBuilder.build(path, index);
+				builder.build(path, index);
 			} catch (NullPointerException e) {
 				System.out.println("The -path flag is missing a value.");
 				return;

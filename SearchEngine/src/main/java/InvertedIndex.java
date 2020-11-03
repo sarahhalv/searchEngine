@@ -26,7 +26,7 @@ public class InvertedIndex {
 	 */
 	private final TreeMap<String, TreeMap<String, TreeSet<Integer>>> index;
 	/**
-	 * map that records how many words in a textfile
+	 * map that records how many words in a text file
 	 */
 	TreeMap<String, Integer> countMap = new TreeMap<String, Integer>();
 
