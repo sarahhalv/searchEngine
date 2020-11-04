@@ -344,7 +344,7 @@ public class InvertedIndex {
 	public TreeMap<String, List<SearchResult>> completePartialSearch(List<Path> files) {
 		TreeMap<String, List<SearchResult>> fullPartialResults = new TreeMap<String, List<SearchResult>>();
 		// parse query file by line
-
+		
 		for (Path file : files) { // loop through all files
 			try (BufferedReader reader = Files.newBufferedReader(file, StandardCharsets.UTF_8);) {
 				String line;

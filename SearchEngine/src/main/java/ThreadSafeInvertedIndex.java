@@ -199,13 +199,11 @@ public class ThreadSafeInvertedIndex extends InvertedIndex {
 	 * @param words the query line
 	 * @return the list of results
 	 */
-	// @Override
-	public List<SearchResult> threadSafeExactSearch(TreeSet<String> words) {
+	@Override
+	public List<SearchResult> exactSearch(TreeSet<String> words) {
+		
 		List<SearchResult> resultList = new ArrayList<>();
 		workQueue.execute(new Task(words, resultList, "exact"));
-		synchronized(resultList) {
-			Collections.sort(resultList);
-		}
 		return resultList;
 	}
 
@@ -215,8 +213,9 @@ public class ThreadSafeInvertedIndex extends InvertedIndex {
 	 * @param p list of files to use
 	 * @return full exact search results as a map
 	 */
-	// @Override
+	@Override
 	public TreeMap<String, List<SearchResult>> completeExactSearch(List<Path> p) {
+	
 		fullResults = super.completeExactSearch(p);
 		workQueue.join();
 		return fullResults;
@@ -229,12 +228,10 @@ public class ThreadSafeInvertedIndex extends InvertedIndex {
 	 * @return list of search results
 	 */
 	// @Override
-	public List<SearchResult> threadSafePartialSearch(TreeSet<String> words) {
+	public List<SearchResult> partialSearch(TreeSet<String> words) {
+		
 		List<SearchResult> resultList = new ArrayList<>();
 		workQueue.execute(new Task(words, resultList, "partial"));
-		synchronized(resultList) {
-			Collections.sort(resultList);
-		}
 		return resultList;
 	}
 
@@ -246,6 +243,7 @@ public class ThreadSafeInvertedIndex extends InvertedIndex {
 	 */
 	@Override
 	public TreeMap<String, List<SearchResult>> completePartialSearch(List<Path> files) {
+		
 		fullResults = super.completePartialSearch(files);
 		workQueue.join();
 		return fullResults;
@@ -287,14 +285,14 @@ public class ThreadSafeInvertedIndex extends InvertedIndex {
 		}
 
 		public void run() { // just add search or partial search
-			//List<SearchResult> results = resultList; // add to passed in list?
+			List<SearchResult> results = resultList; // add to passed in list?
 			ArrayList<String> parsedWords = new ArrayList<String>(words);
 			ArrayList<String> usedFiles = new ArrayList<String>();
 
 			// run method based on which type of search
 			if (searchType.equals("partial")) {
 				// run partial search method
-				//System.out.println("running inside partial search");
+				
 				for (String word : parsedWords) {
 					
 					if (partialFileGetter(word) != null) {
@@ -326,6 +324,7 @@ public class ThreadSafeInvertedIndex extends InvertedIndex {
 				
 			} else {
 				// run exact search
+			
 				for (String i : parsedWords) {
 					if (getLocations(i) != null) {
 
@@ -351,9 +350,9 @@ public class ThreadSafeInvertedIndex extends InvertedIndex {
 					}
 				}
 			}
-//			synchronized(results) {
-//				Collections.sort(results);
-//			}
+			synchronized(results) {
+				Collections.sort(results);
+			}
 		}
 	}
 
