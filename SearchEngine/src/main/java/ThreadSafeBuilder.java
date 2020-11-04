@@ -57,7 +57,9 @@ public class ThreadSafeBuilder extends InvertedIndexBuilder { // access to all i
 		} else { // if single file, add it
 			addFile(path, index);
 		}
-		workQueue.finish();
+		//workQueue.finish();
+		workQueue.join();
+		//workQueue.shutdown();
 		//return;
 	}
 

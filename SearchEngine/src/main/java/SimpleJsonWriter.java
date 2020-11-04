@@ -188,6 +188,36 @@ public class SimpleJsonWriter {
 		}
 		writer.write("}");
 	}
+	
+//	/**
+//	 * @param elements elements to format
+//	 * @param writer   writer to use
+//	 * @param level    indentation level
+//	 * @throws IOException if IO error occurs
+//	 */
+//	public static void asFullResults2(TreeMap<String, List<ThreadSafeSearchResult>> elements, Writer writer, int level)
+//			throws IOException {
+//		
+//		//TODO: CHANGE TO ITERATOR APPROACH
+//		
+//		int size = elements.size();
+//		int counter = 0;
+//
+//		writer.write("{\n");
+//		for (String i : elements.keySet()) { // iterate through the keys of nested array
+//
+//			indent(i.replaceAll("[\\[\\]\\,]", ""), writer, level + 1); // print "key"/non-nested array element
+//
+//			writer.write(": ");
+//			asObjectList2(elements.get(i), writer, level + 1);// write out the content of the nested array
+//			if (counter != size - 1) {
+//				writer.write(",");
+//			}
+//			writer.write("\n");
+//			counter++;
+//		}
+//		writer.write("}");
+//	}
 
 	/**
 	 * @param elements the search result objects to format
@@ -219,6 +249,35 @@ public class SimpleJsonWriter {
 		writer.write("]");
 	}
 
+//	/**
+//	 * @param elements the search result objects to format
+//	 * @param writer   the writer to use
+//	 * @param level    the indentation level
+//	 * @throws IOException if encounter IO error
+//	 */
+//	public static void asObjectList2(List<ThreadSafeSearchResult> elements, Writer writer, int level) throws IOException {
+//		// for each result in list
+//
+//		//TODO: CHANGE TO ITERATOR APPROACH
+//		
+//		int size = elements.size();
+//		int counter = 0;
+//
+//		writer.write("[\n");
+//
+//		for (SearchResult i : elements) { // for every result in list
+//
+//			asObject(i, writer, level + 1);
+//
+//			if (counter != size - 1) { // if not last element, place a comma
+//				writer.write(",");
+//			}
+//			writer.write("\n");
+//			counter++;
+//		}
+//		indent(writer, level);
+//		writer.write("]");
+//	}
 	/**
 	 * @param i      the search result object to format
 	 * @param writer the writer to use
@@ -416,6 +475,21 @@ public class SimpleJsonWriter {
 			asFullResults(elements, writer, 0);
 		}
 	}
+	
+//	/**
+//	 * Writes the search result elements as a pretty JSON object to file.
+//	 * 
+//	 * @param elements the elements to format
+//	 * @param path     the file to write to
+//	 * @throws IOException if IO error occurs
+//	 */
+//	public static void asFullResults2(TreeMap<String, List<ThreadSafeSearchResult>> elements, Path path) throws IOException {
+//
+//		try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
+//			asFullResults2(elements, writer, 0);
+//		}
+//	}
+
 
 	/**
 	 * @param elements results to format

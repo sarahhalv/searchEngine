@@ -1,7 +1,4 @@
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,6 +26,10 @@ public class ThreadSafeInvertedIndex extends InvertedIndex {
 	 */
 	private final WorkQueue workQueue;
 
+	/**
+	 * search results map
+	 */
+	TreeMap<String, List<SearchResult>> fullResults = new TreeMap<String, List<SearchResult>>();
 	/**
 	 * Initializes a thread-safe index
 	 * 
@@ -199,49 +200,26 @@ public class ThreadSafeInvertedIndex extends InvertedIndex {
 	 * @return the list of results
 	 */
 	// @Override
-	public List<ThreadSafeSearchResult> threadSafeExactSearch(TreeSet<String> words) {
-		// lock.readLock().lock();
-		// try {
-		// return super.exactSearch(words);
-		// } finally {
-		// lock.readLock().unlock();
-		// }
-		List<ThreadSafeSearchResult> resultList = new ArrayList<>();
+	public List<SearchResult> threadSafeExactSearch(TreeSet<String> words) {
+		List<SearchResult> resultList = new ArrayList<>();
 		workQueue.execute(new Task(words, resultList, "exact"));
+		synchronized(resultList) {
+			Collections.sort(resultList);
+		}
 		return resultList;
 	}
 
-	// @Override
 	/**
-	 * override doesn't work
+	 * override of non-thread safe method
 	 * 
 	 * @param p list of files to use
 	 * @return full exact search results as a map
 	 */
-	public TreeMap<String, List<ThreadSafeSearchResult>> CompleteExactSearch(List<Path> p) {
-
-		TreeMap<String, List<ThreadSafeSearchResult>> fullExactResults = new TreeMap<String, List<ThreadSafeSearchResult>>();
-		// parse query file by line
-		for (Path file : p) { // loop through all files
-			try (BufferedReader buff = Files.newBufferedReader(file, StandardCharsets.UTF_8);) {
-				String line;
-				while ((line = buff.readLine()) != null) { // while still lines in query file, parse
-
-					if (TextFileStemmer.uniqueStems(line) != null && TextFileStemmer.uniqueStems(line).size() != 0) {
-						// fullExactResults.put(String.join(" ", (TextFileStemmer.uniqueStems(line))),
-						// exactSearch(TextFileStemmer.uniqueStems(line)));
-						fullExactResults.put(String.join(" ", (TextFileStemmer.uniqueStems(line))),
-								threadSafeExactSearch(TextFileStemmer.uniqueStems(line)));
-					}
-				}
-			} catch (IOException e) {
-				System.out.println("no file found or buffered reader unable to work with file");
-			}
-		}
-
-		workQueue.finish();
-		return fullExactResults;
-
+	// @Override
+	public TreeMap<String, List<SearchResult>> completeExactSearch(List<Path> p) {
+		fullResults = super.completeExactSearch(p);
+		workQueue.join();
+		return fullResults;
 	}
 
 	/**
@@ -251,51 +229,37 @@ public class ThreadSafeInvertedIndex extends InvertedIndex {
 	 * @return list of search results
 	 */
 	// @Override
-	public List<ThreadSafeSearchResult> threadSafePartialSearch(TreeSet<String> words) {
-		List<ThreadSafeSearchResult> resultList = new ArrayList<>();
+	public List<SearchResult> threadSafePartialSearch(TreeSet<String> words) {
+		List<SearchResult> resultList = new ArrayList<>();
 		workQueue.execute(new Task(words, resultList, "partial"));
+		synchronized(resultList) {
+			Collections.sort(resultList);
+		}
 		return resultList;
 	}
 
-	// @Override
 	/**
 	 * Override wouldn't work
 	 * 
 	 * @param files the files to use
-	 * @return the search results as a map
+	 * @return the search results as a map.
 	 */
-	public TreeMap<String, List<ThreadSafeSearchResult>> CompletePartialSearch(List<Path> files) {
-		TreeMap<String, List<ThreadSafeSearchResult>> fullPartialResults = new TreeMap<String, List<ThreadSafeSearchResult>>();
-		// parse query file by line
-
-		for (Path file : files) { // loop through all files
-			try (BufferedReader reader = Files.newBufferedReader(file, StandardCharsets.UTF_8);) {
-				String line;
-				while ((line = reader.readLine()) != null) { // while still lines in query file, parse
-
-					if (TextFileStemmer.uniqueStems(line) != null && TextFileStemmer.uniqueStems(line).size() != 0) {
-
-						fullPartialResults.put(String.join(" ", (TextFileStemmer.uniqueStems(line))),
-								threadSafePartialSearch(TextFileStemmer.uniqueStems(line)));
-					}
-				}
-			} catch (IOException e) {
-				System.out.print("buffered reader was unable to work with file");
-			}
-		}
-		workQueue.finish();
-		return fullPartialResults;
+	@Override
+	public TreeMap<String, List<SearchResult>> completePartialSearch(List<Path> files) {
+		fullResults = super.completePartialSearch(files);
+		workQueue.join();
+		return fullResults;
 	}
 
 	/**
 	 * The non-static task class (runnable interclass with run method)
 	 */
 	private class Task implements Runnable {
-		
+
 		/**
 		 * the list to add to
 		 */
-		List<ThreadSafeSearchResult> resultList;
+		List<SearchResult> resultList;
 
 		/**
 		 * the entire string into lil queries
@@ -303,7 +267,7 @@ public class ThreadSafeInvertedIndex extends InvertedIndex {
 		private TreeSet<String> words;
 
 		/**
-		 *the type of search the task must perform
+		 * the type of search the task must perform
 		 */
 		private String searchType;
 
@@ -315,7 +279,7 @@ public class ThreadSafeInvertedIndex extends InvertedIndex {
 		 * @param searchType the type of search to perform
 		 * 
 		 */
-		public Task(TreeSet<String> words, List<ThreadSafeSearchResult> resultList, String searchType) {
+		public Task(TreeSet<String> words, List<SearchResult> resultList, String searchType) {
 			this.words = words;
 			this.resultList = resultList;
 			this.searchType = searchType;
@@ -323,14 +287,16 @@ public class ThreadSafeInvertedIndex extends InvertedIndex {
 		}
 
 		public void run() { // just add search or partial search
-			List<ThreadSafeSearchResult> results = resultList; // add to passed in list?
+			//List<SearchResult> results = resultList; // add to passed in list?
 			ArrayList<String> parsedWords = new ArrayList<String>(words);
 			ArrayList<String> usedFiles = new ArrayList<String>();
 
 			// run method based on which type of search
 			if (searchType.equals("partial")) {
 				// run partial search method
+				//System.out.println("running inside partial search");
 				for (String word : parsedWords) {
+					
 					if (partialFileGetter(word) != null) {
 
 						for (String file : partialFileGetter(word)) {
@@ -338,7 +304,7 @@ public class ThreadSafeInvertedIndex extends InvertedIndex {
 							if (!usedFiles.contains(file)) {
 								usedFiles.add(file);
 
-								ThreadSafeSearchResult nextResult = new ThreadSafeSearchResult();
+								SearchResult nextResult = new SearchResult();
 								nextResult.where = file;
 								int count1 = 0;
 
@@ -348,14 +314,16 @@ public class ThreadSafeInvertedIndex extends InvertedIndex {
 
 								nextResult.count = count1;
 								nextResult.score = ((double) count1 / (double) (builder.wordCountGetter(file)));
-								results.add(nextResult);
+								synchronized(resultList){
+									resultList.add(nextResult);
+								}
+								
 							}
 
 						}
 					}
 				}
-				Collections.sort(results);
-				// return results;
+				
 			} else {
 				// run exact search
 				for (String i : parsedWords) {
@@ -366,7 +334,7 @@ public class ThreadSafeInvertedIndex extends InvertedIndex {
 							if (!usedFiles.contains(file)) {
 								usedFiles.add(file);
 
-								ThreadSafeSearchResult nextResult = new ThreadSafeSearchResult();
+								SearchResult nextResult = new SearchResult();
 								nextResult.where = file;
 								int count1 = 0;
 								for (int x = 0; x < parsedWords.size(); x++) {
@@ -374,15 +342,18 @@ public class ThreadSafeInvertedIndex extends InvertedIndex {
 								}
 								nextResult.count = count1;
 								nextResult.score = ((double) count1 / (double) (builder.wordCountGetter(file)));
-								results.add(nextResult);
+								synchronized(resultList){
+									resultList.add(nextResult);
+								}
 							}
 
 						}
 					}
 				}
-				Collections.sort(results);
-				// return results;
 			}
+//			synchronized(results) {
+//				Collections.sort(results);
+//			}
 		}
 	}
 

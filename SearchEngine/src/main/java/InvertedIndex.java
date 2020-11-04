@@ -301,7 +301,9 @@ public class InvertedIndex {
 	 * 
 	 */
 	public List<SearchResult> partialSearch(TreeSet<String> words) {
-		List<SearchResult> results = new ArrayList<>();
+		
+		List<SearchResult> results = new ArrayList<>(); 
+		//make this into a class member (@ top tht keeps all search results)
 		ArrayList<String> parsedWords = new ArrayList<String>(words);
 		ArrayList<String> usedFiles = new ArrayList<String>();
 
@@ -362,4 +364,20 @@ public class InvertedIndex {
 		return fullPartialResults;
 	}
 
+//	/**
+//	 * @param files the files to use
+//	 * @param type the search type
+//	 * @return map 
+//	 */
+//	public TreeMap<String, List<SearchResult>> search(List<Path> files, String type){
+//	TreeMap<String, List<SearchResult>> results = new TreeMap<String, List<SearchResult>>();
+//		if(type.equals("partial")) {
+//			results = partialSearch(files);
+//			
+//		}else {
+//			results = exactSearch(files);
+//		}
+//		return results;
+//	}
+//	//
 }

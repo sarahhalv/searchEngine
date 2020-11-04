@@ -82,6 +82,7 @@ public class ThreadSafeSearchResult extends SearchResult{
 	
 	@Override
 	public List<Path> getAllFiles(Path p) {
+		//System.out.println("inside thread safe get all files");
 		lock.readLock().lock();
 		try {
 			return super.getAllFiles(p);

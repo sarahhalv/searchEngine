@@ -30,35 +30,35 @@ public class Driver {
 		// store initial start time
 		Instant start = Instant.now();
 		ArgumentMap map = new ArgumentMap(args);
-		//InvertedIndex index = new InvertedIndex();
+		// InvertedIndex index = new InvertedIndex();
 		InvertedIndex index;
 		InvertedIndexBuilder builder;
-		//InvertedIndexBuilder builder = new InvertedIndexBuilder();
-		SearchResult searchResult1; 
-		//SearchResult searchResult1 = new SearchResult();
+		// InvertedIndexBuilder builder = new InvertedIndexBuilder();
+		SearchResult searchResult1;
+		// SearchResult searchResult1 = new SearchResult();
 		TreeMap<String, List<SearchResult>> searchResults = new TreeMap<String, List<SearchResult>>();
-		Boolean threads = false;
+		//Boolean threads = false;
 
 		// check if program should be multithreaded
 		if (map.hasFlag("-threads")) {
-			threads = true;
+			//threads = true;
 			// get number of worker threads to use, or 5 if no number provided
 			int workerThreads;
-			if(map.getInteger("-threads", 5) <= 0) {
+			if (map.getInteger("-threads", 5) <= 0) {
 				workerThreads = 5;
-			}else {
+			} else {
 				workerThreads = map.getInteger("-threads", 5);
 			}
-			//do something with work queue in here?
-			
+			// do something with work queue in here?
+
 			// change all references that should be thread safe
 			index = new ThreadSafeInvertedIndex(workerThreads);
-			builder = new ThreadSafeBuilder((ThreadSafeInvertedIndex)index, workerThreads);
+			builder = new ThreadSafeBuilder((ThreadSafeInvertedIndex) index, workerThreads);
 			searchResult1 = new ThreadSafeSearchResult();
-		}else {
-			//no multithreading
-			index =  new InvertedIndex(); // create index
-			builder =  new InvertedIndexBuilder();
+		} else {
+			// no multithreading
+			index = new InvertedIndex(); // create index
+			builder = new InvertedIndexBuilder();
 			searchResult1 = new SearchResult();
 		}
 
@@ -125,11 +125,11 @@ public class Driver {
 			}
 
 			if (map.hasFlag("-exact")) { // perform exact searching
-
 				searchResults = index.completeExactSearch(searchResult1.getAllFiles(map.getPath("-queries")));
 
 			} else { // perform partial searching
 				searchResults = index.completePartialSearch(searchResult1.getAllFiles(map.getPath("-queries")));
+
 			}
 		}
 
@@ -146,6 +146,11 @@ public class Driver {
 			} else { // path provided
 				try {
 					SimpleJsonWriter.asFullResults(searchResults, map.getPath("-results"));
+					// if(threads) {
+					// SimpleJsonWriter.asFullResults(searchResults2, map.getPath("-results"));
+					// }else {
+					// SimpleJsonWriter.asFullResults(searchResults1, map.getPath("-results"));
+					// }
 				} catch (IOException e) {
 					System.out.println("unable to write results to file: " + map.getPath("-results"));
 				}

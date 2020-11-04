@@ -84,6 +84,7 @@ public class SearchResult implements Comparable<SearchResult> {
 				textfiles.add(p);
 			}
 		}
+		//System.out.println("return textfiles in searchresultgetallfiles");
 		return textfiles;
 	}
 
