@@ -4,8 +4,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.TreeMap;
-
 import opennlp.tools.stemmer.Stemmer;
 import opennlp.tools.stemmer.snowball.SnowballStemmer;
 
@@ -16,10 +14,6 @@ import opennlp.tools.stemmer.snowball.SnowballStemmer;
 public class InvertedIndexBuilder {
 	/** The default stemmer algorithm used by this class. */
 	public static final SnowballStemmer.ALGORITHM DEFAULT = SnowballStemmer.ALGORITHM.ENGLISH;
-	/**
-	 * map that records how many words in a textfile
-	 */
-	static TreeMap<String, Integer> countMap; // TODO Remove
 
 	/**
 	 * builds the inverted index that is passed in
@@ -29,7 +23,7 @@ public class InvertedIndexBuilder {
 	 * @throws IOException if IO exception encountered
 	 */
 	public static void build(Path path, InvertedIndex index) throws IOException {
-		countMap = new TreeMap<String, Integer>();
+		//countMap = new TreeMap<String, Integer>();
 
 		if (Files.isDirectory(path)) {
 			// find and process all of the text files (with .txt and .text extensions) in
@@ -70,25 +64,27 @@ public class InvertedIndexBuilder {
 					fileWordCount++;
 				}
 			}
-			if (fileWordCount != 0) {
-				countMap.putIfAbsent(fileLocation, fileWordCount);
-			}
+//			if (fileWordCount != 0) {
+//				countMap.putIfAbsent(fileLocation, fileWordCount);
+//			}
 		}
 	}
 
-	/**
-	 * @param filename the file which to count the words
-	 * @return the number of words in the passed in file
-	 */
-	public int wordCountGetter(String filename) {
-		return countMap.get(filename);
-	}
-
-	/**
-	 * @return the countMap created alongside the inverted index
-	 */
-	public static TreeMap<String, Integer> returnCountMap() {
-		return countMap;
-	}
+//	/**
+//	 * @param filename the file which to count the words
+//	 * @return the number of words in the passed in file
+//	 */
+//	public int wordCountGetter(String filename) {
+//		return countMap.get(filename);
+//	}
+//
+//	/**
+//	 * @return the countMap created alongside the inverted index
+//	 */
+//	public static TreeMap<String, Integer> returnCountMap() {
+//		return countMap;
+//	}
+	
+	
 
 }

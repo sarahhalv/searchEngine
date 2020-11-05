@@ -63,26 +63,27 @@ public class SimpleJsonWriter {
 	 */
 	public static void asMap(TreeMap<String, Integer> map, Writer writer, int level) throws IOException {
 
-		//TODO: CHANGE TO ITERATOR APPROACH
-		
-		int size = map.size();
-		int counter = 0;
+		Iterator<String> iterator = map.keySet().iterator();
+		writer.write("{");
 
-		writer.write("{\n");
-
-		for (String i : map.keySet()) {
-
+		if (iterator.hasNext()) {
+			writer.write("\n\t");
+			var i = iterator.next();
 			indent(i, writer, level + 1);
 			writer.write(": " + map.get(i));
-
-			if (counter != size - 1) { // if not last element, place a comma
-				writer.write(",");
-			}
-			writer.write("\n");
-			counter++;
 		}
+
+		while (iterator.hasNext()) {
+			writer.write(",\n\t");
+			var i = iterator.next();
+			indent(i, writer, level + 1);
+			writer.write(": " + map.get(i));
+		}
+
+		writer.write("\n");
 		indent(writer, level);
 		writer.write("}");
+
 	}
 
 	/**
@@ -97,7 +98,7 @@ public class SimpleJsonWriter {
 	 */
 	public static void asNestedSet(Map<String, TreeSet<Integer>> elements, Writer writer, int level)
 			throws IOException {
-		
+
 		Iterator<String> iterator = elements.keySet().iterator();
 		writer.write("{");
 
@@ -165,27 +166,30 @@ public class SimpleJsonWriter {
 	 * @param level    indentation level
 	 * @throws IOException if IO error occurs
 	 */
-	public static void asFullResults(TreeMap<String, List<SearchResult>> elements, Writer writer, int level)
-			throws IOException {
+	public static void asFullResults(TreeMap<String, List<InvertedIndex.SearchResult>> elements, Writer writer,
+			int level) throws IOException {
 		
-		//TODO: CHANGE TO ITERATOR APPROACH
-		
-		int size = elements.size();
-		int counter = 0;
+		Iterator<String> iterator = elements.keySet().iterator();
+		writer.write("{");
 
-		writer.write("{\n");
-		for (String i : elements.keySet()) { // iterate through the keys of nested array
-
+		if (iterator.hasNext()) {
+			writer.write("\n\t");
+			var i = iterator.next();
 			indent(i.replaceAll("[\\[\\]\\,]", ""), writer, level + 1); // print "key"/non-nested array element
-
 			writer.write(": ");
 			asObjectList(elements.get(i), writer, level + 1);// write out the content of the nested array
-			if (counter != size - 1) {
-				writer.write(",");
-			}
-			writer.write("\n");
-			counter++;
 		}
+
+		while (iterator.hasNext()) {
+			writer.write(",\n\t");
+			var i = iterator.next();
+			indent(i.replaceAll("[\\[\\]\\,]", ""), writer, level + 1); // print "key"/non-nested array element
+			writer.write(": ");
+			asObjectList(elements.get(i), writer, level + 1);// write out the content of the nested array
+		}
+
+		writer.write("\n");
+		indent(writer, level);
 		writer.write("}");
 	}
 
@@ -195,28 +199,26 @@ public class SimpleJsonWriter {
 	 * @param level    the indentation level
 	 * @throws IOException if encounter IO error
 	 */
-	public static void asObjectList(List<SearchResult> elements, Writer writer, int level) throws IOException {
+	public static void asObjectList(List<InvertedIndex.SearchResult> elements, Writer writer, int level)
+			throws IOException {
 		// for each result in list
+		Iterator<InvertedIndex.SearchResult> iterator = elements.iterator();
+		writer.write("[");
 
-		//TODO: CHANGE TO ITERATOR APPROACH
-		
-		int size = elements.size();
-		int counter = 0;
-
-		writer.write("[\n");
-
-		for (SearchResult i : elements) { // for every result in list
-
-			asObject(i, writer, level + 1);
-
-			if (counter != size - 1) { // if not last element, place a comma
-				writer.write(",");
-			}
-			writer.write("\n");
-			counter++;
+		if (iterator.hasNext()) {
+			writer.write("\n\t");
+			asObject(iterator.next(), writer, level + 1);
 		}
+
+		while (iterator.hasNext()) {
+			writer.write(",\n\t");
+			asObject(iterator.next(), writer, level + 1);
+		}
+
+		writer.write("\n");
 		indent(writer, level);
 		writer.write("]");
+
 	}
 
 	/**
@@ -225,8 +227,8 @@ public class SimpleJsonWriter {
 	 * @param level  the indentation level
 	 * @throws IOException if encounter IO error
 	 */
-	private static void asObject(SearchResult i, Writer writer, int level) throws IOException {
-		
+	private static void asObject(InvertedIndex.SearchResult i, Writer writer, int level) throws IOException {
+
 		indent(writer, level);
 		writer.write("{\n");
 
@@ -410,7 +412,8 @@ public class SimpleJsonWriter {
 	 * @param path     the file to write to
 	 * @throws IOException if IO error occurs
 	 */
-	public static void asFullResults(TreeMap<String, List<SearchResult>> elements, Path path) throws IOException {
+	public static void asFullResults(TreeMap<String, List<InvertedIndex.SearchResult>> elements, Path path)
+			throws IOException {
 
 		try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
 			asFullResults(elements, writer, 0);
@@ -421,7 +424,7 @@ public class SimpleJsonWriter {
 	 * @param elements results to format
 	 * @return the results as a JSON string
 	 */
-	public static String asFullResults(TreeMap<String, List<SearchResult>> elements) {
+	public static String asFullResults(TreeMap<String, List<InvertedIndex.SearchResult>> elements) {
 
 		try {
 			StringWriter writer = new StringWriter();

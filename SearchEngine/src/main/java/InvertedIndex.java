@@ -17,26 +17,23 @@ import java.util.TreeSet;
  * @version Fall 2020
  */
 public class InvertedIndex {
-	/**
-	 * inverted index builder object to grab some of the methods
-	 */
-	InvertedIndexBuilder builder = new InvertedIndexBuilder(); // TODO Remove
+
 	/**
 	 * data structure for inverted index object
 	 */
 	private final TreeMap<String, TreeMap<String, TreeSet<Integer>>> index;
-	
-	// TODO Fix up countMap member (keywords, initialize properly)
+
 	/**
-	 * map that records how many words in a textfile
+	 * map that records how many words in a text file
 	 */
-	TreeMap<String, Integer> countMap = new TreeMap<String, Integer>();
+	TreeMap<String, Integer> countMap;
 
 	/**
 	 * inverted index class object constructor
 	 */
 	public InvertedIndex() {
 		this.index = new TreeMap<String, TreeMap<String, TreeSet<Integer>>>();
+		this.countMap = new TreeMap<String, Integer>();
 	}
 
 	/**
@@ -50,10 +47,7 @@ public class InvertedIndex {
 		index.putIfAbsent(word, new TreeMap<>());
 		index.get(word).putIfAbsent(file, new TreeSet<>());
 		index.get(word).get(file).add(position);
-		
-		/*
-		 * TODO If add something new, update the countMap for this file
-		 */
+		countMap.put(file, position); // If add something new, update the countMap for this file
 	}
 
 	/**
@@ -219,6 +213,21 @@ public class InvertedIndex {
 	}
 
 	/**
+	 * @param filename the file which to count the words
+	 * @return the number of words in the passed in file
+	 */
+	public int wordCountGetter(String filename) {
+		return countMap.get(filename);
+	}
+
+	/**
+	 * @return the countMap created alongside the inverted index
+	 */
+	public TreeMap<String, Integer> returnCountMap() {
+		return countMap;
+	}
+
+	/**
 	 * @param word the word to get count for in partial search
 	 * @param file the file in which to search for appearances of the word
 	 * @return count of appearances of word in file
@@ -249,26 +258,11 @@ public class InvertedIndex {
 		ArrayList<String> parsedWords = new ArrayList<String>(words);
 		ArrayList<String> usedFiles = new ArrayList<String>();
 
-		for (String i : parsedWords) {
-			if (getLocations(i) != null) {
+		for (String word : parsedWords) {
+			if (getLocations(word) != null) {
 
-				for (String file : getLocations(i)) {
-					// if file is not already been used
-					if (!usedFiles.contains(file)) {
-						usedFiles.add(file);
+				commonSearch(results, parsedWords, usedFiles, word, true);
 
-						SearchResult nextResult = new SearchResult();
-						nextResult.where = file;
-						int count1 = 0;
-						for (int x = 0; x < parsedWords.size(); x++) {
-							count1 += wordGetter(parsedWords.get(x), file);
-						}
-						nextResult.count = count1;
-						nextResult.score = ((double) count1 / (double) (builder.wordCountGetter(file)));
-						results.add(nextResult);
-					}
-
-				}
 			}
 		}
 		Collections.sort(results);
@@ -280,32 +274,31 @@ public class InvertedIndex {
 	 * 
 	 * @param p the text file of queries to be used for search
 	 * @return full EXACT search results
+	 * @throws IOException if IO error encountered
 	 */
-	public TreeMap<String, List<SearchResult>> completeExactSearch(List<Path> p) {
+	public TreeMap<String, List<SearchResult>> completeExactSearch(List<Path> p) throws IOException {
 		TreeMap<String, List<SearchResult>> fullExactResults = new TreeMap<String, List<SearchResult>>();
 		// parse query file by line
 		for (Path file : p) { // loop through all files
-			try (BufferedReader buff = Files.newBufferedReader(file, StandardCharsets.UTF_8);) {
-				String line;
-				while ((line = buff.readLine()) != null) { // while still lines in query file, parse
 
-					if (TextFileStemmer.uniqueStems(line) != null && TextFileStemmer.uniqueStems(line).size() != 0) {
-						fullExactResults.put(String.join(" ", (TextFileStemmer.uniqueStems(line))),
-								exactSearch(TextFileStemmer.uniqueStems(line)));
-					}
+			BufferedReader buff = Files.newBufferedReader(file, StandardCharsets.UTF_8);
+			String line;
+			while ((line = buff.readLine()) != null) { // while still lines in query file, parse
+
+				if (TextFileStemmer.uniqueStems(line) != null && TextFileStemmer.uniqueStems(line).size() != 0) {
+					fullExactResults.put(String.join(" ", (TextFileStemmer.uniqueStems(line))),
+							exactSearch(TextFileStemmer.uniqueStems(line)));
 				}
-			} catch (IOException e) {
-				System.out.println("no file found or buffered reader unable to work with file");
 			}
 		}
-
 		return fullExactResults;
 	}
 
 	/**
+	 * does the inner workings of the complete partial search
+	 * 
 	 * @param words the already parsed words from a single line of the query file
 	 * @return a sorted list of PARTIAL search results
-	 * 
 	 */
 	public List<SearchResult> partialSearch(TreeSet<String> words) {
 		List<SearchResult> results = new ArrayList<>();
@@ -313,29 +306,10 @@ public class InvertedIndex {
 		ArrayList<String> usedFiles = new ArrayList<String>();
 
 		for (String word : parsedWords) {
-			if (partialFileGetter(word) != null) { // TODO Embed the loop of partialFileGetter here so that you can see the common loop in both search methods
+			if (partialFileGetter(word) != null) {
 
-				for (String file : partialFileGetter(word)) { // 
-					// if file is not already been used
-					if (!usedFiles.contains(file)) {
-						usedFiles.add(file);
+				commonSearch(results, parsedWords, usedFiles, word, false);
 
-						SearchResult nextResult = new SearchResult();
-						nextResult.where = file;
-						int count1 = 0;
-
-						for (int x = 0; x < parsedWords.size(); x++) {
-							count1 += partialWordGetter(parsedWords.get(x), file);
-						}
-
-						nextResult.count = count1;
-						nextResult.score = ((double) count1 / (double) (builder.wordCountGetter(file)));
-						results.add(nextResult);
-					}
-
-					// TODO Put the common code between exact and partial search that is
-					// inside the for loop into a private helper method
-				}
 			}
 		}
 		Collections.sort(results);
@@ -347,28 +321,198 @@ public class InvertedIndex {
 	 * 
 	 * @param files the text files of queries to be used for search
 	 * @return full PARTIAL search results
+	 * @throws IOException if IO error encountered
 	 */
-	public TreeMap<String, List<SearchResult>> completePartialSearch(List<Path> files) {
+	public TreeMap<String, List<SearchResult>> completePartialSearch(List<Path> files) throws IOException {
 		TreeMap<String, List<SearchResult>> fullPartialResults = new TreeMap<String, List<SearchResult>>();
 		// parse query file by line
 
 		for (Path file : files) { // loop through all files
-			try (BufferedReader reader = Files.newBufferedReader(file, StandardCharsets.UTF_8);) {
-				String line;
-				while ((line = reader.readLine()) != null) { // while still lines in query file, parse
+			
+			BufferedReader reader = Files.newBufferedReader(file, StandardCharsets.UTF_8);
+			String line;
+			while ((line = reader.readLine()) != null) { // while still lines in query file, parse
 
-					if (TextFileStemmer.uniqueStems(line) != null && TextFileStemmer.uniqueStems(line).size() != 0) {
+				if (TextFileStemmer.uniqueStems(line) != null && TextFileStemmer.uniqueStems(line).size() != 0) {
 
-						fullPartialResults.put(String.join(" ", (TextFileStemmer.uniqueStems(line))),
-								partialSearch(TextFileStemmer.uniqueStems(line)));
-					}
+					fullPartialResults.put(String.join(" ", (TextFileStemmer.uniqueStems(line))),
+							partialSearch(TextFileStemmer.uniqueStems(line)));
 				}
-			} catch (IOException e) { // TODO Throw exceptions to Driver
-				System.out.print("buffered reader was unable to work with file");
 			}
 		}
-
 		return fullPartialResults;
+	}
+
+	/**
+	 * common-ish parts of the searches, besides few tweaks of method calling within
+	 * 
+	 * @param results     results list to add to
+	 * @param parsedWords list of parse words of query
+	 * @param usedFiles   files used within query
+	 * @param word        the word to focus on
+	 * @param exact       if performing exact search or not
+	 */
+	private void commonSearch(List<SearchResult> results, ArrayList<String> parsedWords, ArrayList<String> usedFiles,
+			String word, boolean exact) {
+		if (exact) { // exact search
+			for (String file : getLocations(word)) {
+				// if file is not already been used
+				if (!usedFiles.contains(file)) {
+					usedFiles.add(file);
+
+					SearchResult nextResult = new SearchResult();
+					nextResult.where = file;
+					int count1 = 0;
+					for (int x = 0; x < parsedWords.size(); x++) {
+						count1 += wordGetter(parsedWords.get(x), file);
+					}
+					nextResult.count = count1;
+					nextResult.score = ((double) count1 / (double) (wordCountGetter(file)));
+					results.add(nextResult);
+				}
+			}
+		} else { // do partial search
+			for (String file : partialFileGetter(word)) { //
+				// if file is not already been used
+				if (!usedFiles.contains(file)) {
+					usedFiles.add(file);
+
+					SearchResult nextResult = new SearchResult();
+					nextResult.where = file;
+					int count1 = 0;
+
+					for (int x = 0; x < parsedWords.size(); x++) {
+						count1 += partialWordGetter(parsedWords.get(x), file);
+					}
+
+					nextResult.count = count1;
+					nextResult.score = ((double) count1 / (double) (wordCountGetter(file)));
+					results.add(nextResult);
+				}
+			}
+		}
+	}
+
+	/**
+	 * 
+	 * class for the search result object
+	 * 
+	 * @author sarah
+	 */
+	public class SearchResult implements Comparable<SearchResult> {
+
+		/**
+		 * NestedInvertedIndex object to use its methods for creating a search result
+		 * object
+		 */
+		InvertedIndex index;
+		/**
+		 * location
+		 */
+		String where;
+		/**
+		 * total word count of the location
+		 */
+		int totalWords;
+		/**
+		 * total matches within the text file
+		 */
+		int count;
+		/**
+		 * the percent of words in the file that match the query (like the score)
+		 */
+		double score;
+
+		/**
+		 * basic/blank constructor; creates search result object without having to
+		 * provide values
+		 */
+		public SearchResult() {
+		};
+
+		/**
+		 * @param n        the nested inverted index to use for results
+		 * @param count    total matches within the text file
+		 * @param score    the percent of words in the file that match the query
+		 *                 (frequency)
+		 * @param location path of text file
+		 */
+		public SearchResult(InvertedIndex n, int count, double score, String location) {
+			index = n;
+			this.count = count;
+			this.score = score;
+			this.where = location;
+		}
+
+		/**
+		 * @param word     the word which to base and create a single search result off
+		 *                 of
+		 * @param fileName the text file for the result
+		 */
+		public void buildSearchResult(String word, String fileName) {
+			where = fileName;
+			count = index.size(word, fileName);
+		}
+
+		/**
+		 * returns list of all files in path
+		 * @param p the path to a file or potential directory
+		 * @return list of text files
+		 */
+		public List<Path> getAllFiles(Path p) { // TODO Remove
+		
+			List<Path> textfiles = new ArrayList<>();
+			if (Files.isDirectory(p)) { // if path is directory
+				// find and process all of the text files (with .txt and .text extensions) in
+				// that directory and its subdirectories.
+				try {
+					textfiles = TextFileFinder.list(p);
+				} catch (IOException e) {
+					System.out.println("unable to create array of gathered textfiles");
+				}
+			} else { // if single file, add it
+				if (p != null) {
+					textfiles.add(p);
+				}
+			}
+			return textfiles;
+		}
+
+		/**
+		 * @return frequency/score of relative matches to number of words in file
+		 */
+		public double getScore() {
+			return score;
+		}
+
+		/**
+		 * @return location of result
+		 */
+		public String getWhere() {
+			return where;
+		}
+
+		/**
+		 * @return number of matches in result
+		 */
+		public int getCount() {
+			return count;
+		}
+		/*
+		 * how the results will be sorted
+		 */
+
+		@Override
+		public int compareTo(SearchResult o) {
+			// if equal in score
+			if (Double.compare(getScore(), o.score) == 0) {
+				if (Integer.compare(getCount(), o.count) == 0) {
+					return (getWhere()).compareToIgnoreCase((o.where));
+				}
+				return Integer.compare(o.count, getCount());
+			}
+			return Double.compare(o.score, getScore());
+		}
 	}
 
 }

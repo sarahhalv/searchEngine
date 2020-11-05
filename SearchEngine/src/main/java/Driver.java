@@ -31,7 +31,7 @@ public class Driver {
 		Instant start = Instant.now();
 		ArgumentMap map = new ArgumentMap(args);
 		InvertedIndex index = new InvertedIndex(); // create index
-		SearchResult searchResult1 = new SearchResult();
+		InvertedIndex.SearchResult searchResult1 = index.new SearchResult();
 		
 		/*
 		 * TODO Create a QueryBuilder or QueryParser etc. class that has this data structure in it
@@ -44,7 +44,7 @@ public class Driver {
 		 * writeJson(Path path) 
 		 * 		output the searchResults map to file
 		 */
-		TreeMap<String, List<SearchResult>> searchResults = new TreeMap<String, List<SearchResult>>();
+		TreeMap<String, List<InvertedIndex.SearchResult>> searchResults = new TreeMap<String, List<InvertedIndex.SearchResult>>();
 
 		if (map.hasFlag("-path")) {
 			Path path = map.getPath("-path");
@@ -77,21 +77,11 @@ public class Driver {
 		if (map.hasFlag("-counts")) {
 
 			// if path not provided, use default
-			if (map.getString("-counts") == null) {
-				// TODO Path path = map.getPath("-counts", Path.of("counts.json"));
-
-				Path path = Paths.get("counts.json"); // default path
-				try {
-					SimpleJsonWriter.asMap(InvertedIndexBuilder.returnCountMap(), path);
-				} catch (IOException e) {
-					System.out.println("unable to write counts to file: " + path.toString());
-				}
-			} else { // path provided
-				try {
-					SimpleJsonWriter.asMap(InvertedIndexBuilder.returnCountMap(), map.getPath("-counts"));
-				} catch (IOException e) {
-					System.out.println("unable to write counts to file: " + map.getPath("-counts"));
-				}
+			Path path = map.getPath("-counts", Path.of("counts.json"));
+			try {
+				SimpleJsonWriter.asMap(index.returnCountMap(), path);
+			} catch (IOException e) {
+				System.out.println("unable to write counts to file: " + path.toString());
 			}
 		}
 
@@ -111,10 +101,18 @@ public class Driver {
 
 			if (map.hasFlag("-exact")) { // perform exact searching
 
-				searchResults = index.completeExactSearch(searchResult1.getAllFiles(map.getPath("-queries")));
+				try {
+					searchResults = index.completeExactSearch(searchResult1.getAllFiles(map.getPath("-queries")));
+				} catch (IOException e) {
+					System.out.println("no file found or buffered reader unable to work with file for exact search");
+				}
 
 			} else { // perform partial searching
-				searchResults = index.completePartialSearch(searchResult1.getAllFiles(map.getPath("-queries")));
+				try {
+					searchResults = index.completePartialSearch(searchResult1.getAllFiles(map.getPath("-queries")));
+				} catch (IOException e) {
+					System.out.println("no file found or buffered reader unable to work with file for partial search");
+				}
 			}
 		}
 
