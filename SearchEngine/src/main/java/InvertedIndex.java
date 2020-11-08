@@ -276,19 +276,17 @@ public class InvertedIndex {
 	 * @return full EXACT search results
 	 * @throws IOException if IO error encountered
 	 */
-	public TreeMap<String, List<SearchResult>> completeExactSearch(List<Path> p) throws IOException {
+	public TreeMap<String, List<SearchResult>> completeExactSearch(Path p) throws IOException {
 		TreeMap<String, List<SearchResult>> fullExactResults = new TreeMap<String, List<SearchResult>>();
 		// parse query file by line
-		for (Path file : p) { // loop through all files
 
-			BufferedReader buff = Files.newBufferedReader(file, StandardCharsets.UTF_8);
-			String line;
-			while ((line = buff.readLine()) != null) { // while still lines in query file, parse
+		BufferedReader buff = Files.newBufferedReader(p, StandardCharsets.UTF_8);
+		String line;
+		while ((line = buff.readLine()) != null) { // while still lines in query file, parse
 
-				if (TextFileStemmer.uniqueStems(line) != null && TextFileStemmer.uniqueStems(line).size() != 0) {
-					fullExactResults.put(String.join(" ", (TextFileStemmer.uniqueStems(line))),
-							exactSearch(TextFileStemmer.uniqueStems(line)));
-				}
+			if (TextFileStemmer.uniqueStems(line) != null && TextFileStemmer.uniqueStems(line).size() != 0) {
+				fullExactResults.put(String.join(" ", (TextFileStemmer.uniqueStems(line))),
+						exactSearch(TextFileStemmer.uniqueStems(line)));
 			}
 		}
 		return fullExactResults;
@@ -319,25 +317,21 @@ public class InvertedIndex {
 	/**
 	 * methods performs all processes necessary for partial search
 	 * 
-	 * @param files the text files of queries to be used for search
+	 * @param file the text file of queries to be used for search
 	 * @return full PARTIAL search results
 	 * @throws IOException if IO error encountered
 	 */
-	public TreeMap<String, List<SearchResult>> completePartialSearch(List<Path> files) throws IOException {
+	public TreeMap<String, List<SearchResult>> completePartialSearch(Path file) throws IOException {
 		TreeMap<String, List<SearchResult>> fullPartialResults = new TreeMap<String, List<SearchResult>>();
-		// parse query file by line
 
-		for (Path file : files) { // loop through all files
-			
-			BufferedReader reader = Files.newBufferedReader(file, StandardCharsets.UTF_8);
-			String line;
-			while ((line = reader.readLine()) != null) { // while still lines in query file, parse
+		BufferedReader reader = Files.newBufferedReader(file, StandardCharsets.UTF_8);
+		String line;
+		while ((line = reader.readLine()) != null) { // while still lines in query file, parse
 
-				if (TextFileStemmer.uniqueStems(line) != null && TextFileStemmer.uniqueStems(line).size() != 0) {
+			if (TextFileStemmer.uniqueStems(line) != null && TextFileStemmer.uniqueStems(line).size() != 0) {
 
-					fullPartialResults.put(String.join(" ", (TextFileStemmer.uniqueStems(line))),
-							partialSearch(TextFileStemmer.uniqueStems(line)));
-				}
+				fullPartialResults.put(String.join(" ", (TextFileStemmer.uniqueStems(line))),
+						partialSearch(TextFileStemmer.uniqueStems(line)));
 			}
 		}
 		return fullPartialResults;
@@ -452,30 +446,6 @@ public class InvertedIndex {
 		public void buildSearchResult(String word, String fileName) {
 			where = fileName;
 			count = index.size(word, fileName);
-		}
-
-		/**
-		 * returns list of all files in path
-		 * @param p the path to a file or potential directory
-		 * @return list of text files
-		 */
-		public List<Path> getAllFiles(Path p) { // TODO Remove
-		
-			List<Path> textfiles = new ArrayList<>();
-			if (Files.isDirectory(p)) { // if path is directory
-				// find and process all of the text files (with .txt and .text extensions) in
-				// that directory and its subdirectories.
-				try {
-					textfiles = TextFileFinder.list(p);
-				} catch (IOException e) {
-					System.out.println("unable to create array of gathered textfiles");
-				}
-			} else { // if single file, add it
-				if (p != null) {
-					textfiles.add(p);
-				}
-			}
-			return textfiles;
 		}
 
 		/**

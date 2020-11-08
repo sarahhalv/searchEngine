@@ -1,7 +1,6 @@
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
@@ -31,20 +30,8 @@ public class Driver {
 		Instant start = Instant.now();
 		ArgumentMap map = new ArgumentMap(args);
 		InvertedIndex index = new InvertedIndex(); // create index
-		InvertedIndex.SearchResult searchResult1 = index.new SearchResult();
-		
-		/*
-		 * TODO Create a QueryBuilder or QueryParser etc. class that has this data structure in it
-		 * 
-		 * parseQueryFile(Path path, boolean exact)
-		 * 		open up the query file
-		 * 		stem the lines
-		 * 		ask for search results
-		 * 
-		 * writeJson(Path path) 
-		 * 		output the searchResults map to file
-		 */
 		TreeMap<String, List<InvertedIndex.SearchResult>> searchResults = new TreeMap<String, List<InvertedIndex.SearchResult>>();
+		QueryParser queryParser = new QueryParser(index, searchResults);
 
 		if (map.hasFlag("-path")) {
 			Path path = map.getPath("-path");
@@ -99,40 +86,33 @@ public class Driver {
 				return;
 			}
 
-			if (map.hasFlag("-exact")) { // perform exact searching
-
+			if(map.hasFlag("-exact")) {
 				try {
-					searchResults = index.completeExactSearch(searchResult1.getAllFiles(map.getPath("-queries")));
+					queryParser.parseQueryFile(map.getPath("-queries"), true);
 				} catch (IOException e) {
 					System.out.println("no file found or buffered reader unable to work with file for exact search");
 				}
-
-			} else { // perform partial searching
+			}else {
 				try {
-					searchResults = index.completePartialSearch(searchResult1.getAllFiles(map.getPath("-queries")));
+					queryParser.parseQueryFile(map.getPath("-queries"), false);
 				} catch (IOException e) {
 					System.out.println("no file found or buffered reader unable to work with file for partial search");
 				}
 			}
+			
 		}
 
 		// if results, use provided path for the search results output file
 		if (map.hasFlag("-results")) {
 			// if no file path provided, use default
-			if (map.getString("-results") == null) {
-				Path path = Paths.get("results.json");
-				try {
-					SimpleJsonWriter.asFullResults(searchResults, path);
-				} catch (IOException e) {
-					System.out.println("unable to write results to file: results.json");
-				}
-			} else { // path provided
-				try {
-					SimpleJsonWriter.asFullResults(searchResults, map.getPath("-results"));
-				} catch (IOException e) {
-					System.out.println("unable to write results to file: " + map.getPath("-results"));
-				}
+
+			Path path = map.getPath("-results", Path.of("results.json"));
+			try {
+				queryParser.writeJson(path);
+			} catch (IOException e) {
+				System.out.println("unable to write results to file: " + map.getPath("-results"));
 			}
+			
 		}
 
 		// calculate time elapsed and output

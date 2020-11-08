@@ -23,7 +23,6 @@ public class InvertedIndexBuilder {
 	 * @throws IOException if IO exception encountered
 	 */
 	public static void build(Path path, InvertedIndex index) throws IOException {
-		//countMap = new TreeMap<String, Integer>();
 
 		if (Files.isDirectory(path)) {
 			// find and process all of the text files (with .txt and .text extensions) in
@@ -52,7 +51,7 @@ public class InvertedIndexBuilder {
 		try (BufferedReader reader = Files.newBufferedReader(file, StandardCharsets.UTF_8);) {
 			String line = null;
 			int location = 1;
-			int fileWordCount = 0;
+
 			String fileLocation = file.toString();
 
 			while ((line = reader.readLine()) != null) {
@@ -61,30 +60,9 @@ public class InvertedIndexBuilder {
 				for (String word : words) {
 					index.add((stemmer.stem(word)).toString(), fileLocation, location);
 					location++;
-					fileWordCount++;
 				}
 			}
-//			if (fileWordCount != 0) {
-//				countMap.putIfAbsent(fileLocation, fileWordCount);
-//			}
 		}
 	}
-
-//	/**
-//	 * @param filename the file which to count the words
-//	 * @return the number of words in the passed in file
-//	 */
-//	public int wordCountGetter(String filename) {
-//		return countMap.get(filename);
-//	}
-//
-//	/**
-//	 * @return the countMap created alongside the inverted index
-//	 */
-//	public static TreeMap<String, Integer> returnCountMap() {
-//		return countMap;
-//	}
-	
-	
 
 }
