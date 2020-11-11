@@ -26,7 +26,7 @@ public class InvertedIndex {
 	/**
 	 * map that records how many words in a text file
 	 */
-	TreeMap<String, Integer> countMap;
+	TreeMap<String, Integer> countMap; // TODO keywords
 
 	/**
 	 * inverted index class object constructor
@@ -47,6 +47,16 @@ public class InvertedIndex {
 		index.putIfAbsent(word, new TreeMap<>());
 		index.get(word).putIfAbsent(file, new TreeSet<>());
 		index.get(word).get(file).add(position);
+		
+		/*
+		 * TODO Assumes positions are added in order and not...
+		 * 
+		 * add(hello, hello.txt, 99);
+		 * add(world, hello.txt, 2);
+		 * 
+		 * Check that the new position is greater than the old one
+		 * Math.max to compare the two positions
+		 */
 		countMap.put(file, position); // If add something new, update the countMap for this file
 	}
 
@@ -180,7 +190,7 @@ public class InvertedIndex {
 	 * @param word the word from which to grab files for partial search
 	 * @return set of files where word is located
 	 */
-	public Set<String> partialFileGetter(String word) {
+	public Set<String> partialFileGetter(String word) { // TODO Remove
 		Set<String> files = new TreeSet<String>();
 
 		for (String stem : index.keySet()) {
@@ -217,14 +227,14 @@ public class InvertedIndex {
 	 * @return the number of words in the passed in file
 	 */
 	public int wordCountGetter(String filename) {
-		return countMap.get(filename);
+		return countMap.get(filename); // TODO getOrDefault or verify filename is a key in countMap
 	}
 
 	/**
 	 * @return the countMap created alongside the inverted index
 	 */
 	public TreeMap<String, Integer> returnCountMap() {
-		return countMap;
+		return countMap; // TODO Make unmodifiable
 	}
 
 	/**
@@ -232,7 +242,7 @@ public class InvertedIndex {
 	 * @param file the file in which to search for appearances of the word
 	 * @return count of appearances of word in file
 	 */
-	public int partialWordGetter(String word, String file) {
+	public int partialWordGetter(String word, String file) { // TODO Remove
 		int matches = 0;
 
 		for (String stem : index.keySet()) {
@@ -253,6 +263,7 @@ public class InvertedIndex {
 	 * @param words the already parsed words from a single line of the query file
 	 * @return a sorted list of EXACT search results
 	 */
+	// TODO public List<SearchResult> exactSearch(Set<String> words) {
 	public List<SearchResult> exactSearch(TreeSet<String> words) {
 		List<SearchResult> results = new ArrayList<>();
 		ArrayList<String> parsedWords = new ArrayList<String>(words);
@@ -265,10 +276,36 @@ public class InvertedIndex {
 
 			}
 		}
+		
+		/*
+		 * TODO
+		 * 
+		List<SearchResult> results = new ArrayList<>();
+		Map<String (location), SearchResult> lookup = ....
+		
+		for (String query : words ) {
+			if (index.containsKey(query)) {
+			   for (String location : index.get(query).keySet()) {
+			        if (lookup.containsKey(location)) {
+			        	lookup.get(location).update(...);
+			        }
+			        else {
+			        	SearchResult current = ...
+			        	results.add(current);
+			        	lookup.put(location, current);
+			        }
+			   }
+			}
+		}
+		 */
+		
+		
+		
 		Collections.sort(results);
 		return results;
 	}
 
+	// TODO Move logic form completeExact/PartialSearch into QueryParser
 	/**
 	 * methods performs all processes necessary for exact search
 	 * 
@@ -299,11 +336,17 @@ public class InvertedIndex {
 	 * @return a sorted list of PARTIAL search results
 	 */
 	public List<SearchResult> partialSearch(TreeSet<String> words) {
+		// TODO Don't call commonSearch just yet, need to optimize search before removing duplicate logic
 		List<SearchResult> results = new ArrayList<>();
 		ArrayList<String> parsedWords = new ArrayList<String>(words);
 		ArrayList<String> usedFiles = new ArrayList<String>();
 
+		// TODO for String word : words
 		for (String word : parsedWords) {
+			// TODO Directly loop through the inverted index keys here
+			// TODO for String key : index.keySet()
+			// TODO if the key starts with the query...
+			// TODO loop through index.get(key).keySet() <--- locations
 			if (partialFileGetter(word) != null) {
 
 				commonSearch(results, parsedWords, usedFiles, word, false);
@@ -351,7 +394,7 @@ public class InvertedIndex {
 		if (exact) { // exact search
 			for (String file : getLocations(word)) {
 				// if file is not already been used
-				if (!usedFiles.contains(file)) {
+				if (!usedFiles.contains(file)) { // TODO This is a linear time operation on a list
 					usedFiles.add(file);
 
 					SearchResult nextResult = new SearchResult();
@@ -399,23 +442,23 @@ public class InvertedIndex {
 		 * NestedInvertedIndex object to use its methods for creating a search result
 		 * object
 		 */
-		InvertedIndex index;
+		InvertedIndex index; // TODO Remove
 		/**
 		 * location
 		 */
-		String where;
+		String where; // TODO private final
 		/**
 		 * total word count of the location
 		 */
-		int totalWords;
+		int totalWords; // TODO remove, access countMap directly
 		/**
 		 * total matches within the text file
 		 */
-		int count;
+		int count; // TODO private
 		/**
 		 * the percent of words in the file that match the query (like the score)
 		 */
-		double score;
+		double score; // TODO private
 
 		/**
 		 * basic/blank constructor; creates search result object without having to
@@ -437,13 +480,25 @@ public class InvertedIndex {
 			this.score = score;
 			this.where = location;
 		}
+		
+		/*
+		 * TODO Have 1 constructor
+		 * public SearchResult(String location) {
+		 *    init the count and score to 0
+		 * }
+		 * 
+		 * private void update(String word) {
+		 *    this.count += index.get(word).get(location).size();
+		 *    this.score = this.count / countMap.get(location);
+		 * }
+		 */
 
 		/**
 		 * @param word     the word which to base and create a single search result off
 		 *                 of
 		 * @param fileName the text file for the result
 		 */
-		public void buildSearchResult(String word, String fileName) {
+		public void buildSearchResult(String word, String fileName) { // TODO Remove
 			where = fileName;
 			count = index.size(word, fileName);
 		}

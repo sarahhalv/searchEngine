@@ -4,12 +4,12 @@ import java.util.List;
 import java.util.TreeMap;
 
 /**
- * class that dealsw with query file and produces search results
+ * class that deals with query file and produces search results
  * 
  * @author sarah
  *
  */
-public class QueryParser {
+public class QueryParser { // TODO Use appropriate keywords, make members private and final
 
 	/**
 	 * index to use
@@ -33,6 +33,13 @@ public class QueryParser {
 
 	}
 
+	/* TODO 
+	public QueryParser(InvertedIndex index) {
+		this.index = index;
+		this.searchResults = new TreeMap<String, List<InvertedIndex.SearchResult>>();
+	}
+	*/
+	
 	/**
 	 * @param path  the path to the query file
 	 * @param exact whether to perform exact or partial search
@@ -46,7 +53,20 @@ public class QueryParser {
 			searchResults = index.completePartialSearch(path);
 		}
 		return;
+		
+		/*
+		 * TODO Open up the file, read line by line and call... parseQueryLine(line, exact);
+		 */
 	}
+	
+	/* TODO 
+	public void parseQueryLine(String line, boolean exact) {
+		stem the line here into words
+		join the stems into a single line
+		collect the search results from index
+		and store them in your searchResults map
+	}
+	*/
 
 	/**
 	 * outputs the searchResults map to file
