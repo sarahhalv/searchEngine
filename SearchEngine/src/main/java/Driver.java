@@ -3,8 +3,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.List;
-import java.util.TreeMap;
 
 /**
  * Class responsible for running this project based on the provided command-line
@@ -30,8 +28,7 @@ public class Driver {
 		Instant start = Instant.now();
 		ArgumentMap map = new ArgumentMap(args);
 		InvertedIndex index = new InvertedIndex(); // create index
-		TreeMap<String, List<InvertedIndex.SearchResult>> searchResults = new TreeMap<String, List<InvertedIndex.SearchResult>>();
-		QueryParser queryParser = new QueryParser(index, searchResults);
+		QueryParser queryParser = new QueryParser(index);
 
 		if (map.hasFlag("-path")) {
 			Path path = map.getPath("-path");

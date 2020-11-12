@@ -1,4 +1,7 @@
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.TreeMap;
@@ -9,37 +12,27 @@ import java.util.TreeMap;
  * @author sarah
  *
  */
-public class QueryParser { // TODO Use appropriate keywords, make members private and final
+public class QueryParser {
 
 	/**
 	 * index to use
 	 */
-	InvertedIndex index;
+	private final InvertedIndex index;
 	/**
 	 * map containing search results from query
 	 */
-	TreeMap<String, List<InvertedIndex.SearchResult>> searchResults;
+	private final TreeMap<String, List<InvertedIndex.SearchResult>> searchResults;
 
 	/**
 	 * query parser constructor
 	 * 
-	 * @param index         the index to use for this class
-	 * @param searchResults the map to store results in
+	 * @param index the index to use for this class
 	 */
-	public QueryParser(InvertedIndex index, TreeMap<String, List<InvertedIndex.SearchResult>> searchResults) {
-		this.index = index;
-		// initialize search results in here
-		this.searchResults = searchResults;
-
-	}
-
-	/* TODO 
 	public QueryParser(InvertedIndex index) {
 		this.index = index;
 		this.searchResults = new TreeMap<String, List<InvertedIndex.SearchResult>>();
 	}
-	*/
-	
+
 	/**
 	 * @param path  the path to the query file
 	 * @param exact whether to perform exact or partial search
@@ -47,26 +40,29 @@ public class QueryParser { // TODO Use appropriate keywords, make members privat
 	 */
 	public void parseQueryFile(Path path, boolean exact) throws IOException {
 
-		if (exact) {
-			searchResults = index.completeExactSearch(path);
-		} else {
-			searchResults = index.completePartialSearch(path);
+		BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8);
+		String line;
+		while ((line = reader.readLine()) != null) { // while still lines in query file, parse
+			parseQueryLine(line, exact);
 		}
-		return;
-		
-		/*
-		 * TODO Open up the file, read line by line and call... parseQueryLine(line, exact);
-		 */
 	}
-	
-	/* TODO 
+
+	/**
+	 * @param line  the query line of text
+	 * @param exact whether its an exact search or not
+	 */
 	public void parseQueryLine(String line, boolean exact) {
-		stem the line here into words
-		join the stems into a single line
-		collect the search results from index
-		and store them in your searchResults map
+
+		if (TextFileStemmer.uniqueStems(line) != null && TextFileStemmer.uniqueStems(line).size() != 0) {
+			if (exact) {
+				searchResults.put(String.join(" ", (TextFileStemmer.uniqueStems(line))),
+						index.exactSearch(TextFileStemmer.uniqueStems(line)));
+			} else {
+				searchResults.put(String.join(" ", (TextFileStemmer.uniqueStems(line))),
+						index.partialSearch(TextFileStemmer.uniqueStems(line)));
+			}
+		}
 	}
-	*/
 
 	/**
 	 * outputs the searchResults map to file

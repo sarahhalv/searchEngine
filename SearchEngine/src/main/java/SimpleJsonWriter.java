@@ -61,7 +61,7 @@ public class SimpleJsonWriter {
 	 * @param level  the initial indent to use
 	 * @throws IOException if an IO error occurs
 	 */
-	public static void asMap(TreeMap<String, Integer> map, Writer writer, int level) throws IOException {
+	public static void asMap(Map<String, Integer> map, Writer writer, int level) throws IOException {
 
 		Iterator<String> iterator = map.keySet().iterator();
 		writer.write("{");
@@ -233,12 +233,12 @@ public class SimpleJsonWriter {
 		writer.write("{\n");
 
 		indent(writer, level + 1);
-		writer.write("\"where\": " + "\"" + i.where.toString() + "\",\n");
+		writer.write("\"where\": " + "\"" + i.getWhere() + "\",\n");
 		indent(writer, level + 1);
-		writer.write("\"count\": " + i.count + ",\n");
+		writer.write("\"count\": " + i.getCount() + ",\n");
 		indent(writer, level + 1);
 		DecimalFormat FORMATTER = new DecimalFormat("0.00000000");
-		writer.write("\"score\": " + FORMATTER.format(i.score) + "\n");
+		writer.write("\"score\": " + FORMATTER.format(i.getScore()) + "\n");
 
 		indent(writer, level);
 		writer.write("}");
@@ -365,7 +365,7 @@ public class SimpleJsonWriter {
 	 * @throws IOException if IO error occurs
 	 *
 	 */
-	public static void asMap(TreeMap<String, Integer> map, Path path) throws IOException {
+	public static void asMap(Map<String, Integer> map, Path path) throws IOException {
 		try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
 			asMap(map, writer, 0);
 		}
