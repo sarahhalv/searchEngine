@@ -56,6 +56,8 @@ public class SimpleJsonWriter {
 	}
 
 	/**
+	 * TODO Add description
+	 * 
 	 * @param map    the map to write
 	 * @param writer the writer to use
 	 * @param level  the initial indent to use
