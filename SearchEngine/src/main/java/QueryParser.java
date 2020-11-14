@@ -32,6 +32,8 @@ public class QueryParser {
 		this.index = index;
 		this.searchResults = new TreeMap<String, List<InvertedIndex.SearchResult>>();
 	}
+	
+	// TODO Fix your javadoc
 
 	/**
 	 * @param path  the path to the query file
@@ -39,7 +41,7 @@ public class QueryParser {
 	 * @throws IOException if IO error occurs
 	 */
 	public void parseQueryFile(Path path, boolean exact) throws IOException {
-
+		// TODO Use try-with-resources! 
 		BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8);
 		String line;
 		while ((line = reader.readLine()) != null) { // while still lines in query file, parse
@@ -52,6 +54,8 @@ public class QueryParser {
 	 * @param exact whether its an exact search or not
 	 */
 	public void parseQueryLine(String line, boolean exact) {
+		// TODO Do not call uniqueStems over and over and over again. Do not call String.join over again.
+		// TODO Create and reuse variables as needed here
 
 		if (TextFileStemmer.uniqueStems(line) != null && TextFileStemmer.uniqueStems(line).size() != 0) {
 			if (exact) {

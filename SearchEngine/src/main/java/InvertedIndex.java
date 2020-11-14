@@ -50,6 +50,11 @@ public class InvertedIndex {
 		if (Math.max(wordCountGetter(file), position) == position) {
 			countMap.put(file, position); // If add something new, update the countMap for this file
 		}
+		
+		/*
+		 * TODO Could simplify this:
+		countMap.put(file, Math.max(wordCountGetter(file), position));
+		 */
 	}
 
 	/**
@@ -177,6 +182,8 @@ public class InvertedIndex {
 	public String toString() {
 		return index.toString();
 	}
+	
+	// TODO Add descriptions to your javadoc!
 
 	/**
 	 * @param word the word to get count for in exact search
@@ -222,7 +229,7 @@ public class InvertedIndex {
 				for (String location : index.get(query).keySet()) {
 					if (lookup.containsKey(location)) {
 
-						lookup.get(location).update(query);
+						lookup.get(location).update(query); // TODO Notice duplicate update call?
 
 					} else {
 
@@ -232,6 +239,16 @@ public class InvertedIndex {
 						lookup.put(location, current);
 
 					}
+					
+					/*
+					 * TODO YOu can simplify this (as well as remove duplicate logic) as follows:
+					 *
+					 * if you don't have a search result for this location
+					 *   create the result but don't update the count/score
+					 *   add the result to the map and list
+					 *
+					 * always update the count/score using the map here
+					 */
 				}
 			}
 		}
@@ -252,9 +269,23 @@ public class InvertedIndex {
 
 		for (String query : words) {
 			if (index.keySet() != null) {
+			 /*
+			  * TODO This is doing a linear search for a consecutive chunk of elements. We fix
+			  * these types of linear searches differently. Here, the key observation to make
+			  * is that our data is sorted. Anytime we have sorted data, we can do something
+			  * like a binary search to speed things up. In this case, we don't need to explicitly
+			  * do a binary search---this kind of functionality is built into tree data structures.
+			  * Look at this lecture example:
+			  *
+			  * https://github.com/usf-cs212-fall2020/lectures/blob/87a9175b8b45b077e0845bee90d90a63ef5d8b3b/DataStructures/src/main/java/FindDemo.java#L145-L163
+			  *
+			  * You can take a similar approach using TreeMaps too! If you aren't sure how to
+			  * adapt this for partial search, reach out on Piazza!
+			  */
 				for (String key : index.keySet()) {
 					if (key.startsWith(query)) {
 						if (index.get(key).keySet() != null) {
+							// TODO Move this duplicate for loop into a private helper method that is called by both exact and partial search
 							for (String location : index.get(key).keySet()) {
 								if (lookup.containsKey(location)) {
 
