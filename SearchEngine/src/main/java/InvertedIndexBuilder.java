@@ -8,7 +8,8 @@ import opennlp.tools.stemmer.Stemmer;
 import opennlp.tools.stemmer.snowball.SnowballStemmer;
 
 /**
- * @author sarah Class that works with and creates the nested Inverted Index
+ * Class that works with and creates the nested Inverted Index
+ * @author sarah 
  *
  */
 public class InvertedIndexBuilder {

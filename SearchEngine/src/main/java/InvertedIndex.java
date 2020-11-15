@@ -46,15 +46,7 @@ public class InvertedIndex {
 		index.putIfAbsent(word, new TreeMap<>());
 		index.get(word).putIfAbsent(file, new TreeSet<>());
 		index.get(word).get(file).add(position);
-
-		if (Math.max(wordCountGetter(file), position) == position) {
-			countMap.put(file, position); // If add something new, update the countMap for this file
-		}
-		
-		/*
-		 * TODO Could simplify this:
-		countMap.put(file, Math.max(wordCountGetter(file), position));
-		 */
+		countMap.put(file, Math.max(wordCountGetter(file), position)); // update the countMap for this file
 	}
 
 	/**
@@ -182,10 +174,10 @@ public class InvertedIndex {
 	public String toString() {
 		return index.toString();
 	}
-	
-	// TODO Add descriptions to your javadoc!
 
 	/**
+	 * grabs the number of appearances a word has in a particular file
+	 * 
 	 * @param word the word to get count for in exact search
 	 * @param file the file in which to search for appearances of the word
 	 * @return count of appearances of word in file
@@ -201,6 +193,8 @@ public class InvertedIndex {
 	}
 
 	/**
+	 * grabs how many words in a given file
+	 * 
 	 * @param filename the file which to count the words
 	 * @return the number of words in the passed in file
 	 */
@@ -209,6 +203,8 @@ public class InvertedIndex {
 	}
 
 	/**
+	 * returns the countmap as an unmodifiable structure
+	 * 
 	 * @return the countMap created alongside the inverted index
 	 */
 	public Map<String, Integer> returnCountMap() {
@@ -216,6 +212,8 @@ public class InvertedIndex {
 	}
 
 	/**
+	 * performs an exact search from a given set of words
+	 * 
 	 * @param words the already parsed words from a single line of the query file
 	 * @return a sorted list of EXACT search results
 	 */
@@ -226,30 +224,7 @@ public class InvertedIndex {
 
 		for (String query : words) {
 			if (index.containsKey(query)) {
-				for (String location : index.get(query).keySet()) {
-					if (lookup.containsKey(location)) {
-
-						lookup.get(location).update(query); // TODO Notice duplicate update call?
-
-					} else {
-
-						SearchResult current = new SearchResult(location);
-						current.update(query);
-						results.add(current);
-						lookup.put(location, current);
-
-					}
-					
-					/*
-					 * TODO YOu can simplify this (as well as remove duplicate logic) as follows:
-					 *
-					 * if you don't have a search result for this location
-					 *   create the result but don't update the count/score
-					 *   add the result to the map and list
-					 *
-					 * always update the count/score using the map here
-					 */
-				}
+				commonSearch(query,results,lookup);
 			}
 		}
 		Collections.sort(results);
@@ -257,7 +232,8 @@ public class InvertedIndex {
 	}
 
 	/**
-	 * does the inner workings of the complete partial search
+	 * performs a partial search for a given set of words (if word is substring of a
+	 * key)
 	 *
 	 * @param words the already parsed words from a single line of the query file
 	 * @return a sorted list of PARTIAL search results
@@ -268,45 +244,52 @@ public class InvertedIndex {
 		Map<String, SearchResult> lookup = new HashMap<String, SearchResult>();
 
 		for (String query : words) {
-			if (index.keySet() != null) {
-			 /*
-			  * TODO This is doing a linear search for a consecutive chunk of elements. We fix
-			  * these types of linear searches differently. Here, the key observation to make
-			  * is that our data is sorted. Anytime we have sorted data, we can do something
-			  * like a binary search to speed things up. In this case, we don't need to explicitly
-			  * do a binary search---this kind of functionality is built into tree data structures.
-			  * Look at this lecture example:
-			  *
-			  * https://github.com/usf-cs212-fall2020/lectures/blob/87a9175b8b45b077e0845bee90d90a63ef5d8b3b/DataStructures/src/main/java/FindDemo.java#L145-L163
-			  *
-			  * You can take a similar approach using TreeMaps too! If you aren't sure how to
-			  * adapt this for partial search, reach out on Piazza!
-			  */
-				for (String key : index.keySet()) {
+				/*
+				 * TODO This is doing a linear search for a consecutive chunk of elements. We
+				 * fix these types of linear searches differently. Here, the key observation to
+				 * make is that our data is sorted. Anytime we have sorted data, we can do
+				 * something like a binary search to speed things up. In this case, we don't
+				 * need to explicitly do a binary search---this kind of functionality is built
+				 * into tree data structures. Look at this lecture example:
+				 *$
+				 * https://github.com/usf-cs212-fall2020/lectures/blob/
+				 * 87a9175b8b45b077e0845bee90d90a63ef5d8b3b/DataStructures/src/main/java/
+				 * FindDemo.java#L145-L163
+				 *
+				 * You can take a similar approach using TreeMaps too! If you aren't sure how to
+				 * adapt this for partial search, reach out on Piazza!
+				 */
+				TreeSet<String> set = new TreeSet<String>(index.keySet());
+				for (String key : set.tailSet(query)) {
 					if (key.startsWith(query)) {
 						if (index.get(key).keySet() != null) {
-							// TODO Move this duplicate for loop into a private helper method that is called by both exact and partial search
-							for (String location : index.get(key).keySet()) {
-								if (lookup.containsKey(location)) {
-
-									lookup.get(location).update(key);
-
-								} else {
-
-									SearchResult current = new SearchResult(location);
-									current.update(key);
-									results.add(current);
-									lookup.put(location, current);
-
-								}
-							}
+							commonSearch(key,results,lookup);
 						}
 					}
 				}
-			}
 		}
 		Collections.sort(results);
 		return results;
+	}
+
+	/**
+	 * the common functionality present in both exact and partial search, adds results to results and a lookup map
+	 * 
+	 * @param input   the specific input for the different searches (query for
+	 *                exact, key for partial)
+	 * @param results the search results list to add to
+	 * @param lookup  the lookup map to add results to
+	 */
+	private void commonSearch(String input, List<SearchResult> results, Map<String, SearchResult> lookup) {
+
+		for (String location : index.get(input).keySet()) {
+			if (!lookup.containsKey(location)) {
+				SearchResult current = new SearchResult(location);
+				results.add(current);
+				lookup.put(location, current);
+			}
+			lookup.get(location).update(input);
+		}
 	}
 
 	/**
@@ -341,18 +324,18 @@ public class InvertedIndex {
 		}
 
 		/**
-		 * updates search result object
+		 * updates the count and score of search result object
 		 * 
 		 * @param word the word to add
 		 */
-		private void update(String word) { // update broken?
-			//System.out.println("updating for search result location: " + where);
+		private void update(String word) {
 			this.count += index.get(word).get(where).size();
-			//System.out.println("count rn: " + this.count);
-			this.score = this.count / (double)countMap.get(where);
+			this.score = this.count / (double) countMap.get(where);
 		}
 
 		/**
+		 * grabs the score of the search result
+		 * 
 		 * @return frequency/score of relative matches to number of words in file
 		 */
 		public double getScore() {
@@ -360,6 +343,8 @@ public class InvertedIndex {
 		}
 
 		/**
+		 * grabs the location/filename for the search result
+		 * 
 		 * @return location of result
 		 */
 		public String getWhere() {
@@ -367,15 +352,17 @@ public class InvertedIndex {
 		}
 
 		/**
+		 * grabs the count (of matches) for a search result
+		 * 
 		 * @return number of matches in result
 		 */
 		public int getCount() {
 			return count;
 		}
-		/*
-		 * how the results will be sorted
-		 */
 
+		/*
+		 * method for how the results will be sorted
+		 */
 		@Override
 		public int compareTo(SearchResult o) {
 			// if equal in score

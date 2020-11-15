@@ -56,7 +56,7 @@ public class SimpleJsonWriter {
 	}
 
 	/**
-	 * TODO Add description
+	 * writes the elements of a map out in JSON format
 	 * 
 	 * @param map    the map to write
 	 * @param writer the writer to use
@@ -163,6 +163,8 @@ public class SimpleJsonWriter {
 	}
 
 	/**
+	 * writes a map of search results for specific queries in JSON format
+	 * 
 	 * @param elements elements to format
 	 * @param writer   writer to use
 	 * @param level    indentation level
@@ -196,6 +198,8 @@ public class SimpleJsonWriter {
 	}
 
 	/**
+	 * Writes the a list of the search result objects in JSON array format
+	 * 
 	 * @param elements the search result objects to format
 	 * @param writer   the writer to use
 	 * @param level    the indentation level
@@ -224,6 +228,8 @@ public class SimpleJsonWriter {
 	}
 
 	/**
+	 * Writes the search result object in JSON format
+	 * 
 	 * @param i      the search result object to format
 	 * @param writer the writer to use
 	 * @param level  the indentation level
@@ -423,6 +429,8 @@ public class SimpleJsonWriter {
 	}
 
 	/**
+	 * Returns the map of full search results in JSON format/as a JSON object
+	 * 
 	 * @param elements results to format
 	 * @return the results as a JSON string
 	 */

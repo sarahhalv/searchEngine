@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 /**
  * class that deals with query file and produces search results
@@ -32,38 +33,41 @@ public class QueryParser {
 		this.index = index;
 		this.searchResults = new TreeMap<String, List<InvertedIndex.SearchResult>>();
 	}
-	
-	// TODO Fix your javadoc
 
 	/**
+	 * parses the query file line by line and calls parseQueryLine for the results
+	 * 
 	 * @param path  the path to the query file
 	 * @param exact whether to perform exact or partial search
 	 * @throws IOException if IO error occurs
 	 */
 	public void parseQueryFile(Path path, boolean exact) throws IOException {
-		// TODO Use try-with-resources! 
-		BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8);
-		String line;
-		while ((line = reader.readLine()) != null) { // while still lines in query file, parse
-			parseQueryLine(line, exact);
+		try (BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
+
+			String line;
+			while ((line = reader.readLine()) != null) { // while still lines in query file, parse
+				parseQueryLine(line, exact);
+			}
 		}
+
 	}
 
 	/**
+	 * parses a single line of queries and adds the appropriate type of search
+	 * result to the result map
+	 * 
 	 * @param line  the query line of text
 	 * @param exact whether its an exact search or not
 	 */
 	public void parseQueryLine(String line, boolean exact) {
-		// TODO Do not call uniqueStems over and over and over again. Do not call String.join over again.
-		// TODO Create and reuse variables as needed here
+		TreeSet<String> stems = TextFileStemmer.uniqueStems(line);
+		String query = String.join(" ", stems);
 
-		if (TextFileStemmer.uniqueStems(line) != null && TextFileStemmer.uniqueStems(line).size() != 0) {
+		if (stems != null && stems.size() != 0) {
 			if (exact) {
-				searchResults.put(String.join(" ", (TextFileStemmer.uniqueStems(line))),
-						index.exactSearch(TextFileStemmer.uniqueStems(line)));
+				searchResults.put(query, index.exactSearch(stems));
 			} else {
-				searchResults.put(String.join(" ", (TextFileStemmer.uniqueStems(line))),
-						index.partialSearch(TextFileStemmer.uniqueStems(line)));
+				searchResults.put(query, index.partialSearch(stems));
 			}
 		}
 	}
