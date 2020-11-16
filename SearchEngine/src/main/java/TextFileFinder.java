@@ -17,20 +17,14 @@ import java.util.stream.Stream;
  */
 public class TextFileFinder {
 
-
 	/**
 	 * A lambda function that returns true if the path is a file that ends in a .txt
 	 * or .text extension (case-insensitive).
 	 */
-	public static final Predicate<Path> IS_TEXT = i -> Files.isRegularFile(i)
-			&& (i.getFileName().toString().toLowerCase().endsWith(".txt")
-					|| i.getFileName().toString().toLowerCase().endsWith(".text"));
-	/*
-	 * TODO Above, avoid calling getFileName().toString().toLowerCase() multiple
-	 * times. Can either make a case insensitive regex or save that value in a
-	 * variable. That will require you to add the { } curly braces to the lambda
-	 * expression.
-	 */
+	public static final Predicate<Path> IS_TEXT = i -> {
+		var lower = i.getFileName().toString().toLowerCase();
+		return Files.isRegularFile(i) && (lower.endsWith(".txt") || lower.endsWith(".text"));
+	};
 
 	/**
 	 * Returns a stream of matching files, following any symbolic links encountered.
@@ -72,5 +66,5 @@ public class TextFileFinder {
 		List<Path> textFileList = textFiles.collect(Collectors.toList()); // convert Stream to list
 		return textFileList; // return list of text files
 	}
-	
+
 }

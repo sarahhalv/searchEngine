@@ -224,7 +224,7 @@ public class InvertedIndex {
 
 		for (String query : words) {
 			if (index.containsKey(query)) {
-				commonSearch(query,results,lookup);
+				commonSearch(query, results, lookup);
 			}
 		}
 		Collections.sort(results);
@@ -244,36 +244,19 @@ public class InvertedIndex {
 		Map<String, SearchResult> lookup = new HashMap<String, SearchResult>();
 
 		for (String query : words) {
-				/*
-				 * TODO This is doing a linear search for a consecutive chunk of elements. We
-				 * fix these types of linear searches differently. Here, the key observation to
-				 * make is that our data is sorted. Anytime we have sorted data, we can do
-				 * something like a binary search to speed things up. In this case, we don't
-				 * need to explicitly do a binary search---this kind of functionality is built
-				 * into tree data structures. Look at this lecture example:
-				 *$
-				 * https://github.com/usf-cs212-fall2020/lectures/blob/
-				 * 87a9175b8b45b077e0845bee90d90a63ef5d8b3b/DataStructures/src/main/java/
-				 * FindDemo.java#L145-L163
-				 *
-				 * You can take a similar approach using TreeMaps too! If you aren't sure how to
-				 * adapt this for partial search, reach out on Piazza!
-				 */
-				TreeSet<String> set = new TreeSet<String>(index.keySet());
-				for (String key : set.tailSet(query)) {
-					if (key.startsWith(query)) {
-						if (index.get(key).keySet() != null) {
-							commonSearch(key,results,lookup);
-						}
-					}
+			for (String key : index.tailMap(query).keySet()) {
+				if (key.startsWith(query)) {
+					commonSearch(key, results, lookup);
 				}
+			}
 		}
 		Collections.sort(results);
 		return results;
 	}
 
 	/**
-	 * the common functionality present in both exact and partial search, adds results to results and a lookup map
+	 * the common functionality present in both exact and partial search, adds
+	 * results to results and a lookup map
 	 * 
 	 * @param input   the specific input for the different searches (query for
 	 *                exact, key for partial)
