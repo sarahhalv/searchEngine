@@ -211,6 +211,13 @@ public class InvertedIndex {
 		return Collections.unmodifiableMap(countMap);
 	}
 
+	/*
+	 * TODO Create a search convenience method like this:
+	 *  public List<SearchResult> search(Set<String> words, boolean exact) {
+	 *      if exact, return exactSearch(words) else return partialSearch(words)
+	 *  }
+	 */
+	
 	/**
 	 * performs an exact search from a given set of words
 	 * 
@@ -248,6 +255,7 @@ public class InvertedIndex {
 				if (key.startsWith(query)) {
 					commonSearch(key, results, lookup);
 				}
+				// TODO else break!!! Very important for runtime.
 			}
 		}
 		Collections.sort(results);
