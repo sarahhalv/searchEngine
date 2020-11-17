@@ -82,6 +82,14 @@ public class Driver {
 				System.out.println("invalid query path");
 				return;
 			}
+			
+			/* TODO Replace your code below with this:
+			try {
+				queryParser.parseQueryFile(map.getPath("-queries"), map.hasFlag("-exact"));
+			} catch (IOException e) {
+				System.out.println("no file found or buffered reader unable to work with file for search");
+			}
+			*/
 
 			if(map.hasFlag("-exact")) {
 				try {
