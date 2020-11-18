@@ -63,17 +63,9 @@ public class QueryParser {
 		TreeSet<String> stems = TextFileStemmer.uniqueStems(line);
 		String query = String.join(" ", stems);
 
-		if (stems != null && stems.size() != 0) { // TODO Just check stems.size() != 0 or !stems.isEmpty(), remove the null check
-			// TODO Don't search if you already have query in your map (duplicate query lines)
-			// TODO And create a search method in index so you can do this:
-			/*
-			 * if query is not a key in searchResults
-			 *     searchResults.put(query, index.search(stems, exact));
-			 */
-			if (exact) {
-				searchResults.put(query, index.exactSearch(stems));
-			} else {
-				searchResults.put(query, index.partialSearch(stems));
+		if (stems.size() != 0) {
+			if(!searchResults.containsKey(query)) {
+				searchResults.put(query, index.search(stems, exact));
 			}
 		}
 	}

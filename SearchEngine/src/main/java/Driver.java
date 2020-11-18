@@ -82,29 +82,13 @@ public class Driver {
 				System.out.println("invalid query path");
 				return;
 			}
-			
-			/* TODO Replace your code below with this:
+
 			try {
 				queryParser.parseQueryFile(map.getPath("-queries"), map.hasFlag("-exact"));
 			} catch (IOException e) {
 				System.out.println("no file found or buffered reader unable to work with file for search");
 			}
-			*/
 
-			if(map.hasFlag("-exact")) {
-				try {
-					queryParser.parseQueryFile(map.getPath("-queries"), true);
-				} catch (IOException e) {
-					System.out.println("no file found or buffered reader unable to work with file for exact search");
-				}
-			}else {
-				try {
-					queryParser.parseQueryFile(map.getPath("-queries"), false);
-				} catch (IOException e) {
-					System.out.println("no file found or buffered reader unable to work with file for partial search");
-				}
-			}
-			
 		}
 
 		// if results, use provided path for the search results output file
@@ -117,7 +101,7 @@ public class Driver {
 			} catch (IOException e) {
 				System.out.println("unable to write results to file: " + map.getPath("-results"));
 			}
-			
+
 		}
 
 		// calculate time elapsed and output
