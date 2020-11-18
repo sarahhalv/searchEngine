@@ -40,8 +40,8 @@ jobs:
       - name: Setup Project Reference
         run: |
           echo "Release: ${{ github.event.inputs.release }}"
-          echo "::set-env name=RELEASE_REF::refs/tags/${{ github.event.inputs.release }}"
-          echo "::set-env name=MAIN_PATH::$(pwd)/SearchEngine"
+          echo "RELEASE_REF=refs/tags/${{ github.event.inputs.release }}" >> $GITHUB_ENV
+          echo "MAIN_PATH=$(pwd)/SearchEngine" >> $GITHUB_ENV
 
       - name: Parse Project Release
         id: parse-project-release
