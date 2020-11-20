@@ -4,6 +4,10 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import opennlp.tools.stemmer.Stemmer;
 import opennlp.tools.stemmer.snowball.SnowballStemmer;
 
@@ -15,7 +19,8 @@ import opennlp.tools.stemmer.snowball.SnowballStemmer;
 public class InvertedIndexBuilder {
 	/** The default stemmer algorithm used by this class. */
 	public static final SnowballStemmer.ALGORITHM DEFAULT = SnowballStemmer.ALGORITHM.ENGLISH;
-
+	/** Logger to use for this class. */
+	private static final Logger log = LogManager.getLogger();
 	/**
 	 * builds the inverted index that is passed in
 	 * 
@@ -23,8 +28,8 @@ public class InvertedIndexBuilder {
 	 * @param index the index to populate
 	 * @throws IOException if IO exception encountered
 	 */
-	public static void build(Path path, InvertedIndex index) throws IOException {
-
+	public void build(Path path, InvertedIndex index) throws IOException {
+		log.debug("inside normal builder build instead?");
 		if (Files.isDirectory(path)) {
 			// find and process all of the text files (with .txt and .text extensions) in
 			// that directory and its sub directories.
@@ -46,7 +51,7 @@ public class InvertedIndexBuilder {
 	 * @param index the inverted index to add he file data to
 	 * @throws IOException if IO exception occurs
 	 */
-	public static void addFile(Path file, InvertedIndex index) throws IOException {
+	public void addFile(Path file, InvertedIndex index) throws IOException {
 		Stemmer stemmer = new SnowballStemmer(DEFAULT);
 
 		try (BufferedReader reader = Files.newBufferedReader(file, StandardCharsets.UTF_8);) {
@@ -65,5 +70,6 @@ public class InvertedIndexBuilder {
 			}
 		}
 	}
+
 
 }

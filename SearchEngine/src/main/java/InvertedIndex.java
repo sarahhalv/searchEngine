@@ -280,7 +280,7 @@ public class InvertedIndex {
 	 * @param results the search results list to add to
 	 * @param lookup  the lookup map to add results to
 	 */
-	private void commonSearch(String input, List<SearchResult> results, Map<String, SearchResult> lookup) {
+	public void commonSearch(String input, List<SearchResult> results, Map<String, SearchResult> lookup) {
 
 		for (String location : index.get(input).keySet()) {
 			if (!lookup.containsKey(location)) {
@@ -328,7 +328,7 @@ public class InvertedIndex {
 		 * 
 		 * @param word the word to add
 		 */
-		private void update(String word) {
+		public void update(String word) {
 			this.count += index.get(word).get(where).size();
 			this.score = this.count / (double) countMap.get(where);
 		}
