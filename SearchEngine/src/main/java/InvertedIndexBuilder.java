@@ -11,6 +11,18 @@ import org.apache.logging.log4j.Logger;
 import opennlp.tools.stemmer.Stemmer;
 import opennlp.tools.stemmer.snowball.SnowballStemmer;
 
+/*
+ * TODO There isn't justification to have these methods suddenly non-static. 
+ * They were static before:
+ * 
+ * https://github.com/usf-cs212-fall2020/project-sarahhalv/blob/v2.4.1/SearchEngine/src/main/java/InvertedIndexBuilder.java
+ * 
+ * If you want instance methods, there is a way to design this class to use
+ * instance methods and instance data, but this isn't it. You can ask on Piazza
+ * if you want to change the design. Otherwise, make these static again and also
+ * take a static approach in your multithreaded builder class.
+ */
+
 /**
  * Class that works with and creates the nested Inverted Index
  * @author sarah 

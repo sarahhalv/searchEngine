@@ -271,6 +271,7 @@ public class InvertedIndex {
 		return results;
 	}
 
+	// TODO Make commonSearch private
 	/**
 	 * the common functionality present in both exact and partial search, adds
 	 * results to results and a lookup map
@@ -328,7 +329,7 @@ public class InvertedIndex {
 		 * 
 		 * @param word the word to add
 		 */
-		public void update(String word) {
+		public void update(String word) { // TODO Make private
 			this.count += index.get(word).get(where).size();
 			this.score = this.count / (double) countMap.get(where);
 		}

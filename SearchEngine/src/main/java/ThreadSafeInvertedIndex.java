@@ -4,6 +4,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/*
+ * TODO You do not need to add Javadoc to overridden methods most of the time,
+ * unless something is significantly different.
+ */
 
 /**
  * Inverted Index class that is thread safe
@@ -24,7 +28,7 @@ public class ThreadSafeInvertedIndex extends InvertedIndex {
 	 * @param threads the amount of threads to use
 	 *
 	 */
-	public ThreadSafeInvertedIndex(int threads) {
+	public ThreadSafeInvertedIndex(int threads) { // TODO Do not pass threads to this class
 		super();
 		lock = new ReadWriteLock();
 	}
@@ -162,6 +166,10 @@ public class ThreadSafeInvertedIndex extends InvertedIndex {
 	 */
 	@Override
 	public void toJson(Path path) throws IOException {
+		/*
+		 * TODO What is being read from versus written to? What is the shared
+		 * data here? 
+		 */
 		lock.writeLock().lock();
 		try {
 			super.toJson(path);
@@ -260,6 +268,7 @@ public class ThreadSafeInvertedIndex extends InvertedIndex {
 	 */
 	@Override
 	public List<SearchResult> exactSearch(Set<String> words) {
+		// TODO This must be protected with the lock!
 		//log.debug("inside exact search safe index");
 		return super.exactSearch(words);
 	}
@@ -272,10 +281,12 @@ public class ThreadSafeInvertedIndex extends InvertedIndex {
 	 */
 	@Override
 	public List<SearchResult> partialSearch(Set<String> words) {
+		// TODO This must be protected with the lock!
 		//log.debug("inside partial search safe index");
 		return super.partialSearch(words);
 	}
 
+	// TODO Remove, make private in InvertedIndex
 	/**
 	 * common search for threadsafe index class
 	 * 
@@ -290,6 +301,7 @@ public class ThreadSafeInvertedIndex extends InvertedIndex {
 		super.commonSearch(input, results, lookup);
 	}
 
+	// TODO Remove, don't need to override if any of the methods that change data are made private
 	/**
 	 * thread safe version of search result class
 	 * 
@@ -388,4 +400,5 @@ public class ThreadSafeInvertedIndex extends InvertedIndex {
 		}
 	}
 
+	// TODO Missing some methods: wordCountGetter, returnCountMap
 }

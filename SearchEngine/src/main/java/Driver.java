@@ -49,6 +49,14 @@ public class Driver {
 			index = new ThreadSafeInvertedIndex(workerThreads);
 			queryParser = new ThreadSafeQueryParser((ThreadSafeInvertedIndex) index, workerThreads);
 			builder = new ThreadSafeBuilder((ThreadSafeInvertedIndex) index, workerThreads);
+
+			/* TODO Don't downcast. Do this instead:
+			ThreadSafeInvertedIndex threadSafe = new ThreadSafeInvertedIndex(workerThreads);
+			index = threadSafe;
+			queryParser = new ThreadSafeQueryParser(threadSafe, workerThreads);
+			builder = new ThreadSafeBuilder(threadSafe, workerThreads);
+			*/
+		
 		} else {
 			// no multithreading
 			index = new InvertedIndex(); // create index
