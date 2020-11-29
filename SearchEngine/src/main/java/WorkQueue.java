@@ -54,6 +54,7 @@ public class WorkQueue {
 		this.workers = new PoolWorker[threads];
 
 		this.shutdown = false;
+		// TODO initialize pending here
 
 		// start the threads so they are waiting in the background
 		for (int i = 0; i < threads; i++) {
@@ -91,7 +92,7 @@ public class WorkQueue {
 	 * Waits for all pending work to be finished. Does not terminate the worker
 	 * threads so that the work queue can continue to be used.
 	 */
-	public void finish() {
+	public void finish() { // TODO Make the entire method synchronized instead
 		 log.debug("start of work queue finish method, waiting for work ..");
 		synchronized (this) { // should explicitly synchronize on queue instead ???
 			while (pending > 0) {

@@ -9,6 +9,21 @@ import java.util.TreeSet;
 //import org.apache.logging.log4j.LogManager;
 //import org.apache.logging.log4j.Logger;
 
+
+/* TODO Design
+In cases where there are common methods, but you aren't reusing very much code
+and have to either break encapsulation or create new private data, the extends
+relationship doesn't really end up helping very much.
+
+Create an interface with the common methods in your single and multithreaded
+classes. Instead of extending, have both implement that interface. Each class
+will have its own data and implementations. (There will be some opportunity still
+for code reuse, which becomes more apparent after you have the rest optimized.)
+
+public class ThreadSafeQueryParser implements QueryParserInterface
+public class QueryParser implements QueryParserInterface
+*/
+
 /**
  * QueryParser class made thread safe for multithreading
  * 
@@ -60,6 +75,12 @@ public class ThreadSafeQueryParser extends QueryParser {
 				workQueue.execute(new Task(line, exact));
 			}
 		}
+		
+		/* TODO Deadlock
+		If this method is called twice, the second time there will be no worker threads
+		active and your code will deadlock. Do not shutdown your work queue in a scope
+		different from where it was created.
+		*/
 		workQueue.join();
 	}
 

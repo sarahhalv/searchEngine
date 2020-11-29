@@ -140,7 +140,7 @@ public class ReadWriteLock {
 		 */
 		@Override
 		public void unlock() throws IllegalStateException { // UM .MAYBE
-			if (readers == 0) {
+			if (readers == 0) { // TODO Unsafe read of the shared "readers" variable!
 				throw new IllegalStateException();
 			}
 			synchronized (lock) {
@@ -154,6 +154,13 @@ public class ReadWriteLock {
 
 				assert writers == 0;
 				readers--;
+				/* TODO Over-Notification
+				You ALWAYS wake up a waiting writer thread here. Suppose you have 100 readers.
+				Every time unlock is called, you wake up any waiting writer threads. However,
+				those threads can't actually run until readers hits 0. So you wake them up 99
+				extra times. That can make your code very sluggish as threads have to constantly
+				switch their states from waiting to runnable and back again.
+				*/
 				lock.notifyAll();
 			}
 		}
@@ -168,7 +175,7 @@ public class ReadWriteLock {
 		/**
 		 * member to track which thread hold the write lock
 		 */
-		Thread writeLockHolder;
+		Thread writeLockHolder; // TODO private
 
 		/**
 		 * Waits until there are no active readers or writers in the system. Then,
@@ -204,10 +211,10 @@ public class ReadWriteLock {
 		@Override
 		public void unlock() throws IllegalStateException, ConcurrentModificationException {
 	
-			if (writers == 0) {
+			if (writers == 0) { // TODO This is an unsafe read of shared data (writers)!
 				throw new IllegalStateException();
 			}
-			if (!sameThread(writeLockHolder)) {
+			if (!sameThread(writeLockHolder)) {  // TODO This is an unsafe read of shared data (writeLockHolder)!
 				throw new ConcurrentModificationException();
 			}
 
