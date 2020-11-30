@@ -6,32 +6,17 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.TreeMap;
 import java.util.TreeSet;
-//import org.apache.logging.log4j.LogManager;
-//import org.apache.logging.log4j.Logger;
-
-
-/* TODO Design
-In cases where there are common methods, but you aren't reusing very much code
-and have to either break encapsulation or create new private data, the extends
-relationship doesn't really end up helping very much.
-
-Create an interface with the common methods in your single and multithreaded
-classes. Instead of extending, have both implement that interface. Each class
-will have its own data and implementations. (There will be some opportunity still
-for code reuse, which becomes more apparent after you have the rest optimized.)
-
-public class ThreadSafeQueryParser implements QueryParserInterface
-public class QueryParser implements QueryParserInterface
-*/
+// import org.apache.logging.log4j.LogManager;
+// import org.apache.logging.log4j.Logger;
 
 /**
  * QueryParser class made thread safe for multithreading
  * 
  * @author sarah
  */
-public class ThreadSafeQueryParser extends QueryParser {
+public class ThreadSafeQueryParser implements QueryParserInterface {
 	/** Logger to use for this class. */
-	//private static final Logger log = LogManager.getLogger();
+	// private static final Logger log = LogManager.getLogger();
 	/**
 	 * work queue to use for building
 	 */
@@ -48,25 +33,16 @@ public class ThreadSafeQueryParser extends QueryParser {
 	/**
 	 * thread safe query parser constructor
 	 * 
-	 * @param index   the safe index to use for the constructor
-	 * @param threads the amount of threads to use in the multithreading
+	 * @param index     the safe index to use for the constructor
+	 * @param workQueue the workqueue to use
 	 */
-	public ThreadSafeQueryParser(ThreadSafeInvertedIndex index, int threads) {
-		super(index);
+	public ThreadSafeQueryParser(ThreadSafeInvertedIndex index, WorkQueue workQueue) {
 		this.index = index;
 		this.searchResults = new TreeMap<String, List<InvertedIndex.SearchResult>>();
-		this.workQueue = new WorkQueue(threads);
-
+		this.workQueue = workQueue;
 	}
 
-	/**
-	 * threadsafe override for parsequeryfile. parses the query file line by line
-	 * and calls parseQueryLine for the results
-	 * 
-	 * @param path  the path to the query file
-	 * @param exact whether to perform exact or partial search
-	 * @throws IOException if IO error occurs
-	 */
+	@Override
 	public void parseQueryFile(Path path, boolean exact) throws IOException {
 		try (BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
 
@@ -75,22 +51,11 @@ public class ThreadSafeQueryParser extends QueryParser {
 				workQueue.execute(new Task(line, exact));
 			}
 		}
-		
-		/* TODO Deadlock
-		If this method is called twice, the second time there will be no worker threads
-		active and your code will deadlock. Do not shutdown your work queue in a scope
-		different from where it was created.
-		*/
-		workQueue.join();
+
+		workQueue.finish();
 	}
 
-	/**
-	 * thread safe override for parsequeryline: parses a single line of queries and
-	 * adds the appropriate type of search result to the result map
-	 * 
-	 * @param line  the query line of text
-	 * @param exact whether its an exact search or not
-	 */
+	@Override
 	public void parseQueryLine(String line, boolean exact) {
 
 		TreeSet<String> stems = TextFileStemmer.uniqueStems(line);
@@ -109,12 +74,7 @@ public class ThreadSafeQueryParser extends QueryParser {
 		}
 	}
 
-	/**
-	 * threadsafe version of writeJSON. outputs the searchResults map to file
-	 * 
-	 * @param path the file to output/write results to
-	 * @throws IOException if IO error encountered
-	 */
+	@Override
 	public void writeJson(Path path) throws IOException {
 		synchronized (searchResults) {
 			SimpleJsonWriter.asFullResults(searchResults, path);
@@ -152,6 +112,7 @@ public class ThreadSafeQueryParser extends QueryParser {
 		/*
 		 * run function for the task (performs the search on each query line)
 		 */
+		@Override
 		public void run() {
 			// log.debug("starting to run query task of: " + line);
 			parseQueryLine(line, exact);

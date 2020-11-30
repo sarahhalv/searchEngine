@@ -33,8 +33,9 @@ public class Driver {
 		Instant start = Instant.now();
 		ArgumentMap map = new ArgumentMap(args);
 		InvertedIndex index; // create index
-		QueryParser queryParser;
+		QueryParserInterface queryParser;
 		InvertedIndexBuilder builder;
+		WorkQueue workQueue = null;
 
 		int workerThreads = 5;
 		// check if program should be multithreaded
@@ -46,16 +47,12 @@ public class Driver {
 			} else {
 				workerThreads = map.getInteger("-threads", 5);
 			}
-			index = new ThreadSafeInvertedIndex(workerThreads);
-			queryParser = new ThreadSafeQueryParser((ThreadSafeInvertedIndex) index, workerThreads);
-			builder = new ThreadSafeBuilder((ThreadSafeInvertedIndex) index, workerThreads);
-
-			/* TODO Don't downcast. Do this instead:
-			ThreadSafeInvertedIndex threadSafe = new ThreadSafeInvertedIndex(workerThreads);
+			workQueue = new WorkQueue(workerThreads);
+			ThreadSafeInvertedIndex threadSafe = new ThreadSafeInvertedIndex();
 			index = threadSafe;
-			queryParser = new ThreadSafeQueryParser(threadSafe, workerThreads);
-			builder = new ThreadSafeBuilder(threadSafe, workerThreads);
-			*/
+			queryParser = new ThreadSafeQueryParser(threadSafe, workQueue);
+			builder = new ThreadSafeBuilder(threadSafe, workQueue);
+			
 		
 		} else {
 			// no multithreading
@@ -70,7 +67,13 @@ public class Driver {
 
 			Path path = map.getPath("-path");
 			try {
-				builder.build(path, index);
+				//bc static, check if multithread or regular function
+				if(builder instanceof ThreadSafeBuilder){
+					ThreadSafeBuilder.build(path, index);
+				}else {
+					InvertedIndexBuilder.build(path, index);
+				}
+				
 			} catch (NullPointerException e) {
 				System.out.println("The -path flag is missing a value.");
 				return;
@@ -154,6 +157,9 @@ public class Driver {
 		double seconds = (double) elapsed.toMillis() / Duration.ofSeconds(1).toMillis();
 		System.out.printf("Elapsed: %f seconds%n", seconds);
 
+		if(map.hasFlag("-threads")) {
+			workQueue.shutdown();
+		}
 	}
 
 }

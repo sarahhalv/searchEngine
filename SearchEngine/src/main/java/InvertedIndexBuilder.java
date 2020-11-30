@@ -11,17 +11,6 @@ import org.apache.logging.log4j.Logger;
 import opennlp.tools.stemmer.Stemmer;
 import opennlp.tools.stemmer.snowball.SnowballStemmer;
 
-/*
- * TODO There isn't justification to have these methods suddenly non-static. 
- * They were static before:
- * 
- * https://github.com/usf-cs212-fall2020/project-sarahhalv/blob/v2.4.1/SearchEngine/src/main/java/InvertedIndexBuilder.java
- * 
- * If you want instance methods, there is a way to design this class to use
- * instance methods and instance data, but this isn't it. You can ask on Piazza
- * if you want to change the design. Otherwise, make these static again and also
- * take a static approach in your multithreaded builder class.
- */
 
 /**
  * Class that works with and creates the nested Inverted Index
@@ -40,7 +29,7 @@ public class InvertedIndexBuilder {
 	 * @param index the index to populate
 	 * @throws IOException if IO exception encountered
 	 */
-	public void build(Path path, InvertedIndex index) throws IOException {
+	public static void build(Path path, InvertedIndex index) throws IOException {
 		log.debug("inside normal builder build instead?");
 		if (Files.isDirectory(path)) {
 			// find and process all of the text files (with .txt and .text extensions) in
@@ -63,7 +52,7 @@ public class InvertedIndexBuilder {
 	 * @param index the inverted index to add he file data to
 	 * @throws IOException if IO exception occurs
 	 */
-	public void addFile(Path file, InvertedIndex index) throws IOException {
+	public static void addFile(Path file, InvertedIndex index) throws IOException {
 		Stemmer stemmer = new SnowballStemmer(DEFAULT);
 
 		try (BufferedReader reader = Files.newBufferedReader(file, StandardCharsets.UTF_8);) {

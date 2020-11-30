@@ -32,10 +32,6 @@ public class ReadWriteLock {
 	/**
 	 * The lock object used for synchronized access of readers and writers. For
 	 * security reasons, a separate private final lock object is used.
-	 *
-	 * @see <a href=
-	 *      "https://wiki.sei.cmu.edu/confluence/display/java/LCK00-J.+Use+private+final+lock+objects+to+synchronize+classes+that+may+interact+with+untrusted+code">
-	 *      SEI CERT Oracle Coding Standard for Java</a>
 	 */
 	private Object lock;
 
@@ -139,8 +135,8 @@ public class ReadWriteLock {
 		 * @throws IllegalStateException if no readers to unlock
 		 */
 		@Override
-		public void unlock() throws IllegalStateException { // UM .MAYBE
-			if (readers == 0) { // TODO Unsafe read of the shared "readers" variable!
+		public void unlock() throws IllegalStateException {
+			if (readers() == 0) {
 				throw new IllegalStateException();
 			}
 			synchronized (lock) {
@@ -154,14 +150,10 @@ public class ReadWriteLock {
 
 				assert writers == 0;
 				readers--;
-				/* TODO Over-Notification
-				You ALWAYS wake up a waiting writer thread here. Suppose you have 100 readers.
-				Every time unlock is called, you wake up any waiting writer threads. However,
-				those threads can't actually run until readers hits 0. So you wake them up 99
-				extra times. That can make your code very sluggish as threads have to constantly
-				switch their states from waiting to runnable and back again.
-				*/
-				lock.notifyAll();
+				// overnotification fixed i think?
+				if (readers() == 0) {
+					lock.notifyAll();
+				}
 			}
 		}
 
@@ -173,9 +165,20 @@ public class ReadWriteLock {
 	private class WriteLock implements SimpleLock {
 
 		/**
-		 * member to track which thread hold the write lock
+		 * member to track which thread holds the write lock
 		 */
-		Thread writeLockHolder; // TODO private
+		private Thread writeLockHolder;
+
+		/**
+		 * Returns which thread currently holds the writelock
+		 *
+		 * @return the thread holding the writelock
+		 */
+		public Thread writeLockHolder() {
+			synchronized (lock) {
+				return writeLockHolder;
+			}
+		}
 
 		/**
 		 * Waits until there are no active readers or writers in the system. Then,
@@ -210,11 +213,11 @@ public class ReadWriteLock {
 		 */
 		@Override
 		public void unlock() throws IllegalStateException, ConcurrentModificationException {
-	
-			if (writers == 0) { // TODO This is an unsafe read of shared data (writers)!
+
+			if (writers() == 0) {
 				throw new IllegalStateException();
 			}
-			if (!sameThread(writeLockHolder)) {  // TODO This is an unsafe read of shared data (writeLockHolder)!
+			if (!sameThread(writeLockHolder())) {
 				throw new ConcurrentModificationException();
 			}
 

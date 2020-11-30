@@ -9,14 +9,6 @@ import org.apache.logging.log4j.Logger;
 import opennlp.tools.stemmer.Stemmer;
 import opennlp.tools.stemmer.snowball.SnowballStemmer;
 
-/* TODO Code Reuse & Efficiency
-If you create a work queue in Driver and pass it in to the constructors that need
-to use a work queue instead of the number of threads to use, you have more
-opportunity for code reuse and it is slightly more efficient. You then need to make
-sure the work queue is shutdown in Driver and call finish in your multithreaded
-classes instead of join or shutdown.
-*/
-
 /**
  * @author sarah
  *
@@ -29,24 +21,18 @@ public class ThreadSafeBuilder extends InvertedIndexBuilder { // access to all i
 	/**
 	 * work queue to use for building
 	 */
-	private final WorkQueue workQueue;
+	// private final static WorkQueue workQueue;
+	private static WorkQueue workQueue;
 
-	/* TODO Not thread-safe
-	You need to make sure all of the references here use the thread-safe inverted
-	index. Otherwise, it is possible to pass in a normal inverted index that isn't
-	properly synchronized.
-	*/
-	
 	/**
 	 * thread safe builder constructor
 	 * 
-	 * @param index   the thread safe index
-	 * @param threads the num of threads to use in wq
+	 * @param index     the thread safe index
+	 * @param workQueue the workqueue to use
 	 */
-	public ThreadSafeBuilder(InvertedIndex index, int threads) {
-		this.workQueue = new WorkQueue(threads);
+	public ThreadSafeBuilder(ThreadSafeInvertedIndex index, WorkQueue workQueue) {
+		ThreadSafeBuilder.workQueue = workQueue;
 		log.debug("a thread safe builder was made");
-
 	}
 
 	/**
@@ -56,8 +42,8 @@ public class ThreadSafeBuilder extends InvertedIndexBuilder { // access to all i
 	 * @param index the index to populate
 	 * @throws IOException if IO error encountered
 	 */
-	@Override
-	public void build(Path path, InvertedIndex index) throws IOException { // make sure u pass thread safe
+
+	public static void build(Path path, ThreadSafeInvertedIndex index) throws IOException { // make sure u pass thread safe
 		log.debug("inside thread safe build");
 		if (Files.isDirectory(path)) {
 			// find and process all of the text files (with .txt and .text extensions) in
@@ -70,24 +56,18 @@ public class ThreadSafeBuilder extends InvertedIndexBuilder { // access to all i
 		} else { // if single file, add it
 			addFile(path, index);
 		}
-		
-		/* TODO Deadlock
-		If this method is called twice, the second time there will be no worker threads
-		active and your code will deadlock. Do not shutdown your work queue in a scope
-		different from where it was created.
-		*/
-		workQueue.join();
+
+		workQueue.finish();
 	}
 
 	/**
 	 * thread safe add file method
 	 * 
 	 * @param file  the file to add into index
-	 * @param index thread sae index to populate
+	 * @param index thread safe index to populate
 	 * @throws IOException if IO error occurs
 	 */
-	@Override
-	public void addFile(Path file, InvertedIndex index) throws IOException {
+	public static void addFile(Path file, ThreadSafeInvertedIndex index) throws IOException {
 		workQueue.execute(new Task(file, index));
 	}
 
@@ -100,7 +80,7 @@ public class ThreadSafeBuilder extends InvertedIndexBuilder { // access to all i
 		/**
 		 * thread safe index to add to
 		 */
-		private InvertedIndex safeIndex;
+		private ThreadSafeInvertedIndex safeIndex;
 
 		/**
 		 * Initializes this task.
@@ -109,20 +89,22 @@ public class ThreadSafeBuilder extends InvertedIndexBuilder { // access to all i
 		 * @param index the index to use
 		 *
 		 */
-		public Task(Path path, InvertedIndex index) {
+		public Task(Path path, ThreadSafeInvertedIndex index) {
 			this.path = path;
 			this.safeIndex = index;
-			//log.debug("builder task just created : task of path " + path.toString());
+			// log.debug("builder task just created : task of path " + path.toString());
 
 		}
 
-		// TODO Add @Override
+		@Override
 		public void run() { // just addFile method
-			
-			// TODO Need to remove the duplicate code---exactly how depends on whether you want a static or non-static approach
-			
-			//log.debug("starting to run builder task of path: " + path.toString());
+
+			// TODO Need to remove the duplicate code---exactly how depends on whether you
+			// want a static or non-static approach
+
+			// log.debug("starting to run builder task of path: " + path.toString());
 			Stemmer stemmer = new SnowballStemmer(DEFAULT);
+			InvertedIndex local = new InvertedIndex();
 
 			try (BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8);) {
 				String line = null;
@@ -134,29 +116,17 @@ public class ThreadSafeBuilder extends InvertedIndexBuilder { // access to all i
 					String[] words = TextParser.parse(line);
 
 					for (String word : words) {
-						safeIndex.add((stemmer.stem(word)).toString(), fileLocation, location);
+						local.add((stemmer.stem(word)).toString(), fileLocation, location);
 						log.debug("just added stemmed word " + (stemmer.stem(word)).toString() + " to " + fileLocation);
 						location++;
 					}
 				}
+				// merge the shared data with the local data
+				safeIndex.addAll(local);
 			} catch (IOException e) {
 				log.debug("IO exception ");
 			}
-			//log.debug("finished running builder task of path: " + path.toString());
-			
-			/* TODO Over-Blocking
-			This is really slow due to the constant blocking that is happening. To avoid
-			the constant blocking that is happening, try this:
-
-			1) Use local data, like:
-			InvertedIndex local = new InvertedIndex(); <--- use the non-thread-safe version
-
-			2) Then add to that local data, avoiding blocking:
-			((your original addFile method from builder))
-
-			3) Finally merge the shared data with the local data:
-			index.addAll(local); <--- you have to create this method
-			*/			
+			// log.debug("finished running builder task of path: " + path.toString());
 		}
 	}
 }
