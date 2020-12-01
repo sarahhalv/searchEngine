@@ -18,6 +18,19 @@ public interface QueryParserInterface {
 	 */
 	public void parseQueryFile(Path path, boolean exact) throws IOException;
 
+	/* TODO Instead do this:
+	public default void parseQueryFile(Path path, boolean exact) throws IOException {
+		try (BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
+
+			String line;
+			while ((line = reader.readLine()) != null) { // while still lines in query file, parse
+				parseQueryLine(line, exact);
+			}
+		}
+	}
+	*/
+
+	
 	/**
 	 * parses a single line of queries and adds the appropriate type of search
 	 * result to the result map

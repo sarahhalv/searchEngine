@@ -34,6 +34,7 @@ public class QueryParser implements QueryParserInterface{
 		this.searchResults = new TreeMap<String, List<InvertedIndex.SearchResult>>();
 	}
 
+	// TODO Remove from here
 	@Override
 	public void parseQueryFile(Path path, boolean exact) throws IOException {
 		try (BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
@@ -43,7 +44,6 @@ public class QueryParser implements QueryParserInterface{
 				parseQueryLine(line, exact);
 			}
 		}
-
 	}
 
 	@Override

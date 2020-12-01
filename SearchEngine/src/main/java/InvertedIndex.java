@@ -56,13 +56,15 @@ public class InvertedIndex {
 	 * @param local the local index data to add to threadsafe index
 	 */
 	public void addAll(InvertedIndex local) {
+		// TODO Access private data directly
+		
 		for (String stemWord : local.getWords()) {
 			//System.out.println("stemword : " + stemWord);
 			if (!this.index.containsKey(stemWord)) {
 				this.index.put(stemWord, local.index.get(stemWord));
 			} else {
 				//System.out.println("else contains");
-				for (String location : local.getLocations(stemWord)) {
+				for (String location : local.getLocations(stemWord)) { // TODO local.index.get(stemWord).keySet(0
 					if (!this.index.get(stemWord).containsKey(location)) {
 						this.index.get(stemWord).put(location, local.index.get(stemWord).get(location));
 					}else {

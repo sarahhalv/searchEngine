@@ -136,7 +136,7 @@ public class ReadWriteLock {
 		 */
 		@Override
 		public void unlock() throws IllegalStateException {
-			if (readers() == 0) {
+			if (readers() == 0) { // TODO Move inside the synchronized (lock) block
 				throw new IllegalStateException();
 			}
 			synchronized (lock) {
@@ -213,7 +213,7 @@ public class ReadWriteLock {
 		 */
 		@Override
 		public void unlock() throws IllegalStateException, ConcurrentModificationException {
-
+			// TODO Move into the synchronized block
 			if (writers() == 0) {
 				throw new IllegalStateException();
 			}

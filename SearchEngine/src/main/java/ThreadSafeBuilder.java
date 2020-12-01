@@ -14,6 +14,7 @@ public class ThreadSafeBuilder { // access to all inverted index builder
 	/** Logger to use for this class. */
 	private static final Logger log = LogManager.getLogger();
 
+	// TODO Cleanup
 	// /**
 	// * work queue to use for building
 	// */
@@ -40,7 +41,6 @@ public class ThreadSafeBuilder { // access to all inverted index builder
 	 * @param workQueue the workqueue to use
 	 * @throws IOException if IO error encountered
 	 */
-
 	public static void build(Path path, ThreadSafeInvertedIndex index, WorkQueue workQueue) throws IOException {
 		log.debug("inside thread safe build");
 		if (Files.isDirectory(path)) {
@@ -58,7 +58,7 @@ public class ThreadSafeBuilder { // access to all inverted index builder
 		}
 
 		// potential deadlock fixed?
-		workQueue.finish();
+		workQueue.finish(); // TODO Place in a finally block
 	}
 
 	/**
@@ -70,7 +70,7 @@ public class ThreadSafeBuilder { // access to all inverted index builder
 		/**
 		 * thread safe index to add to
 		 */
-		private ThreadSafeInvertedIndex safeIndex;
+		private ThreadSafeInvertedIndex safeIndex; // TODO Final
 
 		/**
 		 * Initializes this task.
