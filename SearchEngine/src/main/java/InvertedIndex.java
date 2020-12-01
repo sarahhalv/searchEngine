@@ -50,7 +50,10 @@ public class InvertedIndex {
 	}
 
 	/**
-	 * @param local
+	 * merges the shared data (of index) with the local index data/a snippet of new
+	 * index data
+	 * 
+	 * @param local the local index data to add to threadsafe index
 	 */
 	public void addAll(InvertedIndex local) {
 		for (String stemWord : local.getWords()) {

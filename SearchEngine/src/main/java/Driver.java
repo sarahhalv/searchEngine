@@ -34,7 +34,6 @@ public class Driver {
 		ArgumentMap map = new ArgumentMap(args);
 		InvertedIndex index; // create index
 		QueryParserInterface queryParser;
-		//InvertedIndexBuilder builder;
 		WorkQueue workQueue = null;
 
 		int workerThreads = 5;
@@ -51,13 +50,11 @@ public class Driver {
 			ThreadSafeInvertedIndex threadSafe = new ThreadSafeInvertedIndex();
 			index = threadSafe;
 			queryParser = new ThreadSafeQueryParser(threadSafe, workQueue);
-			//builder = new ThreadSafeBuilder();
 
 		} else {
 			// no multithreading
 			index = new InvertedIndex(); // create index
 			queryParser = new QueryParser(index);
-			//builder = new InvertedIndexBuilder();
 		}
 		// log.debug("done with threads section");
 

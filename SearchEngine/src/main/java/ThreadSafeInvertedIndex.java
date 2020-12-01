@@ -198,21 +198,14 @@ public class ThreadSafeInvertedIndex extends InvertedIndex {
 		}
 	}
 
-	/**
-	 * merges the shared data (of index) with the local index data/a snippet of new
-	 * index data
-	 * 
-	 * @param local the local index data to add to threadsafe index
-	 */
+	@Override
 	public void addAll(InvertedIndex local) {
 		// loop thru local and add all values to threadsafe?
 		lock.writeLock().lock();
-		System.out.println("locked");
 		try {
 			super.addAll(local);
 		} finally {
 			lock.writeLock().unlock();
-			System.out.println("unlocked");
 		}
 	}
 
