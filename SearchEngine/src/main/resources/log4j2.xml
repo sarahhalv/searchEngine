@@ -21,13 +21,13 @@
 		<!-- Logger for driver class -->
 		<Logger name="Driver" additivity="false">
 			<AppenderRef ref="Console" level = "WARN"/>
-			<AppenderRef ref="FileLog" level= "ALL"/>
+			<AppenderRef ref="FileLog" level= "WARN"/>
 		</Logger>
 		
 		<!-- root to only console output info messages and higher (root is like default) -->
 		<Root level="ALL">
 			<AppenderRef ref="Console" level="INFO" />
-			<AppenderRef ref="FileLog" level= "ALL"/>
+			<AppenderRef ref="FileLog" level= "WARN"/>
 		</Root>
 	</Loggers>
 </Configuration>

@@ -50,6 +50,37 @@ public class InvertedIndex {
 	}
 
 	/**
+	 * @param local
+	 */
+	public void addAll(InvertedIndex local) {
+		for (String stemWord : local.getWords()) {
+			//System.out.println("stemword : " + stemWord);
+			if (!this.index.containsKey(stemWord)) {
+				this.index.put(stemWord, local.index.get(stemWord));
+			} else {
+				//System.out.println("else contains");
+				for (String location : local.getLocations(stemWord)) {
+					if (!this.index.get(stemWord).containsKey(location)) {
+						this.index.get(stemWord).put(location, local.index.get(stemWord).get(location));
+					}else {
+						this.index.get(stemWord).get(location).addAll(local.index.get(stemWord).get(location));
+					}
+				}
+			}
+		}
+		//merge wordcounts
+		for(String word: local.countMap.keySet()) {
+			if(!this.countMap.containsKey(word)) {
+				this.countMap.put(word, local.countMap.get(word));
+			}else {
+				if(this.wordCountGetter(word) < local.wordCountGetter(word)) {
+					this.countMap.put(word, local.wordCountGetter(word));
+				}
+			}
+		}
+	}
+
+	/**
 	 * finds the number of stemmed words in the index
 	 * 
 	 * @return number of words in index
@@ -212,20 +243,21 @@ public class InvertedIndex {
 	}
 
 	/**
-	 * a search convenience method that returns a list of search results for the passed in queries
+	 * a search convenience method that returns a list of search results for the
+	 * passed in queries
 	 * 
 	 * @param words the queries
 	 * @param exact whether its exact or partial search
 	 * @return a list of search results
 	 */
 	public List<SearchResult> search(Set<String> words, boolean exact) {
-		if(exact) {
+		if (exact) {
 			return exactSearch(words);
-		}else {
+		} else {
 			return partialSearch(words);
 		}
 	}
-	
+
 	/**
 	 * performs an exact search from a given set of words
 	 * 
@@ -262,7 +294,7 @@ public class InvertedIndex {
 			for (String key : index.tailMap(query).keySet()) {
 				if (key.startsWith(query)) {
 					commonSearch(key, results, lookup);
-				}else {
+				} else {
 					break;
 				}
 			}

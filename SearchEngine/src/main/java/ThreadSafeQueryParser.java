@@ -52,6 +52,7 @@ public class ThreadSafeQueryParser implements QueryParserInterface {
 			}
 		}
 
+		//potential deadlock fixed?
 		workQueue.finish();
 	}
 

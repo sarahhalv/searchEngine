@@ -12,10 +12,10 @@ import java.util.Set;
 public class ThreadSafeInvertedIndex extends InvertedIndex {
 
 	/** Logger to use for this class. */
-	//private static final Logger log = LogManager.getLogger();
+	// private static final Logger log = LogManager.getLogger();
 	/** The lock used to protect concurrent access to the underlying set. */
 	private final ReadWriteLock lock;
-	
+
 	/**
 	 * Initializes a thread-safe index
 	 *
@@ -64,7 +64,7 @@ public class ThreadSafeInvertedIndex extends InvertedIndex {
 			lock.readLock().unlock();
 		}
 	}
-	
+
 	@Override
 	public boolean contains(String stem) {
 		lock.readLock().lock();
@@ -84,7 +84,7 @@ public class ThreadSafeInvertedIndex extends InvertedIndex {
 			lock.readLock().unlock();
 		}
 	}
-	
+
 	@Override
 	public boolean contains(String word, String location, int position) {
 		lock.readLock().lock();
@@ -144,7 +144,7 @@ public class ThreadSafeInvertedIndex extends InvertedIndex {
 			lock.readLock().unlock();
 		}
 	}
-	
+
 	@Override
 	public int wordGetter(String word, String file) {
 		lock.readLock().lock();
@@ -157,8 +157,8 @@ public class ThreadSafeInvertedIndex extends InvertedIndex {
 
 	@Override
 	public List<SearchResult> exactSearch(Set<String> words) {
-		//log.debug("inside exact search safe index");
-		
+		// log.debug("inside exact search safe index");
+
 		lock.readLock().lock();
 		try {
 			return super.exactSearch(words);
@@ -169,7 +169,7 @@ public class ThreadSafeInvertedIndex extends InvertedIndex {
 
 	@Override
 	public List<SearchResult> partialSearch(Set<String> words) {
-		//log.debug("inside partial search safe index");
+		// log.debug("inside partial search safe index");
 		lock.readLock().lock();
 		try {
 			return super.partialSearch(words);
@@ -180,33 +180,40 @@ public class ThreadSafeInvertedIndex extends InvertedIndex {
 
 	@Override
 	public int wordCountGetter(String filename) {
+		lock.readLock().lock();
+		try {
 			return super.wordCountGetter(filename);
+		} finally {
+			lock.readLock().unlock();
+		}
 	}
 
 	@Override
 	public Map<String, Integer> returnCountMap() {
+		lock.readLock().lock();
+		try {
 			return super.returnCountMap();
+		} finally {
+			lock.readLock().unlock();
+		}
 	}
-	
+
 	/**
-	 * merges the shared data (of index) with the local index data/a snippet of new index data
+	 * merges the shared data (of index) with the local index data/a snippet of new
+	 * index data
 	 * 
 	 * @param local the local index data to add to threadsafe index
 	 */
 	public void addAll(InvertedIndex local) {
+		// loop thru local and add all values to threadsafe?
 		lock.writeLock().lock();
+		System.out.println("locked");
 		try {
-			//loop thru local and add all values to threadsafe?
-			for(String stemWord : local.getWords()) {
-				for(String location : local.getLocations(stemWord)) {
-					for(int position : local.getPositions(stemWord, location)) {
-						add(stemWord, location, position);
-					}
-				}
-			}
+			super.addAll(local);
 		} finally {
 			lock.writeLock().unlock();
+			System.out.println("unlocked");
 		}
 	}
-	
+
 }

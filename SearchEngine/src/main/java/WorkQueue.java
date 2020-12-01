@@ -94,7 +94,7 @@ public class WorkQueue {
 	 */
 	public void finish() {
 		synchronized (this) {
-			log.debug("start of work queue finish method, waiting for work ..");
+			//log.debug("start of work queue finish method, waiting for work ..");
 			while (pending > 0) {
 				try {
 					this.wait();
@@ -102,9 +102,9 @@ public class WorkQueue {
 					Thread.currentThread().interrupt();
 					// System.err.println("Warning: Work queue interrupted.");
 				}
-				log.debug("Woke up with pending at {}.", pending);
+				//log.debug("Woke up with pending at {}.", pending);
 			}
-			log.debug("Work finished. (workqueue finish())");
+			//log.debug("Work finished. (workqueue finish())");
 		}
 	}
 

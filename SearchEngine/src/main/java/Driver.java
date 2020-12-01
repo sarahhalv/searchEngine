@@ -34,7 +34,7 @@ public class Driver {
 		ArgumentMap map = new ArgumentMap(args);
 		InvertedIndex index; // create index
 		QueryParserInterface queryParser;
-		InvertedIndexBuilder builder;
+		//InvertedIndexBuilder builder;
 		WorkQueue workQueue = null;
 
 		int workerThreads = 5;
@@ -51,14 +51,13 @@ public class Driver {
 			ThreadSafeInvertedIndex threadSafe = new ThreadSafeInvertedIndex();
 			index = threadSafe;
 			queryParser = new ThreadSafeQueryParser(threadSafe, workQueue);
-			builder = new ThreadSafeBuilder(threadSafe, workQueue);
-			
-		
+			//builder = new ThreadSafeBuilder();
+
 		} else {
 			// no multithreading
 			index = new InvertedIndex(); // create index
 			queryParser = new QueryParser(index);
-			builder = new InvertedIndexBuilder();
+			//builder = new InvertedIndexBuilder();
 		}
 		// log.debug("done with threads section");
 
@@ -67,13 +66,14 @@ public class Driver {
 
 			Path path = map.getPath("-path");
 			try {
-				//bc static, check if multithread or regular function
-				if(builder instanceof ThreadSafeBuilder){
-					ThreadSafeBuilder.build(path, index);
-				}else {
+				// bc static, check if multithread or regular function
+				if (map.hasFlag("-threads")) {
+					ThreadSafeBuilder.build(path, (ThreadSafeInvertedIndex)index, workQueue);
+					//ThreadSafeBuilder.build(path, index);
+				} else {
 					InvertedIndexBuilder.build(path, index);
 				}
-				
+
 			} catch (NullPointerException e) {
 				System.out.println("The -path flag is missing a value.");
 				return;
@@ -157,7 +157,7 @@ public class Driver {
 		double seconds = (double) elapsed.toMillis() / Duration.ofSeconds(1).toMillis();
 		System.out.printf("Elapsed: %f seconds%n", seconds);
 
-		if(map.hasFlag("-threads")) {
+		if (map.hasFlag("-threads")) {
 			workQueue.shutdown();
 		}
 	}
