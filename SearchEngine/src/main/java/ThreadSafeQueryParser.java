@@ -53,12 +53,15 @@ public class ThreadSafeQueryParser implements QueryParserInterface {
 		}
 
 		//potential deadlock fixed?
+		// TODO QueryParserInterface.super.parseQueryFile(path, exact);
 		workQueue.finish();
 	}
 
 	@Override
 	public void parseQueryLine(String line, boolean exact) {
-
+		// TODO workQueue.execute(new Task(line, exact));
+		
+		// TODO Move the code below into the run() method
 		TreeSet<String> stems = TextFileStemmer.uniqueStems(line);
 		String query = String.join(" ", stems);
 
