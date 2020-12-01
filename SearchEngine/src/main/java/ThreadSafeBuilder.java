@@ -9,28 +9,10 @@ import org.apache.logging.log4j.Logger;
  * @author sarah
  *
  */
-public class ThreadSafeBuilder { // access to all inverted index builder
+public class ThreadSafeBuilder { 
 
 	/** Logger to use for this class. */
 	private static final Logger log = LogManager.getLogger();
-
-	// /**
-	// * work queue to use for building
-	// */
-	// // private final static WorkQueue workQueue;
-	// private static WorkQueue workQueue;
-	//
-	// /**
-	// * thread safe builder constructor
-	// *
-	// * @param index the thread safe index
-	// * @param workQueue the workqueue to use
-	// */
-	// public ThreadSafeBuilder(ThreadSafeInvertedIndex index, WorkQueue workQueue)
-	// {
-	// ThreadSafeBuilder.workQueue = workQueue;
-	// log.debug("a thread safe builder was made");
-	// }
 
 	/**
 	 * thread safe build method
