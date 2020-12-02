@@ -1,4 +1,6 @@
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
@@ -34,20 +36,27 @@ public class Driver {
 		ArgumentMap map = new ArgumentMap(args);
 		InvertedIndex index; // create index
 		QueryParserInterface queryParser;
-
 		ThreadSafeInvertedIndex threadSafe = null;
 		WorkQueue workQueue = null;
 
 		int workerThreads = 5;
 		// check if program should be multithreaded
-		if (map.hasFlag("-threads")) {
+		if (map.hasFlag("-threads") || map.hasFlag("-url")) {
 			// log.debug("threads flag found, beginning of threads section");
-			// get number of worker threads to use, or 5 if no number provided
-			if (map.getInteger("-threads", 5) <= 0) {
+
+			// if url flag, worker threads is default (5)
+			if (map.hasFlag("-url")) {
 				workerThreads = 5;
 			} else {
-				workerThreads = map.getInteger("-threads", 5);
+				// threads flag instead
+				// get number of worker threads to use, or 5 if no number provided
+				if (map.getInteger("-threads", 5) <= 0) {
+					workerThreads = 5;
+				} else {
+					workerThreads = map.getInteger("-threads", 5);
+				}
 			}
+
 			workQueue = new WorkQueue(workerThreads);
 			threadSafe = new ThreadSafeInvertedIndex();
 			index = threadSafe;
@@ -81,6 +90,31 @@ public class Driver {
 			}
 		}
 		// log.debug("done with path section");
+
+		// if url flag, build index from seed url
+		if (map.hasFlag("-url")) {
+
+			// get number of URLs to crawl when building index
+			int total = 1;
+			if (map.hasFlag("-max")) {
+				if (map.getInteger("-max", 1) <= 0) {
+					total = 1;
+				} else {
+					total = map.getInteger("-max", 1);
+				}
+			}
+			//make new webcrawler instance and pass in workqueue
+			WebCrawler webCrawler = new WebCrawler(workQueue, total, threadSafe);
+			URL seed;
+			try {
+				seed = new URL(map.getString("-url"));
+			} catch (MalformedURLException e) {
+				System.out.println("unable to grab url from -url flag");
+				return;
+			}
+			webCrawler.crawl(seed);
+		}
+
 		/*
 		 * writing a nested data structure (matching your inverted index data structure)
 		 * to a file in JSON format (SimpleJSONWriter)
