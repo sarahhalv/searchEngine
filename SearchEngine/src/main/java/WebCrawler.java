@@ -1,6 +1,7 @@
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Class that deals with the webcrawling aspects of building the inverted index
@@ -13,7 +14,7 @@ public class WebCrawler {
 	/**
 	 * urls that have already been parsed
 	 */
-	private List<URL> parsedURLs = new ArrayList<>();
+	private Set<URL> parsedURLs = new HashSet<>();
 	/**
 	 * work queue to use for dealing with urls/links and building
 	 */
@@ -45,8 +46,6 @@ public class WebCrawler {
 		this.workQueue = workQueue;
 		this.total = total;
 		this.safeIndex = safeIndex;
-		System.out.println("total is: "+ total);
-
 	}
 
 	/**
@@ -58,7 +57,9 @@ public class WebCrawler {
 		// should really only add a task to your work queue (and maybe track the URL
 		// being parsed)
 		urlsCrawled++; // increment for total
-		parsedURLs.add(seed); // marked as parsed
+		synchronized(parsedURLs) {
+			parsedURLs.add(seed); // marked as parsed
+		}
 		workQueue.execute(new Task(seed));
 	}
 
@@ -88,7 +89,7 @@ public class WebCrawler {
 		 */
 		@Override
 		public void run() {
-			System.out.println("inside run rn");
+			System.out.println("inside run rn: url is: "+url);
 			// log.debug("starting to run webcrawler task of: " + url);
 			// download the html
 			String html = HtmlFetcher.fetch(url, 3);
@@ -98,20 +99,20 @@ public class WebCrawler {
 			// links
 			html = HtmlCleaner.stripBlockElements(html);
 			System.out.println("after html cleaner :" +html);
-			// parse the links
-			// unique link that haven't already been (or will be) crawled and you are below
-			// the maximum,
+			// parse the links (unique links that havent been crawled and if below max)
 			ArrayList<URL> links = LinkParser.getValidLinks(url, html);
 			System.out.println("valid links grabbed :" + links.toString());
 			for (URL link : links) {
 				if (urlsCrawled == total) {
 					// total met. done parsing
 					System.out.println("total met so returning");
-					return;
+					break;
 				} else if (!parsedURLs.contains(link)) {
 					// add new task to queue
 					urlsCrawled++;
-					parsedURLs.add(link);
+					synchronized(parsedURLs) {
+						parsedURLs.add(link);
+					}
 					workQueue.execute(new Task(link));
 					System.out.println("new task just created");
 				}

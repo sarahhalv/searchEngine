@@ -39,7 +39,7 @@ public class HttpsFetcher {
 				InputStreamReader input = new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8);
 				BufferedReader response = new BufferedReader(input);
 		) {
-			System.out.println("made it out the fetch url try");
+			System.out.println("made it out the fetch url try block");
 			printGetRequest(request, url);
 
 			Map<String, List<String>> headers = getHeaderFields(response);
