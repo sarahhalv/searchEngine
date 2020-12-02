@@ -1,8 +1,11 @@
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.MalformedURLException;
+import java.net.Socket;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -91,15 +94,21 @@ public class HtmlFetcher {
 	 * @see #isRedirect(Map)
 	 */
 	public static String fetch(URL url, int redirects) {
-		System.out.println("inside fetch rn");
+		System.out.println("inside htmlfetcher fetch rn");
 		Map<String, List<String>> headers;
-		try {
-			headers = HttpsFetcher.fetchURL(url);
-			System.out.println("made it after fetch url");
+		try (
+				Socket socket = HttpsFetcher.openConnection(url);
+				PrintWriter request = new PrintWriter(socket.getOutputStream());
+				InputStreamReader input = new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8);
+				BufferedReader response = new BufferedReader(input);
+		) {
+			HttpsFetcher.printGetRequest(request, url);
+			System.out.println("after try");
+			headers = HttpsFetcher.getHeaderFields(response);
 			
 			// if 200 and html
 			if (getStatusCode(headers) == 200 && isHtml(headers)) {
-				String html = String.join("\n", headers.get("Content"));
+				String html = String.join("\n", HttpsFetcher.getContent(response));
 				System.out.println("fetch returning: "+ html);
 				return html;
 			}

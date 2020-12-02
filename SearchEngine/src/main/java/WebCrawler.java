@@ -56,10 +56,7 @@ public class WebCrawler {
 	public void crawl(URL seed) {
 		// should really only add a task to your work queue (and maybe track the URL
 		// being parsed)
-		urlsCrawled++; // increment for total
-		synchronized(parsedURLs) {
-			parsedURLs.add(seed); // marked as parsed
-		}
+		parsedURLs.add(seed); // marked as parsed
 		workQueue.execute(new Task(seed));
 	}
 
@@ -89,7 +86,7 @@ public class WebCrawler {
 		 */
 		@Override
 		public void run() {
-			System.out.println("inside run rn: url is: "+url);
+			System.out.println("inside run rn: url is: " + url);
 			// log.debug("starting to run webcrawler task of: " + url);
 			// download the html
 			String html = HtmlFetcher.fetch(url, 3);
@@ -98,30 +95,33 @@ public class WebCrawler {
 			// Remove any HTML block elements that should not be considered for parsing
 			// links
 			html = HtmlCleaner.stripBlockElements(html);
-			System.out.println("after html cleaner :" +html);
+			System.out.println("after html cleaner :" + html);
+
 			// parse the links (unique links that havent been crawled and if below max)
 			ArrayList<URL> links = LinkParser.getValidLinks(url, html);
 			System.out.println("valid links grabbed :" + links.toString());
-			for (URL link : links) {
-				if (urlsCrawled == total) {
-					// total met. done parsing
-					System.out.println("total met so returning");
-					break;
-				} else if (!parsedURLs.contains(link)) {
-					// add new task to queue
-					urlsCrawled++;
-					synchronized(parsedURLs) {
+			
+			synchronized (parsedURLs) {
+				for (URL link : links) {
+
+					if (parsedURLs.size() >= total) {
+						// total met. done parsing
+						System.out.println("total met so returning");
+						break;
+					} else if (!parsedURLs.contains(link)) {
+						// add new task to queue & url to used
 						parsedURLs.add(link);
+						workQueue.execute(new Task(link));
+						System.out.println("new task just created");
 					}
-					workQueue.execute(new Task(link));
-					System.out.println("new task just created");
 				}
 			}
-
+			
 			// Remove all of the remaining HTML tags and entities.
 			html = HtmlCleaner.stripTags(html);
 			html = HtmlCleaner.stripEntities(html);
 			System.out.println("stripped html of tags and entities: " + html);
+
 			// Clean, parse, and stem the resulting text to
 			// populate the inverted index in the same way plain text files were handled in
 			// previous projects.
@@ -132,10 +132,10 @@ public class WebCrawler {
 				local.add(stem, url.toString(), location);
 				location++;
 			}
-			System.out.println("local index : " + local.toString());
+			//System.out.println("local index : " + local.toString());
 			// merge the shared data with the local data
 			safeIndex.addAll(local);
-			System.out.println("safe index: "+safeIndex.toString());
+			//System.out.println("safe index: " + safeIndex.toString());
 			// log.debug("finished running webcrawler task of:" + url);
 		}
 	}

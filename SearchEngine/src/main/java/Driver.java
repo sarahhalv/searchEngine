@@ -109,7 +109,7 @@ public class Driver {
 			try {
 				seed = new URL(map.getString("-url"));
 			} catch (MalformedURLException e) {
-				System.out.println("unable to grab url from -url flag");
+				System.out.println("unable to grab/create url from -url flag");
 				return;
 			}
 			webCrawler.crawl(seed);
