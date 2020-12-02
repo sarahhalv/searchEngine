@@ -31,11 +31,6 @@ public class WebCrawler {
 	ThreadSafeInvertedIndex safeIndex;
 
 	/**
-	 * counter for how many URLS have been crawled
-	 */
-	private int urlsCrawled = 0;
-
-	/**
 	 * web crawler class constructor
 	 * 
 	 * @param workQueue the work queue to use

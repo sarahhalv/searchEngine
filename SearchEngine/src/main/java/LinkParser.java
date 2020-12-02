@@ -67,7 +67,7 @@ public class LinkParser {
 				continue; // don't add
 			}
 
-			System.out.println(matched);
+			//System.out.println(matched);
 		}
 
 		return urls;

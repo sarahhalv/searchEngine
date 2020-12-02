@@ -132,7 +132,7 @@ public class HtmlCleaner {
 	 */
 	public static String stripElement(String html, String name) {
 		//take same approach
-		Pattern pattern = Pattern.compile("(?is)<"+name+".*?>.*?<\\/"+name+"\\s*>");
+		Pattern pattern = Pattern.compile("(?is)<"+name+"[^>]*?>.*?<\\/"+name+"\\s*>");
 		return pattern.matcher(html).replaceAll(HtmlCleaner::lookForNewLine);
 	}
 	
