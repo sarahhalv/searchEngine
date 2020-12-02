@@ -32,20 +32,20 @@ public class HttpsFetcher {
 	 * @throws IOException if unable to fetch headers and content
 	 */
 	public static Map<String, List<String>> fetchURL(URL url) throws IOException {
-		System.out.println("inside https fetch URL");
+		//System.out.println("inside https fetch URL");
 		try (
 				Socket socket = openConnection(url);
 				PrintWriter request = new PrintWriter(socket.getOutputStream());
 				InputStreamReader input = new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8);
 				BufferedReader response = new BufferedReader(input);
 		) {
-			System.out.println("made it out the fetch url try block");
+			//System.out.println("made it out the fetch url try block");
 			printGetRequest(request, url);
 
 			Map<String, List<String>> headers = getHeaderFields(response);
 			List<String> content = getContent(response);
 			headers.put("Content", content);
-			System.out.println("returning headers from fetch url");
+			//System.out.println("returning headers from fetch url");
 			return headers;
 		}
 	}
