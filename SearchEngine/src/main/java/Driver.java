@@ -34,8 +34,8 @@ public class Driver {
 		ArgumentMap map = new ArgumentMap(args);
 		InvertedIndex index; // create index
 		QueryParserInterface queryParser;
-		
-		// TODO ThreadSafeInvertedIndex threadSafe = null;
+
+		ThreadSafeInvertedIndex threadSafe = null;
 		WorkQueue workQueue = null;
 
 		int workerThreads = 5;
@@ -49,7 +49,7 @@ public class Driver {
 				workerThreads = map.getInteger("-threads", 5);
 			}
 			workQueue = new WorkQueue(workerThreads);
-			ThreadSafeInvertedIndex threadSafe = new ThreadSafeInvertedIndex();
+			threadSafe = new ThreadSafeInvertedIndex();
 			index = threadSafe;
 			queryParser = new ThreadSafeQueryParser(threadSafe, workQueue);
 
@@ -66,10 +66,8 @@ public class Driver {
 			Path path = map.getPath("-path");
 			try {
 				// bc static, check if multithread or regular function
-				// TODO if (threadSafe != null) { ThreadSafeBuilder.build(path, threadSafe, workQueue);}
-				if (map.hasFlag("-threads")) {
-					ThreadSafeBuilder.build(path, (ThreadSafeInvertedIndex)index, workQueue);
-					//ThreadSafeBuilder.build(path, index);
+				if (threadSafe != null) {
+					ThreadSafeBuilder.build(path, threadSafe, workQueue);
 				} else {
 					InvertedIndexBuilder.build(path, index);
 				}
@@ -157,7 +155,7 @@ public class Driver {
 		double seconds = (double) elapsed.toMillis() / Duration.ofSeconds(1).toMillis();
 		System.out.printf("Elapsed: %f seconds%n", seconds);
 
-		if (map.hasFlag("-threads")) { // TODO workQueue != null
+		if (workQueue != null) {
 			workQueue.shutdown();
 		}
 	}

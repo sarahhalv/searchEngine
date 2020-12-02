@@ -1,4 +1,7 @@
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 /**
@@ -16,9 +19,7 @@ public interface QueryParserInterface {
 	 * @param exact whether to perform exact or partial search
 	 * @throws IOException if IO error occurs
 	 */
-	public void parseQueryFile(Path path, boolean exact) throws IOException;
 
-	/* TODO Instead do this:
 	public default void parseQueryFile(Path path, boolean exact) throws IOException {
 		try (BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
 
@@ -28,9 +29,7 @@ public interface QueryParserInterface {
 			}
 		}
 	}
-	*/
 
-	
 	/**
 	 * parses a single line of queries and adds the appropriate type of search
 	 * result to the result map

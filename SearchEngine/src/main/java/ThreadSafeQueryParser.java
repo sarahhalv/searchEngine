@@ -1,7 +1,4 @@
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.TreeMap;
@@ -44,38 +41,13 @@ public class ThreadSafeQueryParser implements QueryParserInterface {
 
 	@Override
 	public void parseQueryFile(Path path, boolean exact) throws IOException {
-		try (BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
-
-			String line;
-			while ((line = reader.readLine()) != null) { // while still lines in query file, parse
-				workQueue.execute(new Task(line, exact));
-			}
-		}
-
-		//potential deadlock fixed?
-		// TODO QueryParserInterface.super.parseQueryFile(path, exact);
+		QueryParserInterface.super.parseQueryFile(path, exact);
 		workQueue.finish();
 	}
 
 	@Override
 	public void parseQueryLine(String line, boolean exact) {
-		// TODO workQueue.execute(new Task(line, exact));
-		
-		// TODO Move the code below into the run() method
-		TreeSet<String> stems = TextFileStemmer.uniqueStems(line);
-		String query = String.join(" ", stems);
-
-		if (stems.size() != 0) {
-			synchronized (searchResults) {
-				if (searchResults.containsKey(query)) {
-					return;
-				}
-			}
-			List<InvertedIndex.SearchResult> result = index.search(stems, exact);
-			synchronized (searchResults) {
-				searchResults.put(query, result);
-			}
-		}
+		workQueue.execute(new Task(line, exact));
 	}
 
 	@Override
@@ -119,7 +91,21 @@ public class ThreadSafeQueryParser implements QueryParserInterface {
 		@Override
 		public void run() {
 			// log.debug("starting to run query task of: " + line);
-			parseQueryLine(line, exact);
+			// parseQueryLine(line, exact);
+			TreeSet<String> stems = TextFileStemmer.uniqueStems(line);
+			String query = String.join(" ", stems);
+
+			if (stems.size() != 0) {
+				synchronized (searchResults) {
+					if (searchResults.containsKey(query)) {
+						return;
+					}
+				}
+				List<InvertedIndex.SearchResult> result = index.search(stems, exact);
+				synchronized (searchResults) {
+					searchResults.put(query, result);
+				}
+			}
 			// log.debug("finished running query task of:" + line);
 		}
 	}

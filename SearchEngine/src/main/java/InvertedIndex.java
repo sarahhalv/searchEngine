@@ -56,30 +56,29 @@ public class InvertedIndex {
 	 * @param local the local index data to add to threadsafe index
 	 */
 	public void addAll(InvertedIndex local) {
-		// TODO Access private data directly
-		
-		for (String stemWord : local.getWords()) {
-			//System.out.println("stemword : " + stemWord);
+
+		for (String stemWord : local.index.keySet()) {
+			// System.out.println("stemword : " + stemWord);
 			if (!this.index.containsKey(stemWord)) {
 				this.index.put(stemWord, local.index.get(stemWord));
 			} else {
-				//System.out.println("else contains");
-				for (String location : local.getLocations(stemWord)) { // TODO local.index.get(stemWord).keySet(0
+				// System.out.println("else contains");
+				for (String location : local.index.get(stemWord).keySet()) {
 					if (!this.index.get(stemWord).containsKey(location)) {
 						this.index.get(stemWord).put(location, local.index.get(stemWord).get(location));
-					}else {
+					} else {
 						this.index.get(stemWord).get(location).addAll(local.index.get(stemWord).get(location));
 					}
 				}
 			}
 		}
-		//merge wordcounts
-		for(String word: local.countMap.keySet()) {
-			if(!this.countMap.containsKey(word)) {
-				this.countMap.put(word, local.countMap.get(word));
-			}else {
-				if(this.wordCountGetter(word) < local.wordCountGetter(word)) {
-					this.countMap.put(word, local.wordCountGetter(word));
+		// merge wordcounts
+		for (String filename : local.countMap.keySet()) {
+			if (!this.countMap.containsKey(filename)) {
+				this.countMap.put(filename, local.countMap.get(filename));
+			} else {
+				if (this.countMap.get(filename) < local.countMap.get(filename)) {
+					this.countMap.put(filename, local.countMap.get(filename));
 				}
 			}
 		}

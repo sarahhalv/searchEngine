@@ -9,29 +9,10 @@ import org.apache.logging.log4j.Logger;
  * @author sarah
  *
  */
-public class ThreadSafeBuilder { // access to all inverted index builder
+public class ThreadSafeBuilder {
 
 	/** Logger to use for this class. */
 	private static final Logger log = LogManager.getLogger();
-
-	// TODO Cleanup
-	// /**
-	// * work queue to use for building
-	// */
-	// // private final static WorkQueue workQueue;
-	// private static WorkQueue workQueue;
-	//
-	// /**
-	// * thread safe builder constructor
-	// *
-	// * @param index the thread safe index
-	// * @param workQueue the workqueue to use
-	// */
-	// public ThreadSafeBuilder(ThreadSafeInvertedIndex index, WorkQueue workQueue)
-	// {
-	// ThreadSafeBuilder.workQueue = workQueue;
-	// log.debug("a thread safe builder was made");
-	// }
 
 	/**
 	 * thread safe build method
@@ -43,22 +24,23 @@ public class ThreadSafeBuilder { // access to all inverted index builder
 	 */
 	public static void build(Path path, ThreadSafeInvertedIndex index, WorkQueue workQueue) throws IOException {
 		log.debug("inside thread safe build");
-		if (Files.isDirectory(path)) {
-			// find and process all of the text files (with .txt and .text extensions) in
-			// that directory and its sub directories.
-			List<Path> files = TextFileFinder.list(path);
-			// storing a word, file path, and location into an inverted index data structure
-			for (Path file : files) { // iterate through the files
-				// addFile(file, index, workQueue);
-				workQueue.execute(new Task(file, index));
-			}
-		} else { // if single file, add it
-			// addFile(path, index, workQueue);
-			workQueue.execute(new Task(path, index));
-		}
+		try {
+			if (Files.isDirectory(path)) {
+				// find and process all of the text files (with .txt and .text extensions) in
+				// that directory and its sub directories.
+				List<Path> files = TextFileFinder.list(path);
+				// storing a word, file path, and location into an inverted index data structure
+				for (Path file : files) { // iterate through the files
 
-		// potential deadlock fixed?
-		workQueue.finish(); // TODO Place in a finally block
+					workQueue.execute(new Task(file, index));
+				}
+			} else { // if single file, add it
+
+				workQueue.execute(new Task(path, index));
+			}
+		} finally {
+			workQueue.finish();
+		}
 	}
 
 	/**
@@ -70,7 +52,7 @@ public class ThreadSafeBuilder { // access to all inverted index builder
 		/**
 		 * thread safe index to add to
 		 */
-		private ThreadSafeInvertedIndex safeIndex; // TODO Final
+		private final ThreadSafeInvertedIndex safeIndex;
 
 		/**
 		 * Initializes this task.
@@ -88,7 +70,7 @@ public class ThreadSafeBuilder { // access to all inverted index builder
 
 		@Override
 		public void run() { // just addFile method
-			 log.debug("starting to run builder task of path: " + path.toString());
+			log.debug("starting to run builder task of path: " + path.toString());
 			InvertedIndex local = new InvertedIndex();
 
 			try {
@@ -96,7 +78,7 @@ public class ThreadSafeBuilder { // access to all inverted index builder
 			} catch (IOException e) {
 				System.out.println("addfile within builder task run failed");
 			}
-			//System.out.println("add file ovr");
+			// System.out.println("add file ovr");
 			// merge the shared data with the local data
 			safeIndex.addAll(local);
 			log.debug("finished running builder task of path: " + path.toString());

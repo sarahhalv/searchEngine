@@ -92,8 +92,7 @@ public class WorkQueue {
 	 * Waits for all pending work to be finished. Does not terminate the worker
 	 * threads so that the work queue can continue to be used.
 	 */
-	public void finish() { // TODO Make method synchronized
-		synchronized (this) {
+	public synchronized void finish() { 
 			//log.debug("start of work queue finish method, waiting for work ..");
 			while (pending > 0) {
 				try {
@@ -105,7 +104,6 @@ public class WorkQueue {
 				//log.debug("Woke up with pending at {}.", pending);
 			}
 			//log.debug("Work finished. (workqueue finish())");
-		}
 	}
 
 	/**
@@ -135,14 +133,12 @@ public class WorkQueue {
 	 * decrements shared pending count/variable; wakes up any waiting threads
 	 */
 	private synchronized void decrementPending() {
-		synchronized (queue) { // TODO Remove
 			assert pending > 0;
 			pending--;
 
 			if (pending == 0) {
 				this.notifyAll();
 			}
-		}
 	}
 
 	/**

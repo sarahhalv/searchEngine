@@ -1,7 +1,4 @@
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.TreeMap;
@@ -13,7 +10,7 @@ import java.util.TreeSet;
  * @author sarah
  *
  */
-public class QueryParser implements QueryParserInterface{
+public class QueryParser implements QueryParserInterface {
 
 	/**
 	 * index to use
@@ -34,25 +31,13 @@ public class QueryParser implements QueryParserInterface{
 		this.searchResults = new TreeMap<String, List<InvertedIndex.SearchResult>>();
 	}
 
-	// TODO Remove from here
-	@Override
-	public void parseQueryFile(Path path, boolean exact) throws IOException {
-		try (BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
-
-			String line;
-			while ((line = reader.readLine()) != null) { // while still lines in query file, parse
-				parseQueryLine(line, exact);
-			}
-		}
-	}
-
 	@Override
 	public void parseQueryLine(String line, boolean exact) {
 		TreeSet<String> stems = TextFileStemmer.uniqueStems(line);
 		String query = String.join(" ", stems);
 
 		if (stems.size() != 0) {
-			if(!searchResults.containsKey(query)) {
+			if (!searchResults.containsKey(query)) {
 				searchResults.put(query, index.search(stems, exact));
 			}
 		}
