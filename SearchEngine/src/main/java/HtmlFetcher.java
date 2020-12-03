@@ -94,38 +94,33 @@ public class HtmlFetcher {
 	 * @see #isRedirect(Map)
 	 */
 	public static String fetch(URL url, int redirects) {
-		//System.out.println("inside htmlfetcher fetch rn");
 		Map<String, List<String>> headers;
-		try (
-				Socket socket = HttpsFetcher.openConnection(url);
+		try (Socket socket = HttpsFetcher.openConnection(url);
 				PrintWriter request = new PrintWriter(socket.getOutputStream());
 				InputStreamReader input = new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8);
-				BufferedReader response = new BufferedReader(input);
-		) {
+				BufferedReader response = new BufferedReader(input);) {
 			HttpsFetcher.printGetRequest(request, url);
-			//System.out.println("after try");
+
 			headers = HttpsFetcher.getHeaderFields(response);
-			
+
 			// if 200 and html
 			if (getStatusCode(headers) == 200 && isHtml(headers)) {
 				String html = String.join("\n", HttpsFetcher.getContent(response));
-				//System.out.println("fetch returning: "+ html);
+
 				return html;
 			}
 
 			// if redirect
 			if (isRedirect(headers)) {
-				if(redirects > 0) {
+				if (redirects > 0) {
 					redirects--;
-					//System.out.println("redirecting");
 					return fetch(headers.get("Location").get(0), redirects); // correct ?
 				}
 			}
-			
+
 		} catch (IOException e) {
 			System.out.println("unable to get headers from httpsfetcher fetch url");
 		}
-		//System.out.println("returning null?");
 		return null;
 	}
 

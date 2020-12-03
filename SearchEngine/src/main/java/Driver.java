@@ -44,18 +44,14 @@ public class Driver {
 		if (map.hasFlag("-threads") || map.hasFlag("-url")) {
 			// log.debug("threads flag found, beginning of threads section");
 
-			// if url flag, worker threads is default (5)
-			if (map.hasFlag("-url")) {
+			// threads flag instead
+			// get number of worker threads to use, or 5 if no number provided
+			if (map.getInteger("-threads", 5) <= 0) {
 				workerThreads = 5;
 			} else {
-				// threads flag instead
-				// get number of worker threads to use, or 5 if no number provided
-				if (map.getInteger("-threads", 5) <= 0) {
-					workerThreads = 5;
-				} else {
-					workerThreads = map.getInteger("-threads", 5);
-				}
+				workerThreads = map.getInteger("-threads", 5);
 			}
+			// }
 
 			workQueue = new WorkQueue(workerThreads);
 			threadSafe = new ThreadSafeInvertedIndex();
@@ -103,7 +99,7 @@ public class Driver {
 					total = map.getInteger("-max", 1);
 				}
 			}
-			//make new webcrawler instance and pass in workqueue
+			// make new webcrawler instance and pass in workqueue
 			WebCrawler webCrawler = new WebCrawler(workQueue, total, threadSafe);
 			URL seed;
 			try {
