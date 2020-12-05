@@ -1,0 +1,28 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>${title}</title>
+</head>
+
+<body style="background-color:MintCream;">
+  <h1 style="color:DarkSeaGreen;font-family:verdana;">Search Engine</h1>
+  
+  <ol>
+ 	 ${messages}
+  </ol>
+
+  <form method="${method}" action="${action}">
+    
+    <p>
+      <input type="text" name="query" id="query" maxlength="100" size="60">
+      <input type="submit" value="Search">
+    </p>
+  </form>
+  
+  <p style="font-size:80%;">This request was handled by thread ${thread}.</p>
+
+</body>
+</html>

@@ -1,15 +1,15 @@
 {
-	"../../project-tests/SearchEngineTest/input/text/simple/.txt/hidden.txt": 1,
-	"../../project-tests/SearchEngineTest/input/text/simple/a/b/c/d/subdir.txt": 1,
-	"../../project-tests/SearchEngineTest/input/text/simple/animals.text": 11,
-	"../../project-tests/SearchEngineTest/input/text/simple/animals_copy.text": 11,
-	"../../project-tests/SearchEngineTest/input/text/simple/animals_double.text": 22,
-	"../../project-tests/SearchEngineTest/input/text/simple/capital_extension.TXT": 1,
-	"../../project-tests/SearchEngineTest/input/text/simple/capitals.txt": 4,
-	"../../project-tests/SearchEngineTest/input/text/simple/digits.txt": 2,
-	"../../project-tests/SearchEngineTest/input/text/simple/dir.txt/findme.Txt": 17,
-	"../../project-tests/SearchEngineTest/input/text/simple/hello.txt": 6,
-	"../../project-tests/SearchEngineTest/input/text/simple/position.teXt": 20,
-	"../../project-tests/SearchEngineTest/input/text/simple/symbols.txt": 10,
-	"../../project-tests/SearchEngineTest/input/text/simple/words.tExT": 24
+		"../../project-tests/SearchEngineTest/input/text/simple/.txt/hidden.txt": 1,
+		"../../project-tests/SearchEngineTest/input/text/simple/a/b/c/d/subdir.txt": 1,
+		"../../project-tests/SearchEngineTest/input/text/simple/animals.text": 11,
+		"../../project-tests/SearchEngineTest/input/text/simple/animals_copy.text": 11,
+		"../../project-tests/SearchEngineTest/input/text/simple/animals_double.text": 22,
+		"../../project-tests/SearchEngineTest/input/text/simple/capital_extension.TXT": 1,
+		"../../project-tests/SearchEngineTest/input/text/simple/capitals.txt": 4,
+		"../../project-tests/SearchEngineTest/input/text/simple/digits.txt": 2,
+		"../../project-tests/SearchEngineTest/input/text/simple/dir.txt/findme.Txt": 17,
+		"../../project-tests/SearchEngineTest/input/text/simple/hello.txt": 6,
+		"../../project-tests/SearchEngineTest/input/text/simple/position.teXt": 20,
+		"../../project-tests/SearchEngineTest/input/text/simple/symbols.txt": 10,
+		"../../project-tests/SearchEngineTest/input/text/simple/words.tExT": 24
 }

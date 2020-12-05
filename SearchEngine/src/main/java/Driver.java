@@ -8,6 +8,9 @@ import java.time.Instant;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.servlet.ServletHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
 
 /**
  * Class responsible for running this project based on the provided command-line
@@ -41,9 +44,9 @@ public class Driver {
 
 		int workerThreads = 5;
 		// check if program should be multithreaded
-		if (map.hasFlag("-threads") || map.hasFlag("-url")) {
+		if (map.hasFlag("-threads") || map.hasFlag("-url") || map.hasFlag("-server")) {
 			// log.debug("threads flag found, beginning of threads section");
-
+					
 			// threads flag instead
 			// get number of worker threads to use, or 5 if no number provided
 			if (map.getInteger("-threads", 5) <= 0) {
@@ -108,9 +111,37 @@ public class Driver {
 				System.out.println("unable to grab/create url from -url flag");
 				return;
 			}
+			System.out.println("url given :" + seed);
 			webCrawler.crawl(seed);
 		}
 
+		//launch a server (after build has occured)
+		if( map.hasFlag("-server")) {
+			int port = 8080;
+			if(map.getInteger("-server", 8080) >= 0) {
+				port = map.getInteger("-server", 8080);
+			}
+			Server server = new Server(port); //setting up a socket connector
+			ServletHandler handler = new ServletHandler();
+			try {
+				handler.addServletWithMapping(new ServletHolder(new Servlet(threadSafe)), "/swag");
+			} catch (IOException e2) {
+				System.out.println("unable to create new servlet");
+			}
+			server.setHandler(handler); //class used for handling requests
+			
+			try {
+				server.start();
+			} catch (Exception e1) {
+				System.out.println("unable to start server");
+			}
+			try {
+				server.join();
+			} catch (InterruptedException e) {
+				System.out.println("issues with join");
+			}
+		}
+		
 		/*
 		 * writing a nested data structure (matching your inverted index data structure)
 		 * to a file in JSON format (SimpleJSONWriter)

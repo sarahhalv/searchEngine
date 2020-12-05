@@ -14,7 +14,7 @@
 		<!-- dependency versions -->
 		<jettyVersion>9.4.31.v20200723</jettyVersion>
 		<logj4Version>2.13.3</logj4Version>
-		
+
 		<!-- compiler arguments -->
 		<compileOptionXlint>-Xlint:all</compileOptionXlint>
 		<compileOptionXdoclint>-Xdoclint:all/private</compileOptionXdoclint>
@@ -106,6 +106,19 @@
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-servlet</artifactId>
 			<version>${jettyVersion}</version>
+		</dependency>
+
+		<!-- for apache commons -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.11</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-text</artifactId>
+			<version>1.9</version>
 		</dependency>
 	</dependencies>
 
