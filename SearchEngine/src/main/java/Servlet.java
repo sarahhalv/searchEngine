@@ -5,12 +5,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -38,10 +39,13 @@ public class Servlet extends HttpServlet {
 	private static Logger log = Log.getRootLogger();
 
 	/** The thread-safe data structure to use for storing messages. */
-	private final ConcurrentLinkedQueue<String> messages;
+	private final List<String> searchResults;
 
 	/** Template for HTML. **/
 	private final String htmlTemplate;
+
+	/** storing last inputted queries for partial search toggle **/
+	private Set<String> oldQueries;
 
 	/**
 	 * index to use
@@ -56,7 +60,7 @@ public class Servlet extends HttpServlet {
 	 */
 	public Servlet(ThreadSafeInvertedIndex index) throws IOException {
 		super();
-		messages = new ConcurrentLinkedQueue<>();
+		searchResults = new ArrayList<>();
 		htmlTemplate = Files.readString(Path.of("html", "index.html"), StandardCharsets.UTF_8);
 		this.index = index;
 	}
@@ -79,7 +83,7 @@ public class Servlet extends HttpServlet {
 
 		// compile all of the messages together
 		// keep in mind multiple threads may access this at once!
-		values.put("messages", String.join("\n\n", messages));
+		values.put("searchResults", String.join("\n", searchResults));
 
 		// generate html from template
 		StringSubstitutor replacer = new StringSubstitutor(values);
@@ -99,30 +103,85 @@ public class Servlet extends HttpServlet {
 		response.setContentType("text/html");
 		log.info("MessageServlet ID " + this.hashCode() + " handling POST request.");
 
-		String username = request.getParameter("name");
 		String query = request.getParameter("query");
+		String partialTogglePartial = request.getParameter("partialTogglePartial");
+		String partialToggleExact = request.getParameter("partialToggleExact");
+		String reverse = request.getParameter("reverse");
+		String lucky = request.getParameter("lucky");
 
-		username = username == null ? "anonymous" : username;
-		query = query == null ? "" : query;
+		// if reverse order was pressed, reverse list and send back to doPost
+		if (reverse != null) {
+			Collections.reverse(searchResults);
 
-		// avoid xss attacks using apache commons text
-		username = StringEscapeUtils.escapeHtml4(username);
-		query = StringEscapeUtils.escapeHtml4(query);
+		} else if (partialTogglePartial != null || partialToggleExact != null) {
+			// toggle between partial and exact search depending on which option pressed
+			if (partialTogglePartial != null) {
+				handlePartialToggle(true); // partial results
+			} else {
+				handlePartialToggle(false); // exact results
+			}
 
-		// separate into queries and partial search the index
-		Set<String> queries = TextFileStemmer.uniqueStems(query);
-		List<InvertedIndex.SearchResult> results = index.partialSearch(queries);
+		} else {
+			query = query == null ? "" : query;
 
-		// outputting index to html
-		for (InvertedIndex.SearchResult result : results) {
-			String formatted = String.format("<br><li><a href=%s>%s</a></li>", result.getWhere(), result.getWhere());
-			// keep in mind multiple threads may access at once
-			// but we are using a thread-safe data structure here to avoid any issues
-			messages.add(formatted);
+			// avoid xss attacks using apache commons text
+			query = StringEscapeUtils.escapeHtml4(query);
+
+			// separate into queries and partial search the index
+			Set<String> queries = TextFileStemmer.uniqueStems(query);
+			// store queries/search data incase need
+			oldQueries = queries;
+
+			List<InvertedIndex.SearchResult> results = index.partialSearch(queries);
+
+			// if i'm feeling lucky instead of result list
+			if (lucky != null) {
+				response.sendRedirect(results.get(0).getWhere());
+			} else {
+				// make sure get fresh results
+				searchResults.clear();
+				// outputting search results to html
+				outputToHTML(results);
+			}
 		}
 
 		response.setStatus(HttpServletResponse.SC_OK);
 		response.sendRedirect(request.getServletPath());
+	}
+
+	/**
+	 * adds the search results as clickable html links to the results list for the
+	 * web page output
+	 * 
+	 * @param results the results to display
+	 */
+	protected void outputToHTML(List<InvertedIndex.SearchResult> results) {
+		for (InvertedIndex.SearchResult result : results) {
+			String formatted = String.format("<br><li><a href=%s>%s</a></li>", result.getWhere(), result.getWhere());
+			synchronized (searchResults) {
+				searchResults.add(formatted);
+			}
+		}
+	}
+
+	/**
+	 * performs the actions of toggling between partial and exact results, depending
+	 * on which type of results was last returned
+	 * 
+	 * @param partial if the toggle was on partial button or not (exact otherwise)
+	 */
+	protected void handlePartialToggle(Boolean partial) {
+		List<InvertedIndex.SearchResult> results;
+		searchResults.clear();
+		if (partial == true) {
+			// partial search
+			results = index.partialSearch(oldQueries);
+		} else {
+			// exact search
+			results = index.exactSearch(oldQueries);
+		}
+		// outputting search results to html
+		outputToHTML(results);
 	}
 
 	/**

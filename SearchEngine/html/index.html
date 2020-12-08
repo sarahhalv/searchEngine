@@ -4,25 +4,72 @@
 
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>${title}</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+  <script defer src="https://use.fontawesome.com/releases/v5.14.0/js/all.js"></script>
+  <style>
+  	input {
+  		background-image: linear-gradient(#276149, #2c946a);
+  		color : white;
+  	}
+  </style>
 </head>
 
-<body style="background-color:MintCream;">
-  <h1 style="color:DarkSeaGreen;font-family:verdana;">Search Engine</h1>
+<body>
+  <section class="hero is-primary is-bold">
+    <div class="hero-body">
+      <div class="container">
+        <h1 class="title">Search Engine</h1>
+      </div>
+    </div>
+  </section>
   
-  <ol>
- 	 ${messages}
-  </ol>
+  
+  <section class="section">
+    <div class="container">
+        <ol>
+ 	 		${searchResults}
+  		</ol>
+    </div>
+  </section> <!-- end results -->
+
+
+<!-- show form -->
+  <section class="section">
+    <div class="container">
 
   <form method="${method}" action="${action}">
     
+        <div class="field">
+          <label class="label" for="query">Query</label>
+          <div class="control">
+            <textarea class="textarea" name="query" id="query" placeholder="Enter your query here."></textarea>
+            <button class="button is-primary" type="submit">
+            &nbsp;Search
+          </button>
+          <button class="button is-primary" type="submit" name="lucky">
+            &nbsp;I'm Feeling Lucky
+          </button>
+          </div>
+        </div>
+    
     <p>
-      <input type="text" name="query" id="query" maxlength="100" size="60">
-      <input type="submit" value="Search">
+    	<input type="submit" name="partialTogglePartial" value="partial results">
+    	<input type="submit" name="partialToggleExact" value="exact results">
+    	<input type="submit" name="reverse" value="Reverse Result Order">
     </p>
-  </form>
+    
+      </form>
+    </div>
+  </section>
   
-  <p style="font-size:80%;">This request was handled by thread ${thread}.</p>
+  <footer class="footer">
+    <div class="content has-text-centered">
+      <p style="font-size:80%;">This request was handled by thread ${thread}.</p>
+    </div>
+  </footer>
+  
 
 </body>
 </html>
