@@ -124,7 +124,9 @@ public class Driver {
 			Server server = new Server(port); //setting up a socket connector
 			ServletHandler handler = new ServletHandler();
 			try {
-				handler.addServletWithMapping(new ServletHolder(new Servlet(threadSafe)), "/swag");
+				handler.addServletWithMapping(new ServletHolder(new Servlet(threadSafe)), "/");
+				handler.addServletWithMapping(new ServletHolder(new LocationBrowserServlet(threadSafe)), "/locations");
+				handler.addServletWithMapping(new ServletHolder(new IndexBrowserServlet(threadSafe)), "/index");
 			} catch (IOException e2) {
 				System.out.println("unable to create new servlet");
 			}

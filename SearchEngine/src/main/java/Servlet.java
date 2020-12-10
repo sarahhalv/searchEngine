@@ -3,11 +3,8 @@ import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +30,7 @@ public class Servlet extends HttpServlet {
 	private static final long serialVersionUID = 202040;
 
 	/** The title to use for this webpage. */
-	private static final String TITLE = "SearchEngine";
+	private static final String TITLE = "SURCH";
 
 	/** The logger to use for this servlet. */
 	private static Logger log = Log.getRootLogger();
@@ -47,13 +44,11 @@ public class Servlet extends HttpServlet {
 	/** storing last inputted queries for partial search toggle **/
 	private Set<String> oldQueries;
 
-	/**
-	 * index to use
-	 */
+	/** index to use **/
 	private final ThreadSafeInvertedIndex index;
 
 	/**
-	 * Initializes this index page
+	 * Initializes this servlet to be a web page
 	 * 
 	 * @param index the index to use/search
 	 * @throws IOException if unable to read template
@@ -184,15 +179,4 @@ public class Servlet extends HttpServlet {
 		outputToHTML(results);
 	}
 
-	/**
-	 * Returns the date and time in a long format. For example: "12:00 am on
-	 * Saturday, January 01 2000".
-	 *
-	 * @return current date and time
-	 */
-	private static String getDate() {
-		String format = "hh:mm a 'on' EEEE, MMMM dd yyyy";
-		DateFormat formatter = new SimpleDateFormat(format);
-		return formatter.format(new Date());
-	}
 }

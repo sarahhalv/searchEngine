@@ -20,7 +20,7 @@
   <section class="hero is-primary is-bold">
     <div class="hero-body">
       <div class="container">
-      	<figure class="image is-300x70">
+        <figure class="image is-300x70">
  		 	<img src="https://i.ibb.co/NLhgm18/Logo-Makr-3p-D5n-W.png" alt="Logo-Makr-3p-D5n-W" border="0">
 	  	</figure>
         <h2 class="subtitle">surch the web</h2>
@@ -31,41 +31,13 @@
   
   <section class="section">
     <div class="container">
+    <h1 class="title">Inverted Index Locations</h1>
         <ol>
- 	 		${searchResults}
+ 	 		${locations}
   		</ol>
     </div>
   </section> <!-- end results -->
 
-
-<!-- show form -->
-  <section class="section">
-    <div class="container">
-
-  <form method="${method}" action="${action}">
-    
-        <div class="field">
-          <label class="label" for="query">Query</label>
-          <div class="control">
-            <input class="input" name="query" id="query" placeholder="Enter your query here."></input>
-            <button class="button is-primary" type="submit">
-            &nbsp;surch
-          </button>
-          <button class="button is-primary" type="submit" name="lucky">
-            &nbsp;I'm Feeling Lucky
-          </button>
-          </div>
-        </div>
-    
-    <p>
-    	<input type="submit" name="partialTogglePartial" value="partial results">
-    	<input type="submit" name="partialToggleExact" value="exact results">
-    	<input type="submit" name="reverse" value="Reverse Result Order">
-    </p>
-    
-      </form>
-    </div>
-  </section>
   
   <footer class="footer">
     <div class="content has-text-centered">
