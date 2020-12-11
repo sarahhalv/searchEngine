@@ -126,7 +126,6 @@ public class Driver {
 				handler.addServletWithMapping(new ServletHolder(new Servlet(threadSafe)), "/");
 				handler.addServletWithMapping(new ServletHolder(new LocationBrowserServlet(threadSafe)), "/locations");
 				handler.addServletWithMapping(new ServletHolder(new IndexBrowserServlet(threadSafe)), "/index");
-				//handler.addServletWithMapping(new ServletHolder(new SmoothShutdownServlet()), "/shutdown");
 			} catch (IOException e2) {
 				System.out.println("unable to create new servlet");
 			}
