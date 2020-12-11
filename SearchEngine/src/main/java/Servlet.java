@@ -108,7 +108,7 @@ public class Servlet extends HttpServlet {
 
 		// if reverse order was pressed, reverse list and send back to doPost
 		if (reverse != null) {
-			Collections.reverse(searchResults);
+			Collections.reverse(searchResults); // TODO synchronized, also not multi-user friendly
 
 		} else if (partialTogglePartial != null || partialToggleExact != null) {
 			// toggle between partial and exact search depending on which option pressed
