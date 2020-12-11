@@ -78,7 +78,9 @@ public class Servlet extends HttpServlet {
 
 		// compile all of the messages together
 		// keep in mind multiple threads may access this at once!
-		values.put("searchResults", String.join("\n", searchResults));
+		synchronized (values) {
+			values.put("searchResults", String.join("\n", searchResults));
+		}
 
 		// generate html from template
 		StringSubstitutor replacer = new StringSubstitutor(values);
@@ -134,7 +136,9 @@ public class Servlet extends HttpServlet {
 				response.sendRedirect(results.get(0).getWhere());
 			} else {
 				// make sure get fresh results
-				searchResults.clear();
+				synchronized (searchResults) {
+					searchResults.clear();
+				}
 				// outputting search results to html
 				outputToHTML(results);
 			}
@@ -167,7 +171,9 @@ public class Servlet extends HttpServlet {
 	 */
 	protected void handlePartialToggle(Boolean partial) {
 		List<InvertedIndex.SearchResult> results;
-		searchResults.clear();
+		synchronized (searchResults) {
+			searchResults.clear();
+		}
 		if (partial == true) {
 			// partial search
 			results = index.partialSearch(oldQueries);

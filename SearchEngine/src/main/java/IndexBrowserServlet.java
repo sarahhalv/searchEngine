@@ -69,10 +69,9 @@ public class IndexBrowserServlet extends HttpServlet {
 		values.put("thread", Thread.currentThread().getName());
 
 		// grab locations and the number of words they contain
-		//outputAsHTML();
+		outputAsHTML();
 		// multiple threads may access this at once!
-		values.put("locations", String.join("\n", indexForHTML));
-
+		values.put("index", String.join("\n", indexForHTML));
 
 		// generate html from template
 		StringSubstitutor replacer = new StringSubstitutor(values);
@@ -86,26 +85,25 @@ public class IndexBrowserServlet extends HttpServlet {
 		response.setStatus(HttpServletResponse.SC_OK);
 	}
 
-//	/**
-//	 * outputs index to html with clickable location links
-//	 */
-//	protected void outputAsHTML() {
-//		synchronized (indexForHTML) {
-//			//for stem words
-//			for (String stem : index.getWords()) {
-//				//get inner mapping
-//				String formatted = String.format("<br><li><a href=%s>%s</a>%s</li>", location, location,
-//						": " + countMap.get(location).toString() + " words");
-//				indexForHTML.add(formatted);
-//			}
-//		}
-//	}
-	//for each word
-	
-	//for each location
-	//get positions that word is found in & put into list
-	//put locationformatted string <li>location as link : positions list>
-	//add to what
-	//then <li
-	
+	/**
+	 * adds the inverted index as html with clickable location links to the html string list
+	 * value to output
+	 */
+	protected void outputAsHTML() {
+		synchronized (indexForHTML) {
+			// for stem words
+			for (String stem : index.getWords()) {
+				// get inner mapping
+				List<String> innerList = new ArrayList<>();
+				for (String location : index.getLocations(stem)) {
+					String innerFormatted = String.format("<br><li><a href=%s>%s</a>%s</li>", location, location,
+							": " + index.getPositions(stem, location).toString());
+					innerList.add(innerFormatted);
+				}
+				String formatted = String.format("<br><li><b>%s</b><ul>%s</ul></li>", stem, String.join("", innerList));
+				indexForHTML.add(formatted);
+			}
+		}
+	}
+
 }
